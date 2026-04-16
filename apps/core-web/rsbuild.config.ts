@@ -5,8 +5,10 @@ import { pluginSass } from '@rsbuild/plugin-sass'
 import { TanStackRouterRspack } from '@tanstack/router-plugin/rspack'
 
 const IS_PROD = process.env.NODE_ENV === 'production'
+const DEV_PROXY = process.env.DEV_PROXY === 'true'
 const DEPLOY_PREFIX = process.env.DEPLOY_PREFIX ?? ''
-const BASE_PATH = IS_PROD ? `${DEPLOY_PREFIX}/core/` : '/'
+const CORE_DEV_PORT = 3002
+const BASE_PATH = IS_PROD || DEV_PROXY ? `${DEPLOY_PREFIX}/core/` : '/'
 const MONOREPO_ROOT = path.resolve(__dirname, '../../')
 const { publicVars } = loadEnv({ cwd: MONOREPO_ROOT })
 
@@ -33,6 +35,10 @@ export default defineConfig({
     rspack: {
       plugins: [TanStackRouterRspack()],
     },
+  },
+  server: {
+    port: DEV_PROXY ? CORE_DEV_PORT : undefined,
+    base: DEV_PROXY ? '/core' : undefined,
   },
   html: {
     title: 'Primer Guidy — Core',

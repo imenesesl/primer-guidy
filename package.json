@@ -7,6 +7,7 @@
     "pnpm": ">=10"
   },
   "scripts": {
+    "dev": "npx tsx scripts/dev-proxy.ts",
     "dev:core": "pnpm --filter @primer-guidy/core-web dev",
     "dev:login": "pnpm --filter @primer-guidy/login-web dev",
     "build": "pnpm -r build",
