@@ -1,0 +1,11 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email"
+  }
+}

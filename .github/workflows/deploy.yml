@@ -163,6 +163,9 @@ jobs:
           if [ -d "apps/core-web/dist" ]; then
             cp -r apps/core-web/dist deploy/core
           fi
+          if [ -d "apps/login-web/dist" ]; then
+            cp -r apps/login-web/dist deploy/login
+          fi
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

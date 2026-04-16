@@ -179,6 +179,64 @@ importers:
         specifier: ^1.167.22
         version: 1.167.22(@rsbuild/core@1.7.5)(@tanstack/react-router@1.168.22(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(vite@8.0.8(esbuild@0.27.7)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.3))
 
+  apps/login-web:
+    dependencies:
+      '@primer-guidy/components-web':
+        specifier: workspace:*
+        version: link:../components-web
+      '@primer/octicons-react':
+        specifier: ^19.24.1
+        version: 19.24.1(react@19.2.5)
+      '@primer/react':
+        specifier: ^38.20.0
+        version: 38.20.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react-is@17.0.2)(react@19.2.5)
+      '@tanstack/react-query':
+        specifier: ^5.99.0
+        version: 5.99.0(react@19.2.5)
+      '@tanstack/react-router':
+        specifier: ^1.168.22
+        version: 1.168.22(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      i18next:
+        specifier: ^26.0.5
+        version: 26.0.5(typescript@6.0.2)
+      react:
+        specifier: ^19.2.5
+        version: 19.2.5
+      react-dom:
+        specifier: ^19.2.5
+        version: 19.2.5(react@19.2.5)
+      react-i18next:
+        specifier: ^17.0.3
+        version: 17.0.3(i18next@26.0.5(typescript@6.0.2))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2)
+      zustand:
+        specifier: ^5.0.12
+        version: 5.0.12(@types/react@19.2.14)(react@19.2.5)(use-sync-external-store@1.6.0(react@19.2.5))
+    devDependencies:
+      '@primer-guidy/eslint-config':
+        specifier: workspace:*
+        version: link:../../libs/eslint-config
+      '@primer-guidy/stylelint-config':
+        specifier: workspace:*
+        version: link:../../libs/stylelint-config
+      '@rsbuild/core':
+        specifier: ^1.7.5
+        version: 1.7.5
+      '@rsbuild/plugin-react':
+        specifier: ^1.4.6
+        version: 1.4.6(@rsbuild/core@1.7.5)
+      '@rsbuild/plugin-sass':
+        specifier: ^1.5.1
+        version: 1.5.1(@rsbuild/core@1.7.5)
+      '@tanstack/router-cli':
+        specifier: ^1.166.33
+        version: 1.166.33
+      '@tanstack/router-plugin':
+        specifier: ^1.167.22
+        version: 1.167.22(@rsbuild/core@1.7.5)(@tanstack/react-router@1.168.22(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(vite@8.0.8(esbuild@0.27.7)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.3))
+
   libs/eslint-config:
     dependencies:
       '@eslint/js':

@@ -13,7 +13,7 @@ Every web app deploys to GitHub Pages under a specific sub-route. The root (`/`)
 ```
 https://<user>.github.io/primer-guidy/          → Landing page (app list)
 https://<user>.github.io/primer-guidy/core/      → core-web app
-https://<user>.github.io/primer-guidy/dashboard/  → dashboard-web app (future)
+https://<user>.github.io/primer-guidy/login/     → login-web app
 ```
 
 ## Requirements per Web App
@@ -84,7 +84,9 @@ When creating a new web app:
 1. Set `assetPrefix` in `rsbuild.config.ts`
 2. Set `basepath` in `router.ts`
 3. Register it in `.github/pages/apps-registry.json`
-4. CI handles the rest automatically
+4. Add `dev:<name>` script in root `package.json`
+5. Add copy step in `deploy.yml` under "Assemble deploy output"
+6. CI handles the rest automatically
 
 ## Rules
 

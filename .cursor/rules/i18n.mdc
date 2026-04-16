@@ -12,6 +12,10 @@ TODA cadena visible al usuario DEBE venir de i18n. Cero strings hardcodeados en 
 
 `react-i18next` + `i18next`. Configuración en `src/i18n/i18n.config.ts`.
 
+## Default Language
+
+English (`en`) is the ONLY default language. When scaffolding a new app or module, create ONLY the `en/` locale. Additional languages are added later when needed — NEVER at scaffold time.
+
 ## Estructura de Traducciones
 
 ```
@@ -23,10 +27,6 @@ src/
         common.json           → Keys reutilizables (acciones, labels, errores genéricos)
         home.json             → Namespace del módulo Home
         dashboard.json        → Namespace del módulo Dashboard
-      es/
-        common.json
-        home.json
-        dashboard.json
 ```
 
 ## Namespaces
@@ -134,6 +134,6 @@ Cada módulo declara su namespace. El archivo de traducciones ES el contrato de 
 
 - CERO strings hardcodeados en JSX — todo vía `t()`
 - Keys de `common` son la primera opción — solo crear key nueva si no existe
-- Cada módulo nuevo DEBE crear su namespace con al menos `en` y `es`
+- Cada módulo nuevo DEBE crear su namespace en `en` — otros idiomas se agregan después, nunca al scaffoldear
 - Interpolaciones con nombres descriptivos: `{{count}}`, `{{userName}}`, `{{date}}`
 - Tests deben mockear i18n — nunca depender de traducciones reales en unit tests

@@ -1,6 +1,7 @@
 {
   "apps": [
-    { "name": "Core", "route": "core", "description": "Main application platform", "icon": "🔷" }
+    { "name": "Core", "route": "core", "description": "Main application platform", "icon": "🔷" },
+    { "name": "Login", "route": "login", "description": "Authentication portal", "icon": "🔑" }
   ],
   "storybooks": []
 }

@@ -7,7 +7,8 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "dev": "pnpm --filter @primer-guidy/core-web dev",
+    "dev:core": "pnpm --filter @primer-guidy/core-web dev",
+    "dev:login": "pnpm --filter @primer-guidy/login-web dev",
     "build": "pnpm -r build",
     "generate:landing": "npx tsx .github/pages/generate.ts",
     "typecheck": "pnpm -r --if-present typecheck",

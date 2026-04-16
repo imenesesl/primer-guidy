@@ -11,7 +11,7 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 
 | Type | Path | Tooling | Example |
 |------|------|---------|---------|
-| React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/` |
+| React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/`, `apps/login-web/` |
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
 | Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
@@ -45,6 +45,21 @@ ALL reusable UI components live in `apps/components-web/`. Web apps NEVER define
 import { WorkspaceLayout, Rail, RailItem, useLayoutStore } from '@primer-guidy/components-web'
 import { Button, Text, Heading } from '@primer/react'
 ```
+
+## Root Scripts Convention
+
+The root `package.json` MUST have a `dev:<name>` script for each web app:
+
+```json
+{
+  "dev:core": "pnpm --filter @primer-guidy/core-web dev",
+  "dev:login": "pnpm --filter @primer-guidy/login-web dev"
+}
+```
+
+There is NO generic `dev` script. Each app has its own `dev:<name>` to avoid ambiguity.
+
+Recursive scripts (`build`, `typecheck`, `lint`, `test`) run across all packages automatically.
 
 ## Naming Conventions
 
