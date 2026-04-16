@@ -10,12 +10,25 @@
     "dev": "pnpm --filter @primer-guidy/core-web dev",
     "build": "pnpm -r build",
     "generate:landing": "npx tsx .github/pages/generate.ts",
+    "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm -r lint",
     "lint:css": "pnpm -r lint:css",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "pnpm -r test",
-    "test:e2e": "pnpm -r test:e2e"
+    "test:e2e": "pnpm -r test:e2e",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.module.scss": [
+      "stylelint --fix"
+    ],
+    "*.{ts,tsx,scss,json,md}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
@@ -27,7 +40,9 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
+    "husky": "^9.1.7",
     "jsdom": "^29.0.2",
+    "lint-staged": "^16.4.0",
     "postcss": "^8.5.10",
     "prettier": "^3.8.3",
     "sass": "^1.99.0",

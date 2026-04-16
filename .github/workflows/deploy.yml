@@ -59,7 +59,7 @@ jobs:
           key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: TypeScript
-        run: pnpm -r exec tsc --noEmit
+        run: pnpm typecheck
 
       - name: ESLint
         run: pnpm lint

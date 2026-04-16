@@ -7,6 +7,7 @@
     "dev": "rsbuild dev",
     "build": "rsbuild build",
     "preview": "rsbuild preview",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "lint:css": "stylelint 'src/**/*.module.scss'",
     "format": "prettier --write 'src/**/*.{ts,tsx,scss}'",
