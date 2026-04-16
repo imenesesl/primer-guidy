@@ -20,7 +20,7 @@ export const Rail = ({ items, avatarSrc, avatarName }: RailProps) => {
           activeIcon={item.activeIcon}
           label={tShell(item.labelKey)}
           path={item.path}
-          active={Boolean(matchRoute({ to: item.path }))}
+          active={item.alwaysActive || Boolean(matchRoute({ to: item.path, fuzzy: true }))}
         />
       ))}
       <div className={styles.spacer} />

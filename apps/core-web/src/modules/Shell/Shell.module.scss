@@ -12,12 +12,32 @@
 }
 
 .sidebarHeader {
-  @apply flex items-center;
+  @apply flex items-center gap-2;
+}
+
+.sidebarUserName {
+  @apply text-sm font-semibold truncate flex-1;
+
+  color: var(--primer-fg-default);
+}
+
+.sidebarDivider {
+  border-bottom: 1px solid var(--primer-border-muted);
+}
+
+.sidebarNav {
+  @apply flex flex-col gap-1;
 }
 
 .contentHeader {
-  @apply flex items-center p-2 sticky top-0 z-10;
+  @apply flex items-center gap-2 p-2 sticky top-0 z-10;
 
   background-color: var(--primer-canvas-subtle);
   border-bottom: 1px solid var(--primer-border-default);
+}
+
+.breadcrumb {
+  @apply text-sm font-medium truncate;
+
+  color: var(--primer-fg-muted);
 }

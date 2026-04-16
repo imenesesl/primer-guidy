@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as ShellIndexRouteImport } from './routes/_shell/index'
+import { Route as ShellDirectoriesRouteImport } from './routes/_shell/directories'
+import { Route as ShellDirectoriesIndexRouteImport } from './routes/_shell/directories/index'
+import { Route as ShellDirectoriesUsersRouteImport } from './routes/_shell/directories/users'
 
 const ShellRoute = ShellRouteImport.update({
   id: '/_shell',
@@ -21,24 +24,53 @@ const ShellIndexRoute = ShellIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellDirectoriesRoute = ShellDirectoriesRouteImport.update({
+  id: '/directories',
+  path: '/directories',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellDirectoriesIndexRoute = ShellDirectoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShellDirectoriesRoute,
+} as any)
+const ShellDirectoriesUsersRoute = ShellDirectoriesUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => ShellDirectoriesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ShellIndexRoute
+  '/directories': typeof ShellDirectoriesRouteWithChildren
+  '/directories/users': typeof ShellDirectoriesUsersRoute
+  '/directories/': typeof ShellDirectoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ShellIndexRoute
+  '/directories/users': typeof ShellDirectoriesUsersRoute
+  '/directories': typeof ShellDirectoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_shell': typeof ShellRouteWithChildren
+  '/_shell/directories': typeof ShellDirectoriesRouteWithChildren
   '/_shell/': typeof ShellIndexRoute
+  '/_shell/directories/users': typeof ShellDirectoriesUsersRoute
+  '/_shell/directories/': typeof ShellDirectoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/directories' | '/directories/users' | '/directories/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_shell' | '/_shell/'
+  to: '/' | '/directories/users' | '/directories'
+  id:
+    | '__root__'
+    | '/_shell'
+    | '/_shell/directories'
+    | '/_shell/'
+    | '/_shell/directories/users'
+    | '/_shell/directories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,14 +93,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellIndexRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/directories': {
+      id: '/_shell/directories'
+      path: '/directories'
+      fullPath: '/directories'
+      preLoaderRoute: typeof ShellDirectoriesRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/directories/': {
+      id: '/_shell/directories/'
+      path: '/'
+      fullPath: '/directories/'
+      preLoaderRoute: typeof ShellDirectoriesIndexRouteImport
+      parentRoute: typeof ShellDirectoriesRoute
+    }
+    '/_shell/directories/users': {
+      id: '/_shell/directories/users'
+      path: '/users'
+      fullPath: '/directories/users'
+      preLoaderRoute: typeof ShellDirectoriesUsersRouteImport
+      parentRoute: typeof ShellDirectoriesRoute
+    }
   }
 }
 
+interface ShellDirectoriesRouteChildren {
+  ShellDirectoriesUsersRoute: typeof ShellDirectoriesUsersRoute
+  ShellDirectoriesIndexRoute: typeof ShellDirectoriesIndexRoute
+}
+
+const ShellDirectoriesRouteChildren: ShellDirectoriesRouteChildren = {
+  ShellDirectoriesUsersRoute: ShellDirectoriesUsersRoute,
+  ShellDirectoriesIndexRoute: ShellDirectoriesIndexRoute,
+}
+
+const ShellDirectoriesRouteWithChildren =
+  ShellDirectoriesRoute._addFileChildren(ShellDirectoriesRouteChildren)
+
 interface ShellRouteChildren {
+  ShellDirectoriesRoute: typeof ShellDirectoriesRouteWithChildren
   ShellIndexRoute: typeof ShellIndexRoute
 }
 
 const ShellRouteChildren: ShellRouteChildren = {
+  ShellDirectoriesRoute: ShellDirectoriesRouteWithChildren,
   ShellIndexRoute: ShellIndexRoute,
 }
 

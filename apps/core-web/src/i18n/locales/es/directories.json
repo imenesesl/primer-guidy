@@ -1,0 +1,10 @@
+{
+  "title": "Directorios",
+  "tabs": {
+    "users": "Usuarios"
+  },
+  "users": {
+    "title": "Usuarios",
+    "description": "Administrar directorio de usuarios"
+  }
+}

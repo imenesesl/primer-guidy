@@ -9,18 +9,23 @@ import {
   RouterProvider,
   createMemoryHistory,
 } from '@tanstack/react-router'
-import type { RailItemConfig } from '@primer-guidy/components-web'
+import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
 import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
 import { Shell } from './Shell'
 
 const MockHomeIcon = vi.fn(() => <svg data-testid="home-icon" />)
 const MockChannelsIcon = vi.fn(() => <svg data-testid="channels-icon" />)
 const MockActivityIcon = vi.fn(() => <svg data-testid="activity-icon" />)
+const MockDirIcon = vi.fn(() => <svg data-testid="dir-icon" />)
 
 const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: MockHomeIcon, labelKey: 'rail.items.home', path: '/' },
   { icon: MockChannelsIcon, labelKey: 'rail.items.channels', path: '/channels' },
   { icon: MockActivityIcon, labelKey: 'rail.items.activity', path: '/activity' },
+]
+
+const SIDEBAR_ITEMS: readonly SidebarItemConfig[] = [
+  { icon: MockDirIcon, labelKey: 'sidebar.items.directories', path: '/directories' },
 ]
 
 const AVATAR_SRC = 'https://example.com/avatar.png'
@@ -51,7 +56,7 @@ describe('Shell', () => {
       rail: {
         items: { home: 'Home', channels: 'Channels', activity: 'Activity' },
       },
-      sidebar: { placeholder: 'Sidebar' },
+      sidebar: { items: { directories: 'Directories' } },
     })
     i18n.addResourceBundle('en', 'layout', {
       rail: { label: 'Navigation rail' },
@@ -66,7 +71,12 @@ describe('Shell', () => {
 
   it('renders rail navigation items received via props', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -78,7 +88,12 @@ describe('Shell', () => {
 
   it('renders the avatar from props', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -88,7 +103,7 @@ describe('Shell', () => {
 
   it('renders initials when avatarSrc is not provided', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarName={AVATAR_NAME}>
+      <Shell railItems={RAIL_ITEMS} sidebarItems={SIDEBAR_ITEMS} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -99,7 +114,12 @@ describe('Shell', () => {
 
   it('renders children in the content area', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -109,7 +129,12 @@ describe('Shell', () => {
 
   it('renders a toggle rail button in the sidebar', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -121,7 +146,12 @@ describe('Shell', () => {
 
   it('hides rail when toggle rail button is clicked', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -138,7 +168,12 @@ describe('Shell', () => {
 
   it('renders a toggle sidebar button in the content area', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )
@@ -148,7 +183,12 @@ describe('Shell', () => {
 
   it('hides sidebar when toggle sidebar button is clicked', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
+      <Shell
+        railItems={RAIL_ITEMS}
+        sidebarItems={SIDEBAR_ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+      >
         <div>Page Content</div>
       </Shell>,
     )

@@ -5,6 +5,7 @@ export interface RailItemConfig {
   readonly activeIcon?: Icon
   readonly labelKey: string
   readonly path: string
+  readonly alwaysActive?: boolean
 }
 
 export interface RailProps {

@@ -5,7 +5,14 @@ import styles from './Shell.module.scss'
 import { SidebarContent } from './SidebarContent'
 import { ContentHeader } from './ContentHeader'
 
-export const Shell = ({ railItems, avatarSrc, avatarName, children }: ShellProps) => {
+export const Shell = ({
+  railItems,
+  sidebarItems,
+  avatarSrc,
+  avatarName,
+  userName,
+  children,
+}: ShellProps) => {
   const { theme } = useTheme()
   const themeVars = buildThemeVars(theme?.colors)
 
@@ -13,7 +20,7 @@ export const Shell = ({ railItems, avatarSrc, avatarName, children }: ShellProps
     <div style={themeVars} className={styles.themeRoot}>
       <WorkspaceLayout
         rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarName={avatarName} />}
-        sidebar={<SidebarContent />}
+        sidebar={<SidebarContent userName={userName} sidebarItems={sidebarItems} />}
       >
         <ContentHeader />
         {children}

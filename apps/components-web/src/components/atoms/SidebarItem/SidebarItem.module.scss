@@ -1,0 +1,47 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root.root {
+  @apply flex items-center gap-2 rounded-md px-2 py-1.5 no-underline;
+  @apply transition-all duration-200 ease-in-out;
+  @apply border-0 cursor-pointer;
+
+  color: var(--primer-fg-muted);
+  background: none;
+  box-shadow: none;
+}
+
+.root.root:hover,
+.root.root:focus {
+  @apply no-underline;
+
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-default);
+  box-shadow: none;
+}
+
+.root.root:visited {
+  @apply no-underline;
+
+  box-shadow: none;
+}
+
+.root.root:active {
+  @apply scale-95;
+}
+
+.active.active {
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-default);
+}
+
+.active.active:hover {
+  @apply opacity-85;
+
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-default);
+}
+
+.iconWrapper {
+  @apply flex items-center justify-center;
+}

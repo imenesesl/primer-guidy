@@ -7,6 +7,9 @@ export type {
   RailItemActionProps,
 } from './components/atoms/RailItem'
 
+export { SidebarItem } from './components/atoms/SidebarItem'
+export type { SidebarItemProps, SidebarItemConfig } from './components/atoms/SidebarItem'
+
 export { Rail } from './components/organisms/Rail'
 export type { RailProps, RailItemConfig } from './components/organisms/Rail'
 

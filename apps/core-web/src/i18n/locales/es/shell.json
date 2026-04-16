@@ -11,6 +11,15 @@
     }
   },
   "sidebar": {
-    "placeholder": "Panel lateral"
+    "items": {
+      "directories": "Directorios"
+    }
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "directories": "Directorios",
+    "users": "Usuarios",
+    "channels": "Canales",
+    "activity": "Actividad"
   }
 }

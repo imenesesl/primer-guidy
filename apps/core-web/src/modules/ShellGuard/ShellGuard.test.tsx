@@ -62,7 +62,7 @@ describe('ShellGuard', () => {
       rail: {
         items: { home: 'Home', channels: 'Channels', activity: 'Activity' },
       },
-      sidebar: { placeholder: 'Sidebar' },
+      sidebar: { items: { directories: 'Directories' } },
     })
     i18n.addResourceBundle('en', 'layout', {
       rail: { label: 'Navigation rail' },

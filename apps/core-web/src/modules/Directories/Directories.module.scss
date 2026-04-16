@@ -1,0 +1,35 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col h-full;
+}
+
+.tabBar {
+  @apply flex gap-0 px-4;
+
+  border-bottom: 1px solid var(--primer-border-default);
+}
+
+.tab.tab {
+  @apply px-4 py-2 text-sm font-medium cursor-pointer no-underline;
+  @apply transition-colors duration-200 ease-in-out;
+
+  color: var(--primer-fg-muted);
+  border-bottom: 2px solid transparent;
+
+  &:hover {
+    @apply no-underline;
+
+    color: var(--primer-fg-default);
+  }
+}
+
+.tabActive.tabActive {
+  color: var(--primer-fg-default);
+  border-bottom-color: var(--primer-accent-fg);
+}
+
+.content {
+  @apply flex-1;
+}
