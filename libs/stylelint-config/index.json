@@ -33,9 +33,20 @@
       }
     ],
     "scss/operator-no-unspaced": null,
-    "scss/at-rule-no-unknown": [true, {
-      "ignoreAtRules": ["apply", "reference", "theme", "screen", "responsive", "variants", "tailwind"]
-    }],
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "apply",
+          "reference",
+          "theme",
+          "screen",
+          "responsive",
+          "variants",
+          "tailwind"
+        ]
+      }
+    ],
     "at-rule-no-unknown": null
   }
 }

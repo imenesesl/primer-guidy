@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+dist/
+dist-landing/
+deploy/
+node_modules/
+*.gen.ts

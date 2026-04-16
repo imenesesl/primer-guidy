@@ -15,12 +15,15 @@ export const base = tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-magic-numbers': ['error', {
-        ignore: [0, 1, -1],
-        ignoreEnums: true,
-        ignoreReadonlyClassProperties: true,
-        ignoreTypeIndexes: true,
-      }],
+      '@typescript-eslint/no-magic-numbers': [
+        'error',
+        {
+          ignore: [0, 1, -1],
+          ignoreEnums: true,
+          ignoreReadonlyClassProperties: true,
+          ignoreTypeIndexes: true,
+        },
+      ],
       'no-console': 'warn',
       'react/no-array-index-key': 'warn',
       'react-hooks/exhaustive-deps': 'error',

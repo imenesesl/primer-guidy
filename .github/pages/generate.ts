@@ -5,10 +5,20 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO = 'primer-guidy'
 
-interface Entry { name: string; route: string; description: string; icon: string }
-interface Registry { apps: Entry[]; storybooks: Entry[] }
+interface Entry {
+  name: string
+  route: string
+  description: string
+  icon: string
+}
+interface Registry {
+  apps: Entry[]
+  storybooks: Entry[]
+}
 
-const registry: Registry = JSON.parse(readFileSync(resolve(__dirname, 'apps-registry.json'), 'utf-8'))
+const registry: Registry = JSON.parse(
+  readFileSync(resolve(__dirname, 'apps-registry.json'), 'utf-8'),
+)
 
 const card = (e: Entry, base: string) => `
       <a href="/${REPO}/${base}${e.route}/" class="Box-row d-flex flex-items-center flex-justify-between no-underline color-fg-default">
@@ -23,7 +33,9 @@ const card = (e: Entry, base: string) => `
       </a>`
 
 const column = (title: string, entries: Entry[], base: string) =>
-  entries.length === 0 ? '' : `
+  entries.length === 0
+    ? ''
+    : `
       <div class="flex-1" style="min-width:300px">
         <h3 class="f6 text-uppercase color-fg-muted mb-2">${title}</h3>
         <div class="Box">
@@ -34,7 +46,9 @@ const column = (title: string, entries: Entry[], base: string) =>
 const columns = [
   column('Live Apps', registry.apps, ''),
   column('Storybook', registry.storybooks, 'storybook/'),
-].filter(Boolean).join('')
+]
+  .filter(Boolean)
+  .join('')
 
 const template = readFileSync(resolve(__dirname, 'landing.html'), 'utf-8')
 const html = template.replace('<!-- {{COLUMNS}} -->', columns)
