@@ -34,7 +34,7 @@ alwaysApply: true
 | **ALL colors** | **Primer via useTheme** | `var(--primer-fg-default)`, `var(--primer-canvas-subtle)` |
 | **ALL border colors** | **Primer via useTheme** | `var(--primer-border-default)`, `var(--primer-border-muted)` |
 | **Overlay colors** | **Primer via useTheme** | `var(--primer-neutral-muted)` |
-| **Color adjustments** | CSS `filter` | `filter: brightness(0.75)` for darker, `brightness(1.2)` for lighter |
+| **Color adjustments** | Primer tokens | Use a different `--primer-*` token (e.g., `canvas-inset` < `canvas-default` < `canvas-subtle`) |
 | Typography (when custom) | Tailwind | But prefer Primer `<Text size="small">` first |
 
 ## Colors — Primer Theme via useTheme + style prop
@@ -85,23 +85,6 @@ return <div style={themeVars}>{children}</div>
 | `--primer-success-emphasis` | Success/green |
 | `--primer-success-fg` | Success foreground |
 | `--primer-success-muted` | Success muted |
-
-### Brightness for Color Variants
-
-When a theme variable doesn't have the exact shade needed (e.g., no intermediate dark), use CSS `filter: brightness()` to derive it:
-
-```scss
-.rail {
-  background-color: var(--primer-neutral-emphasis-plus);
-  filter: brightness(0.75);
-}
-
-.button:hover {
-  filter: brightness(0.5);
-}
-```
-
-This keeps colors within the Primer palette while allowing tonal control.
 
 ### What is FORBIDDEN
 
@@ -155,14 +138,30 @@ When Primer's built-in `variant` prop doesn't provide the needed visual (e.g., t
 
 ```scss
 .toggleButton.toggleButton {
-  background-color: var(--primer-neutral-muted);
-  color: var(--primer-fg-on-emphasis);
-
-  &:hover {
-    background-color: var(--primer-neutral-muted);
-    filter: brightness(0.5);
-  }
+  background: none;
+  color: var(--primer-fg-muted);
+  box-shadow: none;
 }
+
+.toggleButton.toggleButton:hover {
+  background: none;
+  color: var(--primer-fg-default);
+  box-shadow: none;
+}
+```
+
+### CSS Specificity — Doubled Selectors MUST Match Everywhere
+
+When using doubled selectors (`.foo.foo`) to override Primer, the SAME doubled pattern MUST be used in ALL contexts including media queries. A single selector in a media query CANNOT override a doubled selector.
+
+```scss
+// BAD — .backdrop in @include md loses to .backdrop.backdrop
+.backdrop.backdrop { @apply block; }
+@include md { .backdrop { @apply hidden; } }
+
+// GOOD — matching specificity
+.backdrop.backdrop { @apply block; }
+@include md { .backdrop.backdrop { @apply hidden; } }
 ```
 
 ```tsx

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildThemeVars } from './Shell.utils'
+import { buildThemeVars } from './theme.utils'
 
 describe('buildThemeVars', () => {
   it('maps all color fields to CSS custom properties', () => {
@@ -10,6 +10,8 @@ describe('buildThemeVars', () => {
       neutral: { emphasis: '#6e7781', emphasisPlus: '#24292f', muted: '#afb8c1' },
       accent: { emphasis: '#0969da', fg: '#0550ae', muted: '#ddf4ff' },
       success: { emphasis: '#1a7f37', fg: '#116329', muted: '#dafbe1' },
+      danger: { emphasis: '#cf222e', fg: '#a40e26', muted: '#ffebe9' },
+      attention: { emphasis: '#9a6700', fg: '#7d4e00' },
     }
 
     const result = buildThemeVars(colors)
@@ -33,6 +35,11 @@ describe('buildThemeVars', () => {
         '--primer-success-emphasis': '#1a7f37',
         '--primer-success-fg': '#116329',
         '--primer-success-muted': '#dafbe1',
+        '--primer-danger-emphasis': '#cf222e',
+        '--primer-danger-fg': '#a40e26',
+        '--primer-danger-muted': '#ffebe9',
+        '--primer-attention-emphasis': '#9a6700',
+        '--primer-attention-fg': '#7d4e00',
       }),
     )
   })

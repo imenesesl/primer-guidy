@@ -21,7 +21,7 @@ alwaysApply: true
 | Transitions | Tailwind | `@apply transition-all duration-200 ease-in-out` |
 | **ALL colors** | **Primer via useTheme** | `var(--primer-fg-default)`, `var(--primer-canvas-subtle)` |
 | **ALL border colors** | **Primer via useTheme** | `var(--primer-border-default)` |
-| **Color adjustments** | CSS `filter` | `filter: brightness(0.75)` for darker shades |
+| **Color adjustments** | Primer tokens | Use a different `--primer-*` token (e.g., `canvas-inset` instead of `canvas-default`) |
 | Layout dimensions | Global CSS vars | `var(--layout-sidebar-width)` |
 
 ## No Custom Token Files
@@ -88,9 +88,8 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 // FORBIDDEN — raw CSS transitions
 .item { transition: opacity 200ms ease; }
 
-// ALLOWED — filter: brightness() for color shade adjustments
+// FORBIDDEN — filter: brightness() cascades to ALL children, breaks nested components
 .darker { filter: brightness(0.75); }
-.lighter { filter: brightness(1.2); }
 
 // REQUIRED — Tailwind for layout, --primer-* for colors
 .card {
@@ -110,7 +109,7 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 
 1. If Tailwind has a utility for layout/spacing/transition properties → use `@apply`
 2. If it's a color (background, foreground, border color, overlay) → use `--primer-*` CSS custom properties (injected via `useTheme` at Shell level)
-3. If a darker/lighter shade is needed and no `--primer-*` variable exists → use `filter: brightness()`
+3. If a darker/lighter shade is needed → use a different Primer token (e.g., `canvas-inset` < `canvas-default` < `canvas-subtle`). NEVER use `filter: brightness()` — it cascades to ALL children and breaks nested components
 4. If a Primer component has a built-in prop for it → use the prop instead of CSS
    Always check Primer docs FIRST: `<Text size="small">` instead of custom CSS
 
@@ -134,6 +133,21 @@ const TIMEOUT_MS = ONE_SECOND_MS * ONE_MINUTE_S
 
 - ALL user-facing strings use i18n (`useTranslation`) — see i18n rule
 - API endpoints, config values, and keys MUST be constants or enums
+- Route paths MUST be `as const` objects — NEVER hardcoded strings in `<Link to>` or `path:` props
+- State machine statuses MUST be enums — NEVER string literals like `'loading'` or `'idle'`
+- Error codes MUST use existing enums (e.g., `AuthErrorCode.UNKNOWN`) — NEVER hardcoded strings
+
+```typescript
+// FORBIDDEN — magic strings
+setStatus('idle')
+setError('UNKNOWN')
+<Link to="/create-account">
+
+// REQUIRED — enums and constants
+setStatus(LoginStatus.Idle)
+setError(AuthErrorCode.UNKNOWN)
+<Link to={LoginRoutes.CreateAccount}>
+```
 
 ## Enforcement
 

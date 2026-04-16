@@ -13,8 +13,8 @@
   @apply transition-all duration-200 ease-in-out;
 
   width: var(--layout-rail-width);
-  background-color: var(--primer-neutral-emphasis-plus);
-  filter: brightness(0.75);
+  background-color: var(--primer-canvas-inset);
+  border-right: 1px solid var(--primer-border-muted);
 }
 
 .railHidden {
@@ -28,7 +28,8 @@
   @apply transition-all duration-200 ease-in-out;
 
   width: var(--layout-sidebar-width);
-  background-color: var(--primer-neutral-emphasis-plus);
+  background-color: var(--primer-canvas-subtle);
+  border-right: 1px solid var(--primer-border-default);
 }
 
 .sidebarHidden {
@@ -62,7 +63,7 @@
     @apply relative top-auto left-auto z-auto;
   }
 
-  .backdrop {
+  .backdrop.backdrop {
     @apply hidden;
   }
 

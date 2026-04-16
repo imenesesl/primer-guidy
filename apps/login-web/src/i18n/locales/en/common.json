@@ -2,7 +2,8 @@
   "actions": {
     "save": "Save",
     "cancel": "Cancel",
-    "submit": "Submit"
+    "submit": "Submit",
+    "back": "Back"
   },
   "validation": {
     "required": "This field is required",

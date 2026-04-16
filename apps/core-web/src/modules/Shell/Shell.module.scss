@@ -5,14 +5,10 @@
   @apply contents;
 }
 
-.rail {
-  @apply flex flex-col items-center p-2 gap-2;
-}
-
 .sidebar {
   @apply flex flex-col p-3 gap-2;
 
-  color: var(--primer-fg-on-emphasis);
+  color: var(--primer-fg-default);
 }
 
 .sidebarHeader {
@@ -22,6 +18,6 @@
 .contentHeader {
   @apply flex items-center p-2;
 
-  background-color: var(--primer-neutral-emphasis-plus);
-  filter: brightness(0.75);
+  background-color: var(--primer-canvas-subtle);
+  border-bottom: 1px solid var(--primer-border-default);
 }

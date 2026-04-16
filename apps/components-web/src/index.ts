@@ -13,3 +13,6 @@ export type { WorkspaceLayoutProps } from './components/templates/WorkspaceLayou
 
 export { createLayoutStore, LayoutStoreProvider, useLayoutStore } from './stores/layout.store'
 export type { LayoutStore } from './stores/layout.store'
+
+export { buildThemeVars } from './utils/theme.utils'
+export type { PrimerColors } from './utils/theme.utils'

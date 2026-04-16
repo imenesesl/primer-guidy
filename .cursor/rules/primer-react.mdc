@@ -71,7 +71,7 @@ Colors are injected once at the Shell module level (or top-level orchestrator). 
 
 ```tsx
 import { useTheme } from '@primer/react'
-import { buildThemeVars } from './Shell.utils'
+import { buildThemeVars } from '@primer-guidy/components-web'
 
 const Shell = ({ children }: ShellProps) => {
   const { theme } = useTheme()
@@ -102,25 +102,32 @@ When Primer's `variant` prop doesn't provide the needed visual, use `variant="in
 
 ```scss
 .toggleButton.toggleButton {
-  background-color: var(--primer-neutral-muted);
-  color: var(--primer-fg-on-emphasis);
-  &:hover {
-    background-color: var(--primer-neutral-muted);
-    filter: brightness(0.5);
-  }
+  background: none;
+  color: var(--primer-fg-muted);
+  box-shadow: none;
+}
+
+.toggleButton.toggleButton:hover {
+  background: none;
+  color: var(--primer-fg-default);
+  box-shadow: none;
 }
 ```
 
 `className` is allowed ONLY for overriding Primer components. Custom components use `variant` props exclusively.
 
-### Brightness for Color Variants
+### FORBIDDEN — filter: brightness()
 
-Use `filter: brightness()` to derive darker/lighter shades from `--primer-*` variables when no exact variable exists:
+NEVER use `filter: brightness()` for color adjustments. It cascades to ALL children and breaks nested components (buttons, inputs, icons). Use a different Primer token instead:
 
 ```scss
+// FORBIDDEN
 .rail { filter: brightness(0.75); }
-.button:hover { filter: brightness(0.5); }
-.activeIcon:hover { filter: brightness(0.85); }
+
+// REQUIRED — use proper canvas layering
+.rail { background-color: var(--primer-canvas-inset); }
+.sidebar { background-color: var(--primer-canvas-subtle); }
+.content { background-color: var(--primer-canvas-default); }
 ```
 
 ## Exceptions — Raw HTML Allowed

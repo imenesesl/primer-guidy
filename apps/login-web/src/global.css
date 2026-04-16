@@ -1,2 +1,4 @@
+@import '@primer/primitives/dist/css/functional/themes/dark.css';
+@import '@primer/primitives/dist/css/functional/themes/light.css';
 @import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';

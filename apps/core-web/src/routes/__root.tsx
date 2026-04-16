@@ -16,7 +16,7 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <ThemeProvider colorMode="night">
         <BaseStyles>
           <Outlet />
         </BaseStyles>

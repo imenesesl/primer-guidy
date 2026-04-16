@@ -10,9 +10,5 @@
 }
 
 .avatar {
-  @apply p-2 rounded-full cursor-pointer transition-opacity duration-200 ease-in-out;
-}
-
-.avatar:hover {
-  @apply opacity-80;
+  @apply p-2 rounded-full;
 }

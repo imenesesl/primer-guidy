@@ -14,9 +14,9 @@ import {
   createLayoutStore,
   LayoutStoreProvider,
   useLayoutStore,
+  buildThemeVars,
 } from '@primer-guidy/components-web'
 import type { ShellProps } from './Shell.types'
-import { buildThemeVars } from './Shell.utils'
 import styles from './Shell.module.scss'
 
 const SidebarContent = () => {
@@ -42,11 +42,21 @@ const SidebarContent = () => {
 
 const ContentHeader = () => {
   const { t: tLayout } = useTranslation('layout')
+  const railVisible = useLayoutStore((s) => s.railVisible)
+  const toggleRail = useLayoutStore((s) => s.toggleRail)
   const sidebarVisible = useLayoutStore((s) => s.sidebarVisible)
   const toggleSidebar = useLayoutStore((s) => s.toggleSidebar)
 
   return (
     <div className={styles.contentHeader}>
+      {!railVisible && (
+        <RailItem
+          variant="action"
+          icon={ChevronRightIcon}
+          aria-label={tLayout('actions.toggleRail')}
+          onClick={toggleRail}
+        />
+      )}
       <RailItem
         variant="action"
         icon={sidebarVisible ? SidebarCollapseIcon : SidebarExpandIcon}

@@ -40,18 +40,19 @@ Every clickable element MUST have a `:hover` state:
 }
 ```
 
-For buttons on dark backgrounds, use `filter: brightness()` for hover feedback:
+For buttons on dark backgrounds, use opacity or a different Primer token for hover feedback:
 
 ```scss
 .button.button {
-  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-muted);
 
   &:hover {
-    background-color: var(--primer-neutral-muted);
-    filter: brightness(0.5);
+    color: var(--primer-fg-default);
   }
 }
 ```
+
+NEVER use `filter: brightness()` — it cascades to ALL children and breaks nested components.
 
 ## Active/Pressed Feedback
 

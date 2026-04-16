@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { HomeIcon, HomeFillIcon, CommentDiscussionIcon, ZapIcon } from '@primer/octicons-react'
 import { Shell } from '@/modules/Shell'
 import type { RailItemConfig } from '@primer-guidy/components-web'
+import { CoreRoutes } from './routes'
 
 const RAIL_ITEMS: readonly RailItemConfig[] = [
-  { icon: HomeIcon, activeIcon: HomeFillIcon, labelKey: 'rail.items.home', path: '/' },
-  { icon: CommentDiscussionIcon, labelKey: 'rail.items.channels', path: '/channels' },
-  { icon: ZapIcon, labelKey: 'rail.items.activity', path: '/activity' },
+  { icon: HomeIcon, activeIcon: HomeFillIcon, labelKey: 'rail.items.home', path: CoreRoutes.Home },
+  { icon: CommentDiscussionIcon, labelKey: 'rail.items.channels', path: CoreRoutes.Channels },
+  { icon: ZapIcon, labelKey: 'rail.items.activity', path: CoreRoutes.Activity },
 ]
 
 const MOCK_AVATAR_SRC = 'https://avatars.githubusercontent.com/u/0?v=4'

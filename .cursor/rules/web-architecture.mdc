@@ -31,15 +31,25 @@ src/
 
 ## Design System (`apps/components-web/`)
 
-All reusable UI components live in the shared design system package:
+All reusable UI components AND shared utilities live in the shared design system package:
 
 ```
 src/
   components/      → Atomic Design: atoms/, molecules/, organisms/, templates/
   stores/          → Shared UI state (Zustand stores consumed by components)
   styles/          → Shared SCSS utilities (breakpoints)
+  utils/           → Shared utilities (buildThemeVars, PrimerColors, etc.)
   test/            → Test setup
   index.ts         → Public API — all exports go through here
+```
+
+### Shared Utilities in `components-web`
+
+Utilities needed by multiple web apps (e.g., `buildThemeVars`, `PrimerColors`) MUST live in `components-web/src/utils/` and be exported from `index.ts`. NEVER duplicate utilities across apps.
+
+```typescript
+// Apps import shared utils from @primer-guidy/components-web
+import { buildThemeVars } from '@primer-guidy/components-web'
 ```
 
 ## Layer Responsibilities

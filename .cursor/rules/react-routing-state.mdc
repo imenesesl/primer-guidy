@@ -23,6 +23,35 @@ export const Route = createFileRoute('/dashboard')({
 })
 ```
 
+## Route Constants — `as const` Objects
+
+Every app MUST define its routes in `src/routes/routes.ts` as an `as const` object. NEVER hardcode path strings in `<Link to>`, `path:`, or navigation logic.
+
+Use `as const` (NOT enums) to preserve literal string types — TanStack Router requires literal types for type-safe `<Link to>` props.
+
+```typescript
+// src/routes/routes.ts
+export const AppRoutes = {
+  Home: '/',
+  Dashboard: '/dashboard',
+  Settings: '/settings',
+} as const
+
+// Usage
+import { AppRoutes } from '@/routes/routes'
+
+<Link to={AppRoutes.Dashboard}>Dashboard</Link>
+
+const RAIL_ITEMS = [
+  { path: AppRoutes.Home, labelKey: 'nav.home' },
+  { path: AppRoutes.Dashboard, labelKey: 'nav.dashboard' },
+]
+```
+
+### Why NOT enums?
+
+TypeScript enums widen the type to the enum itself (e.g., `AppRoutes`), losing the literal string type (`'/'`). TanStack Router's `<Link to>` requires literal types to match its route tree. `as const` preserves them.
+
 ## TanStack Query
 
 - ALL server state managed via `@tanstack/react-query`

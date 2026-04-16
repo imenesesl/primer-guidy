@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-interface PrimerColors {
+export interface PrimerColors {
   readonly fg?: { readonly default?: string; readonly muted?: string; readonly onEmphasis?: string }
   readonly canvas?: { readonly default?: string; readonly subtle?: string; readonly inset?: string }
   readonly border?: { readonly default?: string; readonly muted?: string }
@@ -11,6 +11,8 @@ interface PrimerColors {
   }
   readonly accent?: { readonly emphasis?: string; readonly fg?: string; readonly muted?: string }
   readonly success?: { readonly emphasis?: string; readonly fg?: string; readonly muted?: string }
+  readonly danger?: { readonly emphasis?: string; readonly fg?: string; readonly muted?: string }
+  readonly attention?: { readonly emphasis?: string; readonly fg?: string; readonly muted?: string }
 }
 
 export const buildThemeVars = (colors?: PrimerColors): CSSProperties =>
@@ -32,4 +34,9 @@ export const buildThemeVars = (colors?: PrimerColors): CSSProperties =>
     '--primer-success-emphasis': colors?.success?.emphasis,
     '--primer-success-fg': colors?.success?.fg,
     '--primer-success-muted': colors?.success?.muted,
+    '--primer-danger-emphasis': colors?.danger?.emphasis,
+    '--primer-danger-fg': colors?.danger?.fg,
+    '--primer-danger-muted': colors?.danger?.muted,
+    '--primer-attention-emphasis': colors?.attention?.emphasis,
+    '--primer-attention-fg': colors?.attention?.fg,
   }) as CSSProperties

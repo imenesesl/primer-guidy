@@ -1,0 +1,155 @@
+---
+description: "UI quality: accessibility, contrast, interactivity, no brightness(), enums, module decomposition"
+globs: "**/*.tsx,**/*.module.scss,**/*.ts"
+alwaysApply: true
+---
+
+# UI Quality — Accessibility, Interactivity & Contrast
+
+Every UI element MUST meet GitHub-level quality. These checks are NON-NEGOTIABLE.
+
+## Cursor — Interactive Affordance
+
+Every clickable element MUST show `cursor: pointer`. Every disabled element MUST show `cursor: not-allowed`.
+
+```scss
+// REQUIRED on ALL interactive elements
+.interactive {
+  @apply cursor-pointer;
+}
+
+.interactive:disabled {
+  @apply cursor-not-allowed;
+}
+```
+
+### Rules
+
+- `<Button>`, `<IconButton>`, `<Link>` from Primer handle cursor automatically
+- When overriding Primer styles with doubled selectors (`.myButton.myButton`), ALWAYS include `cursor-pointer`
+- NEVER add `cursor: pointer` to non-interactive elements — it misleads users
+- Keyboard focus MUST be visible on all interactive elements (Primer handles this by default)
+
+## Contrast — WCAG AA Minimum
+
+All text MUST meet WCAG AA contrast ratios against its background.
+
+| Requirement | Ratio |
+|---|---|
+| Normal text (< 18px) | 4.5:1 |
+| Large text (≥ 18px bold or ≥ 24px) | 3:1 |
+| UI components and borders | 3:1 |
+
+### Token pairing rules
+
+| Background | Allowed text | Forbidden text |
+|---|---|---|
+| `canvas.default` | `fg.default`, `fg.muted` | `fg.onEmphasis` |
+| `canvas.subtle` | `fg.default`, `fg.muted` | `fg.onEmphasis` |
+| `accent.emphasis` | `fg.onEmphasis` only | `fg.default`, `fg.muted` |
+| `neutral.emphasisPlus` | `fg.onEmphasis` only | `fg.default`, `fg.muted` |
+
+- NEVER pair muted background with muted foreground
+- NEVER leave text without an explicit color on dark surfaces
+
+## Primer Primitives CSS — REQUIRED Import
+
+Every web app MUST import the Primer primitives theme CSS in `global.css` to ensure ALL Primer components (inputs, buttons, selects, etc.) render correctly in the active theme.
+
+```css
+/* global.css — BEFORE tailwind imports */
+@import '@primer/primitives/dist/css/functional/themes/dark.css';
+@import '@primer/primitives/dist/css/functional/themes/light.css';
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
+```
+
+Without this import, Primer components fall back to default styling — inputs lose contrast, buttons lose their colors, and form controls become invisible on dark backgrounds.
+
+## Interactive Elements — Semantic HTML
+
+- Use `<button>` (or Primer `<Button>`) for actions
+- Use `<a>` (or Primer `<Link>`) for navigation
+- NEVER nest interactive elements (`<a>` inside `<button>` or vice versa)
+- For link + button combos, use TanStack Router `<Link>` wrapping a styled `<div>`, NOT `<Link>` wrapping `<Button>`
+
+## Disabled States
+
+- Disabled elements MUST have reduced opacity (`opacity-50` or similar)
+- Disabled buttons: `cursor: not-allowed` + visual dimming
+- NEVER hide disabled elements — show them dimmed so users understand the option exists
+
+## Focus States
+
+- NEVER remove or override Primer's built-in focus rings
+- Custom interactive elements MUST have a visible focus indicator
+- Focus order MUST follow visual reading order
+
+## Dark Surface Text
+
+When rendering on any dark surface (rail, sidebar, dark cards):
+- ALL text MUST have an explicit color set (never rely on inherited/default colors)
+- Use `--primer-fg-on-emphasis` for text on `neutral-emphasis-plus` backgrounds
+- Use `--primer-fg-default` for text on `canvas-default` / `canvas-subtle` backgrounds in dark mode
+
+## Loading & Transition States
+
+- Loading buttons: disable + show `<Spinner>` or use Primer's loading patterns
+- State transitions: use CSS transitions (`transition-all duration-200 ease-in-out`)
+- NEVER flash between states without visual transition
+
+## FORBIDDEN — filter: brightness()
+
+NEVER use `filter: brightness()` for color adjustments. It cascades to ALL child elements, breaking nested Primer components (buttons become invisible, inputs lose contrast, icons change color unintentionally).
+
+```scss
+// FORBIDDEN
+.rail { filter: brightness(0.75); }
+
+// REQUIRED — use Primer canvas layering
+.rail { background-color: var(--primer-canvas-inset); }
+.sidebar { background-color: var(--primer-canvas-subtle); }
+.content { background-color: var(--primer-canvas-default); }
+```
+
+## CSS Specificity — Doubled Selectors
+
+When overriding Primer component styles with doubled selectors (`.foo.foo`), the SAME doubled pattern MUST be used in ALL contexts including media queries. A single selector in a media query CANNOT override a doubled selector.
+
+```scss
+// BAD — single selector in media query loses specificity
+.backdrop.backdrop { @apply block; }
+@include md { .backdrop { @apply hidden; } }
+
+// GOOD — matching specificity
+.backdrop.backdrop { @apply block; }
+@include md { .backdrop.backdrop { @apply hidden; } }
+```
+
+## Module Decomposition — Single Responsibility
+
+Modules that grow beyond a single orchestrator MUST be decomposed:
+
+1. **Custom hook** for state + side effects → `useFeatureFlow.ts`
+2. **Sub-components** for each distinct UI section (banners, forms, views)
+3. **Thin orchestrator** that composes hook + sub-components
+
+```
+modules/Login/
+  useLoginFlow.ts          → State machine, side effects, error handling
+  LoginForm.tsx            → Email input + submit
+  GoogleSignInButton.tsx   → Google auth button
+  AuthBanner.tsx           → Warning/error banners
+  LinkSentView.tsx         → Confirmation screen
+  VerifyingView.tsx        → Loading screen
+  AuthDivider.tsx          → Visual separator
+  Login.tsx                → Thin orchestrator (composes above)
+  Login.types.ts           → Enums, interfaces, flow state contract
+```
+
+## Enums & Constants — No Magic Strings
+
+- Status/state values MUST be TypeScript `enum` (e.g., `LoginStatus.Idle`)
+- Route paths MUST be `as const` objects (e.g., `LoginRoutes.CreateAccount`)
+- Error codes MUST use existing enums (e.g., `AuthErrorCode.UNKNOWN`)
+- NEVER use hardcoded strings for status, routes, or error codes

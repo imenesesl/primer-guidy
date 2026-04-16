@@ -1,14 +1,46 @@
-import { Heading, Text } from '@primer/react'
+import { Flash, Heading, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
+import { useLoginFlow } from './useLoginFlow'
+import { LoginStatus } from './Login.types'
+import { AuthBanner } from './AuthBanner'
+import { LoginForm } from './LoginForm'
+import { AuthDivider } from './AuthDivider'
+import { GoogleSignInButton } from './GoogleSignInButton'
+import { LinkSentView } from './LinkSentView'
+import { VerifyingView } from './VerifyingView'
 import styles from './Login.module.scss'
 
 export const Login = () => {
   const { t: tLogin } = useTranslation('login')
+  const flow = useLoginFlow()
+
+  if (flow.status === LoginStatus.LinkSent) {
+    return <LinkSentView onBack={flow.resetStatus} />
+  }
+
+  if (flow.status === LoginStatus.CheckingUser) {
+    return <VerifyingView />
+  }
 
   return (
     <div className={styles.root}>
-      <Heading as="h1">{tLogin('title')}</Heading>
-      <Text as="p">{tLogin('subtitle')}</Text>
+      <AuthBanner visible={flow.showAccountBanner} />
+
+      <div className={styles.card}>
+        <Heading as="h2" className={styles.heading}>
+          {tLogin('title')}
+        </Heading>
+
+        <LoginForm onSubmit={flow.onEmailSubmit} disabled={flow.isLoading} />
+        <AuthDivider />
+        <GoogleSignInButton onClick={flow.onGoogleSignIn} disabled={flow.isLoading} />
+
+        {flow.authError && (
+          <Flash variant="danger">
+            <Text as="p">{tLogin(`errors.${flow.authError}`)}</Text>
+          </Flash>
+        )}
+      </div>
     </div>
   )
 }

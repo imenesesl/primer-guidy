@@ -1,31 +1,32 @@
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
-.root {
+.root.root {
   @apply flex flex-col items-center justify-center gap-0.5;
-  @apply py-1 px-1 opacity-70;
+  @apply py-1 px-1;
   @apply transition-all duration-200 ease-in-out;
   @apply border-0 cursor-pointer;
 
-  color: var(--primer-fg-on-emphasis);
+  color: var(--primer-fg-muted);
   background: none;
-
-  &,
-  &:hover,
-  &:focus,
-  &:active,
-  &:visited {
-    @apply no-underline;
-  }
+  box-shadow: none;
 }
 
-.root:hover {
-  @apply opacity-100;
+.root.root:hover,
+.root.root:focus,
+.root.root:active,
+.root.root:visited {
+  @apply no-underline;
 
-  color: var(--primer-fg-on-emphasis);
+  background: none;
+  box-shadow: none;
 }
 
-.root:active {
+.root.root:hover {
+  color: var(--primer-fg-default);
+}
+
+.root.root:active {
   @apply scale-95;
 }
 
@@ -34,7 +35,7 @@
   @apply transition-all duration-200 ease-in-out;
 }
 
-.root:hover .iconWrapper:not(.iconActive, .iconFixed) {
+.root.root:hover .iconWrapper:not(.iconActive, .iconFixed) {
   background-color: var(--primer-neutral-muted);
 }
 
@@ -43,19 +44,21 @@
 }
 
 .active:hover .iconActive {
-  filter: brightness(0.85);
+  @apply opacity-85;
 }
 
 .iconFixed {
   background-color: var(--primer-neutral-muted);
 }
 
-.root:hover .iconFixed {
-  filter: brightness(0.5);
+.root.root:hover .iconFixed {
+  @apply opacity-70;
 }
 
-.active {
-  @apply opacity-100;
-
+.active.active {
   color: var(--primer-fg-on-emphasis);
+}
+
+.active.active:hover {
+  color: var(--primer-fg-default);
 }

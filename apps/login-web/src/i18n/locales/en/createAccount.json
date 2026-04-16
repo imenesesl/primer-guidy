@@ -1,0 +1,13 @@
+{
+  "title": "Create Account",
+  "subtitle": "Choose a method to create your account",
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "email@example.com",
+  "createWithEmail": "Create Account with Email",
+  "createWithGoogle": "Create Account with Google",
+  "or": "or",
+  "alreadyHaveAccount": {
+    "message": "Already have an account?",
+    "cta": "Sign In"
+  }
+}

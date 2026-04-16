@@ -1,0 +1,150 @@
+---
+description: "GitHub dark mode design criteria: canvas layering, Primer tokens, no brightness()"
+globs: "**/*.tsx,**/*.module.scss"
+alwaysApply: true
+---
+
+# GitHub Dark UI — Design Criteria
+
+Every UI screen MUST look and feel like GitHub's dark mode. Primer is the SAME design system GitHub uses — leverage it fully.
+
+## ThemeProvider Setup
+
+- Use `colorMode="night"` for dark pages, `colorMode="auto"` to follow OS preference
+- Available schemes: `dark` (default), `dark_dimmed`, `dark-high-contrast`
+- Primer components automatically adapt — NEVER override their internal colors
+
+```tsx
+<ThemeProvider colorMode="night" nightScheme="dark">
+  <BaseStyles>
+    {children}
+  </BaseStyles>
+</ThemeProvider>
+```
+
+## Surface Layering (Background Tokens)
+
+GitHub layers surfaces using three canvas tokens. Use them to create depth without brightness hacks.
+
+| Token | Purpose | Dark value |
+|---|---|---|
+| `canvas.inset` | Page/viewport background (recessed) | `#010409` |
+| `canvas.default` | Primary surface (cards, panels, main content) | `#0d1117` |
+| `canvas.subtle` | Elevated surface (hover states, secondary panels) | `#161b22` |
+
+### Layering patterns
+
+- **Full-page forms (login, settings):** `canvas.inset` for page → `canvas.default` for card
+- **Dashboards:** `canvas.default` for page → `canvas.subtle` for cards
+- **Sidebars/rails:** `neutral.emphasisPlus` is ONLY for navigation chrome (rail, header bars), NEVER for page backgrounds
+
+## Text Tokens
+
+| Token | Purpose |
+|---|---|
+| `fg.default` | Primary text (headings, body) |
+| `fg.muted` | Secondary text (descriptions, timestamps, placeholders) |
+| `fg.onEmphasis` | Text on emphasis backgrounds (badges, filled buttons) |
+
+### Pairing rules (WCAG AA)
+
+- `canvas.default` bg → `fg.default` text ✓
+- `canvas.subtle` bg → `fg.default` text ✓
+- `accent.emphasis` bg → `fg.onEmphasis` text ✓
+- NEVER pair `bgColor-muted` with `fgColor-muted`
+
+## Border Tokens
+
+| Token | Purpose |
+|---|---|
+| `border.default` | Card borders, input borders, dividers |
+| `border.muted` | Subtle separators, secondary dividers |
+
+## Buttons — Let Primer Handle Them
+
+Primer `<Button>` handles all color states internally (rest, hover, active, disabled, focus). NEVER override button colors with CSS.
+
+| Primer variant | GitHub usage |
+|---|---|
+| `variant="primary"` | Primary CTA (green in dark mode) |
+| `variant="default"` | Secondary actions |
+| `variant="danger"` | Destructive actions |
+| `variant="invisible"` | Inline/subtle actions |
+
+For custom-styled buttons (e.g., Google sign-in), use `canvas.default` bg with `border.default` border — this creates a white/light button that contrasts against dark surfaces.
+
+## Icons
+
+- Use `@primer/octicons-react` for all standard icons
+- For third-party brand icons (Google, Apple), create SVG components in the module folder
+- Always pair icons with `leadingVisual` or `trailingVisual` prop on Button
+
+## What is FORBIDDEN
+
+```scss
+// FORBIDDEN — filter cascades to ALL children, breaks buttons and inputs
+.page { filter: brightness(0.75); }
+
+// FORBIDDEN — neutral-emphasis is for badges/tags, NOT page backgrounds
+.page { background-color: var(--primer-neutral-emphasis-plus); }
+
+// FORBIDDEN — overriding Primer Button colors
+.myButton { background-color: green !important; }
+
+// FORBIDDEN — creating color variations with brightness
+.card { filter: brightness(1.33); }
+```
+
+## What is REQUIRED
+
+```scss
+// REQUIRED — proper canvas layering
+.page {
+  background-color: var(--primer-canvas-inset);
+}
+
+.card {
+  background-color: var(--primer-canvas-default);
+  border: 1px solid var(--primer-border-default);
+}
+
+// REQUIRED — proper text colors
+.heading {
+  color: var(--primer-fg-default);
+}
+
+.description {
+  color: var(--primer-fg-muted);
+}
+```
+
+## Primer Primitives CSS — MANDATORY
+
+Every web app MUST import `@primer/primitives` theme CSS in `global.css` BEFORE Tailwind. This sets ALL 200+ CSS variables that Primer components use internally (inputs, buttons, selects, form controls, etc.).
+
+```css
+/* global.css */
+@import '@primer/primitives/dist/css/functional/themes/dark.css';
+@import '@primer/primitives/dist/css/functional/themes/light.css';
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
+```
+
+Without this, Primer components fall back to defaults — inputs lose contrast, buttons lose colors, form controls become invisible.
+
+## CSS Variable Bridge
+
+In addition to primitives CSS, use `buildThemeVars()` from `@primer-guidy/components-web` to bridge theme colors to `--primer-*` CSS custom properties for SCSS access. This is set at the app root layout. NEVER duplicate `buildThemeVars` across apps — it lives in `components-web/src/utils/`.
+
+## Flash / Banner Alerts
+
+- Use Primer's `<Flash>` with `variant` (warning, danger, success)
+- Flash components handle their own theming — no custom color overrides
+- For sticky banners: wrap in a positioned container, do NOT apply filters
+
+## Responsive Dark UI
+
+- Dark mode should feel spacious — use generous padding (`p-6`, `p-8`)
+- Cards should have visible but subtle borders (`border.default`)
+- Use `rounded-xl` for main cards, `rounded-lg` for inner elements
+- Maintain clear visual hierarchy through token layering, not color hacks
