@@ -6,6 +6,7 @@ import {
   SidebarCollapseIcon,
   SidebarExpandIcon,
 } from '@primer/octicons-react'
+
 import { useTranslation } from 'react-i18next'
 import {
   WorkspaceLayout,
@@ -42,21 +43,11 @@ const SidebarContent = () => {
 
 const ContentHeader = () => {
   const { t: tLayout } = useTranslation('layout')
-  const railVisible = useLayoutStore((s) => s.railVisible)
-  const toggleRail = useLayoutStore((s) => s.toggleRail)
   const sidebarVisible = useLayoutStore((s) => s.sidebarVisible)
   const toggleSidebar = useLayoutStore((s) => s.toggleSidebar)
 
   return (
     <div className={styles.contentHeader}>
-      {!railVisible && (
-        <RailItem
-          variant="action"
-          icon={ChevronRightIcon}
-          aria-label={tLayout('actions.toggleRail')}
-          onClick={toggleRail}
-        />
-      )}
       <RailItem
         variant="action"
         icon={sidebarVisible ? SidebarCollapseIcon : SidebarExpandIcon}
@@ -67,7 +58,7 @@ const ContentHeader = () => {
   )
 }
 
-export const Shell = ({ railItems, avatarSrc, avatarAlt, children }: ShellProps) => {
+export const Shell = ({ railItems, avatarSrc, avatarName, children }: ShellProps) => {
   const { theme } = useTheme()
   const layoutStore = useMemo(() => createLayoutStore(), [])
   const themeVars = buildThemeVars(theme?.colors)
@@ -76,7 +67,7 @@ export const Shell = ({ railItems, avatarSrc, avatarAlt, children }: ShellProps)
     <LayoutStoreProvider value={layoutStore}>
       <div style={themeVars} className={styles.themeRoot}>
         <WorkspaceLayout
-          rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarAlt={avatarAlt} />}
+          rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarName={avatarName} />}
           sidebar={<SidebarContent />}
         >
           <ContentHeader />

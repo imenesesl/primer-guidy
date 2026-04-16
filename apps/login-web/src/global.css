@@ -2,3 +2,11 @@
 @import '@primer/primitives/dist/css/functional/themes/light.css';
 @import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}

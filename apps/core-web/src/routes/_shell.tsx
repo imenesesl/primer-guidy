@@ -1,7 +1,8 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
 import { HomeIcon, HomeFillIcon, CommentDiscussionIcon, ZapIcon } from '@primer/octicons-react'
 import { Shell } from '@/modules/Shell'
+import { useAuthGuard, ContentSkeleton, AuthGuardStatus } from '@/modules/AuthGuard'
+import { UserProvider } from '@/context/user.context'
 import type { RailItemConfig } from '@primer-guidy/components-web'
 import { CoreRoutes } from './routes'
 
@@ -11,18 +12,22 @@ const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: ZapIcon, labelKey: 'rail.items.activity', path: CoreRoutes.Activity },
 ]
 
-const MOCK_AVATAR_SRC = 'https://avatars.githubusercontent.com/u/0?v=4'
-
 export const Route = createFileRoute('/_shell')({
   component: ShellLayout,
 })
 
 function ShellLayout() {
-  const { t: tShell } = useTranslation('shell')
+  const { status, user } = useAuthGuard()
 
   return (
-    <Shell railItems={RAIL_ITEMS} avatarSrc={MOCK_AVATAR_SRC} avatarAlt={tShell('rail.avatar.alt')}>
-      <Outlet />
+    <Shell railItems={RAIL_ITEMS} avatarSrc={user?.avatarUrl ?? undefined} avatarName={user?.name}>
+      {status === AuthGuardStatus.Authenticated && user ? (
+        <UserProvider value={user}>
+          <Outlet />
+        </UserProvider>
+      ) : (
+        <ContentSkeleton />
+      )}
     </Shell>
   )
 }

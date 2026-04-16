@@ -1,4 +1,6 @@
 export { RailItem } from './components/atoms/RailItem'
+export { UserAvatar } from './components/atoms/UserAvatar'
+export type { UserAvatarProps } from './components/atoms/UserAvatar'
 export type {
   RailItemProps,
   RailItemNavigationProps,

@@ -7,3 +7,11 @@
   --layout-rail-width: 4.5rem;
   --layout-sidebar-width: 16.25rem;
 }
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}

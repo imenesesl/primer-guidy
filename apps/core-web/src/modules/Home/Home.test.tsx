@@ -1,28 +1,24 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { describe, it, expect, beforeEach } from 'vitest'
 import i18n from 'i18next'
-import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
+import { UserProvider } from '@/context/user.context'
+import type { UserDocument } from '@/services/user'
 import { Home } from './Home'
 
-const renderWithStore = (railVisible = true, sidebarVisible = true) => {
-  const store = createLayoutStore()
-  if (!railVisible) {
-    store.getState().toggleRail()
-  }
-  if (!sidebarVisible) {
-    store.getState().toggleSidebar()
-  }
-
-  return {
-    store,
-    ...render(
-      <LayoutStoreProvider value={store}>
-        <Home />
-      </LayoutStoreProvider>,
-    ),
-  }
+const mockUser: UserDocument = {
+  uid: 'user-123',
+  name: 'Jane Doe',
+  email: 'jane@example.com',
+  avatarUrl: 'https://example.com/avatar.jpg',
+  createdAt: '2025-01-01T00:00:00.000Z',
 }
+
+const renderWithUser = (user: UserDocument = mockUser) =>
+  render(
+    <UserProvider value={user}>
+      <Home />
+    </UserProvider>,
+  )
 
 describe('Home', () => {
   beforeEach(() => {
@@ -34,51 +30,37 @@ describe('Home', () => {
       },
     })
     i18n.addResourceBundle('en', 'home', {
-      title: 'Primer Guidy',
-      greeting: '{{greeting}}. Welcome to the core application.',
-      actions: {
-        toggleRail: 'Toggle Rail',
-        toggleSidebar: 'Toggle Sidebar',
-      },
+      welcome: '{{greeting}}, {{name}}',
+      subtitle: 'Welcome to the core application.',
     })
   })
 
-  it('renders the title from i18n', () => {
-    renderWithStore()
+  it('renders the user name in the greeting', () => {
+    renderWithUser()
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Primer Guidy')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Jane Doe')
   })
 
-  it('displays a greeting message with interpolation', () => {
-    renderWithStore()
+  it('displays the subtitle message', () => {
+    renderWithUser()
 
-    expect(screen.getByText(/welcome to the core application/i)).toBeInTheDocument()
+    expect(screen.getByText('Welcome to the core application.')).toBeInTheDocument()
   })
 
-  it('renders toggle rail and sidebar buttons', () => {
-    renderWithStore()
+  it('renders the user avatar', () => {
+    renderWithUser()
 
-    expect(screen.getByRole('button', { name: /toggle rail/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /toggle sidebar/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Jane Doe' })).toHaveAttribute(
+      'src',
+      'https://example.com/avatar.jpg',
+    )
   })
 
-  it('toggles rail visibility when rail button is clicked', async () => {
-    const { store } = renderWithStore()
+  it('renders initials when avatarUrl is null', () => {
+    const userWithoutAvatar: UserDocument = { ...mockUser, avatarUrl: null }
+    renderWithUser(userWithoutAvatar)
 
-    expect(store.getState().railVisible).toBe(true)
-
-    await userEvent.click(screen.getByRole('button', { name: /toggle rail/i }))
-
-    expect(store.getState().railVisible).toBe(false)
-  })
-
-  it('toggles sidebar visibility when sidebar button is clicked', async () => {
-    const { store } = renderWithStore()
-
-    expect(store.getState().sidebarVisible).toBe(true)
-
-    await userEvent.click(screen.getByRole('button', { name: /toggle sidebar/i }))
-
-    expect(store.getState().sidebarVisible).toBe(false)
+    const avatar = screen.getByRole('img', { name: 'Jane Doe' })
+    expect(avatar).toHaveTextContent('JD')
   })
 })

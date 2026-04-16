@@ -14,19 +14,11 @@
 .root {
   --shimmer-travel: 200%;
 
-  @apply flex flex-col items-center h-full py-4 px-2 gap-2;
-}
-
-.spacer {
-  @apply flex-1;
+  @apply flex flex-col items-center justify-center flex-1 gap-5 p-8;
 }
 
 .avatar {
-  @apply p-2 rounded-full;
-}
-
-.avatarSkeleton {
-  @apply rounded-full w-8 h-8;
+  @apply rounded-full w-16 h-16;
 
   background: linear-gradient(
     90deg,
@@ -36,4 +28,29 @@
   );
   background-size: var(--shimmer-travel) 100%;
   animation: shimmer 1.5s infinite linear;
+}
+
+.line {
+  @apply rounded h-6;
+
+  background: linear-gradient(
+    90deg,
+    var(--primer-canvas-subtle) 25%,
+    var(--primer-border-default) 50%,
+    var(--primer-canvas-subtle) 75%
+  );
+  background-size: var(--shimmer-travel) 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.lineWide {
+  @apply w-72;
+}
+
+.lineNarrow {
+  @apply w-48;
+}
+
+.lineShort {
+  @apply w-32 h-4;
 }

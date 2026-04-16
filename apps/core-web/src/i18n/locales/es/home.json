@@ -1,6 +1,7 @@
 {
   "title": "Primer Guidy",
-  "greeting": "{{greeting}}. Bienvenido a la aplicación principal.",
+  "welcome": "{{greeting}}, {{name}}",
+  "subtitle": "Bienvenido a la aplicación principal.",
   "actions": {
     "toggleRail": "Alternar Rail",
     "toggleSidebar": "Alternar Sidebar"

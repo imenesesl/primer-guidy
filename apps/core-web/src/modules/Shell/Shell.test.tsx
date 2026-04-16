@@ -23,7 +23,7 @@ const RAIL_ITEMS: readonly RailItemConfig[] = [
 ]
 
 const AVATAR_SRC = 'https://example.com/avatar.png'
-const AVATAR_ALT = 'User avatar'
+const AVATAR_NAME = 'Jane Doe'
 
 const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
   const rootRoute = createRootRoute({ component: () => ui })
@@ -62,7 +62,7 @@ describe('Shell', () => {
 
   it('renders rail navigation items received via props', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -74,17 +74,28 @@ describe('Shell', () => {
 
   it('renders the avatar from props', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
 
-    expect(await screen.findByRole('img', { name: AVATAR_ALT })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: AVATAR_NAME })).toBeInTheDocument()
+  })
+
+  it('renders initials when avatarSrc is not provided', async () => {
+    renderWithRouter(
+      <Shell railItems={RAIL_ITEMS} avatarName={AVATAR_NAME}>
+        <div>Page Content</div>
+      </Shell>,
+    )
+
+    const avatar = await screen.findByRole('img', { name: AVATAR_NAME })
+    expect(avatar).toHaveTextContent('JD')
   })
 
   it('renders children in the content area', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -94,7 +105,7 @@ describe('Shell', () => {
 
   it('renders a toggle rail button in the sidebar', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -106,7 +117,7 @@ describe('Shell', () => {
 
   it('hides rail when toggle rail button is clicked', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -123,7 +134,7 @@ describe('Shell', () => {
 
   it('renders a toggle sidebar button in the content area', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -133,7 +144,7 @@ describe('Shell', () => {
 
   it('hides sidebar when toggle sidebar button is clicked', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarAlt={AVATAR_ALT}>
+      <Shell railItems={RAIL_ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )

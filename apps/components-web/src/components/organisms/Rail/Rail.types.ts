@@ -9,6 +9,6 @@ export interface RailItemConfig {
 
 export interface RailProps {
   readonly items: readonly RailItemConfig[]
-  readonly avatarSrc: string
-  readonly avatarAlt: string
+  readonly avatarSrc?: string
+  readonly avatarName?: string
 }

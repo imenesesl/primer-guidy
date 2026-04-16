@@ -1,13 +1,13 @@
-import { Avatar } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useMatchRoute } from '@tanstack/react-router'
 import { RailItem } from '../../atoms/RailItem'
+import { UserAvatar } from '../../atoms/UserAvatar'
 import type { RailProps } from './Rail.types'
 import styles from './Rail.module.scss'
 
 const AVATAR_SIZE = 32
 
-export const Rail = ({ items, avatarSrc, avatarAlt }: RailProps) => {
+export const Rail = ({ items, avatarSrc, avatarName }: RailProps) => {
   const { t: tShell } = useTranslation('shell')
   const matchRoute = useMatchRoute()
 
@@ -25,7 +25,11 @@ export const Rail = ({ items, avatarSrc, avatarAlt }: RailProps) => {
       ))}
       <div className={styles.spacer} />
       <div className={styles.avatar}>
-        <Avatar src={avatarSrc} alt={avatarAlt} size={AVATAR_SIZE} />
+        {avatarName ? (
+          <UserAvatar name={avatarName} src={avatarSrc} size={AVATAR_SIZE} />
+        ) : (
+          <div className={styles.avatarSkeleton} />
+        )}
       </div>
     </nav>
   )

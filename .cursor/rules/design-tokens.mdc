@@ -78,12 +78,15 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 // FORBIDDEN — arbitrary Tailwind values when Primer has a prop
 // (e.g., use <Text size="small"> instead of @apply text-[0.625rem])
 
-// FORBIDDEN — raw CSS values that Tailwind provides as utilities
-.item { opacity: 0.7; }
-.item { width: 0; }
-.item:active { transform: scale(0.95); }
-.item { display: none; }
-.item { display: block; }
+// FORBIDDEN — raw CSS values when Tailwind has a utility
+.item { opacity: 0.7; }           // use @apply opacity-70
+.item { width: 0; }               // use @apply w-0
+.item:active { transform: scale(0.95); } // use @apply scale-95
+.item { display: none; }          // use @apply hidden
+.item { display: block; }         // use @apply block
+.item { width: 2rem; }            // use @apply w-8
+.item { height: 1.5rem; }         // use @apply h-6
+.item { width: 18rem; }           // use @apply w-72
 
 // FORBIDDEN — raw CSS transitions
 .item { transition: opacity 200ms ease; }
@@ -91,7 +94,13 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 // FORBIDDEN — filter: brightness() cascades to ALL children, breaks nested components
 .darker { filter: brightness(0.75); }
 
-// REQUIRED — Tailwind for layout, --primer-* for colors
+// FORBIDDEN — magic numbers like background-size: 200% 100%
+// extract to a named CSS custom property
+.item { background-size: 200% 100%; }
+```
+
+```scss
+// REQUIRED — Tailwind for ALL sizing/spacing/layout
 .card {
   @apply p-4 min-h-screen rounded-md;
   background-color: var(--primer-canvas-default);
@@ -102,16 +111,25 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 .item:active { @apply scale-95; }
 .item { @apply hidden; }
 .item { @apply block; }
+.item { @apply w-8 h-8; }
 .item { @apply transition-all duration-200 ease-in-out; }
+
+// REQUIRED — extract non-Tailwind values to CSS custom properties
+.root {
+  --shimmer-travel: 200%;
+}
+.skeleton {
+  background-size: var(--shimmer-travel) 100%;
+}
 ```
 
 ## The Rule
 
-1. If Tailwind has a utility for layout/spacing/transition properties → use `@apply`
-2. If it's a color (background, foreground, border color, overlay) → use `--primer-*` CSS custom properties (injected via `useTheme` at Shell level)
-3. If a darker/lighter shade is needed → use a different Primer token (e.g., `canvas-inset` < `canvas-default` < `canvas-subtle`). NEVER use `filter: brightness()` — it cascades to ALL children and breaks nested components
+1. If Tailwind has a utility for it → use `@apply`. This includes ALL sizing (`w-*`, `h-*`), spacing (`p-*`, `gap-*`), display, transitions, transforms, etc.
+2. If it's a color → use `--primer-*` CSS custom properties
+3. If a darker/lighter shade is needed → use a different Primer token. NEVER use `filter: brightness()`
 4. If a Primer component has a built-in prop for it → use the prop instead of CSS
-   Always check Primer docs FIRST: `<Text size="small">` instead of custom CSS
+5. **SCSS has ZERO magic numbers** — if a raw value cannot be expressed with `@apply`, extract it to a named CSS custom property (`--descriptive-name: value`). No raw `rem`, `px`, `%` values in property declarations
 
 ## TypeScript / TSX — No Magic Numbers
 

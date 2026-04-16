@@ -13,7 +13,8 @@ Strict TypeScript rules enforced:
 
 - `@typescript-eslint/strict` preset
 - `no-explicit-any`: error
-- `no-unused-vars`: error
+- `no-unused-vars`: error (args/vars/caught errors prefixed `_` are exempt, rest siblings allowed)
+- `no-unused-expressions`: error
 - `consistent-type-imports`: error (use `import type`)
 - `no-magic-numbers`: error (raw numeric literals MUST be extracted into named constants — tests excluded). The constant definition itself (`const ICON_SIZE = 20`) is allowed; the violation is using the raw number inline (`size={20}`).
 - `no-console`: warn (use logger utilities)

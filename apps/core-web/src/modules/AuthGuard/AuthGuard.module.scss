@@ -1,0 +1,6 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply w-full h-screen;
+}

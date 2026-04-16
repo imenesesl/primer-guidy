@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@primer-guidy/cloud-services": "workspace:*",
     "@primer-guidy/components-web": "workspace:*",
     "@primer/octicons-react": "^19.24.1",
     "@primer/primitives": "^11.7.0",

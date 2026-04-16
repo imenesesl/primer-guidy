@@ -1,0 +1,50 @@
+---
+description: "Zero dead code: no unused imports, variables, types, functions, or unreachable code"
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Clean Code — Zero Dead Code
+
+Every file MUST be clean. No unused imports, no unused variables, no dead code. This is non-negotiable.
+
+## What Counts as Dead Code
+
+| Type | Example | Action |
+|------|---------|--------|
+| Unused import | `import { Foo } from './bar'` where `Foo` is never referenced | Remove the import |
+| Unused variable | `const x = 5` where `x` is never read | Remove the declaration |
+| Unused function | `function helper() {}` never called anywhere | Remove the function |
+| Unused type/interface | `interface Props {}` never referenced | Remove the type |
+| Unreachable code | Code after `return`, `throw`, or `break` | Remove the unreachable lines |
+| Commented-out code | `// const old = doStuff()` | Delete it — git has history |
+| Empty utility files | Files with only a comment like `// utils` | Remove the file or add real content |
+
+## ESLint Enforcement
+
+These rules are enforced at error level in `@primer-guidy/eslint-config`:
+
+```javascript
+'@typescript-eslint/no-unused-vars': ['error', {
+  argsIgnorePattern: '^_',
+  varsIgnorePattern: '^_',
+  caughtErrorsIgnorePattern: '^_',
+  ignoreRestSiblings: true,
+}],
+'@typescript-eslint/no-unused-expressions': 'error',
+```
+
+## Allowed Exceptions
+
+- Function arguments prefixed with `_` (e.g., `(_event) => {}`) — needed for interface contracts
+- Variables prefixed with `_` — explicitly marking as intentionally unused
+- Rest siblings (`const { removed, ...rest } = obj`) — destructuring to omit properties
+
+## Rules
+
+- NEVER commit code with unused imports — clean them before every save
+- NEVER leave commented-out code — use git for history
+- NEVER leave empty files with placeholder comments — delete them or add real content
+- If an import is only used for its type, use `import type { Foo }` — enforced by `consistent-type-imports`
+- Run `eslint --fix` to auto-remove simple cases before committing
+- CI blocks merge on ANY unused import, variable, or expression

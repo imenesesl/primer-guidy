@@ -1,0 +1,9 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.initials {
+  @apply flex items-center justify-center rounded-full font-semibold select-none;
+
+  background-color: var(--primer-accent-emphasis);
+  color: var(--primer-fg-on-emphasis);
+}

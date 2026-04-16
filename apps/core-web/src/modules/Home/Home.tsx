@@ -1,33 +1,25 @@
-import { Heading, Text, Button } from '@primer/react'
-import { SidebarCollapseIcon, SidebarExpandIcon, ColumnsIcon } from '@primer/octicons-react'
+import { Heading, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
+import { UserAvatar } from '@primer-guidy/components-web'
 import { getGreetingKey } from '@/utils/date.utils'
-import { useLayoutStore } from '@primer-guidy/components-web'
+import { useCurrentUser } from '@/context/user.context'
 import styles from './Home.module.scss'
+
+const HOME_AVATAR_SIZE = 64
 
 export const Home = () => {
   const { t: tHome } = useTranslation('home')
   const { t: tCommon } = useTranslation('common')
+  const user = useCurrentUser()
   const greeting = tCommon(getGreetingKey())
-  const railVisible = useLayoutStore((s) => s.railVisible)
-  const toggleRail = useLayoutStore((s) => s.toggleRail)
-  const toggleSidebar = useLayoutStore((s) => s.toggleSidebar)
 
   return (
     <div className={styles.root}>
-      <Heading as="h1">{tHome('title')}</Heading>
-      <Text as="p">{tHome('greeting', { greeting })}</Text>
-      <div className={styles.actions}>
-        <Button
-          leadingVisual={railVisible ? SidebarCollapseIcon : SidebarExpandIcon}
-          onClick={toggleRail}
-        >
-          {tHome('actions.toggleRail')}
-        </Button>
-        <Button leadingVisual={ColumnsIcon} onClick={toggleSidebar}>
-          {tHome('actions.toggleSidebar')}
-        </Button>
-      </div>
+      <UserAvatar name={user.name} src={user.avatarUrl ?? undefined} size={HOME_AVATAR_SIZE} />
+      <Heading as="h1">{tHome('welcome', { greeting, name: user.name })}</Heading>
+      <Text as="p" className={styles.subtitle}>
+        {tHome('subtitle')}
+      </Text>
     </div>
   )
 }
