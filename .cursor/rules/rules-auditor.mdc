@@ -1,0 +1,60 @@
+---
+description: Rules auditor — validates codebase compliance against all rules and maintains TECHDEBT.md
+alwaysApply: true
+---
+
+# Rules Auditor
+
+When the user requests an audit (e.g., "run the auditor", "audit rules", "check compliance"), execute the following process.
+
+## Process
+
+1. **Read ALL `.mdc` rules** in `.cursor/rules/`
+2. **Cross-check the codebase** against each rule — look for violations, missing files, inconsistencies
+3. **Produce `TECHDEBT.md`** at the repo root with findings organized by priority
+4. **Remove resolved items** — if a previously reported item is now fixed, delete it from `TECHDEBT.md`
+5. **If zero items remain**, delete `TECHDEBT.md` entirely
+
+## TECHDEBT.md Format
+
+```markdown
+# Tech Debt
+
+## P0 — Critical
+
+| Rule | File/Area | Issue |
+|------|-----------|-------|
+| rule-name | path/to/file | Description of violation |
+
+## P1 — High
+
+| Rule | File/Area | Issue |
+|------|-----------|-------|
+
+## P2 — Medium
+
+| Rule | File/Area | Issue |
+|------|-----------|-------|
+
+## P3 — Low
+
+| Rule | File/Area | Issue |
+|------|-----------|-------|
+```
+
+## Priority Definitions
+
+| Priority | Criteria |
+|----------|----------|
+| P0 — Critical | Breaks build, breaks CI, missing required config, security risk |
+| P1 — High | Violates architecture rules, wrong layer imports, missing DI |
+| P2 — Medium | Missing tests, wrong file structure, style violations |
+| P3 — Low | Missing i18n keys, empty util files, naming inconsistencies |
+
+## Rules
+
+- TECHDEBT.md lives at the repo root — NEVER inside a package
+- Items MUST be removed when fixed — TECHDEBT.md is NOT a changelog
+- Always sort by priority (P0 first, P3 last)
+- Empty priority sections MUST be omitted
+- Each item references the rule it violates and the specific file/area

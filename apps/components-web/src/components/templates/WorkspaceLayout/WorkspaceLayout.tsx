@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Button } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useLayoutStore } from '../../../stores/layout.store'
 import type { WorkspaceLayoutProps } from './WorkspaceLayout.types'
@@ -24,9 +25,9 @@ export const WorkspaceLayout = ({ rail, sidebar, children }: WorkspaceLayoutProp
       >
         {sidebar}
       </aside>
-      <button
+      <Button
+        variant="invisible"
         className={clsx(styles.backdrop, { [styles.backdropHidden as string]: !sidebarVisible })}
-        type="button"
         aria-label={tLayout('actions.closeSidebar')}
         onClick={closeSidebar}
         tabIndex={-1}

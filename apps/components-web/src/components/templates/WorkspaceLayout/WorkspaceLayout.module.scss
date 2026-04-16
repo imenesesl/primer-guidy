@@ -43,8 +43,8 @@
   background-color: var(--primer-canvas-default);
 }
 
-.backdrop {
-  @apply fixed inset-0 z-30 block;
+.backdrop.backdrop {
+  @apply fixed inset-0 z-30 block p-0 w-full h-full rounded-none border-0;
 
   background-color: var(--primer-neutral-muted);
 }
