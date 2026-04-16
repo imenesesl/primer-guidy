@@ -13,6 +13,9 @@ export type { SidebarItemProps, SidebarItemConfig } from './components/atoms/Sid
 export { Rail } from './components/organisms/Rail'
 export type { RailProps, RailItemConfig } from './components/organisms/Rail'
 
+export { AppProviders } from './components/templates/AppProviders'
+export type { AppProvidersProps } from './components/templates/AppProviders'
+
 export { WorkspaceLayout } from './components/templates/WorkspaceLayout'
 export type { WorkspaceLayoutProps } from './components/templates/WorkspaceLayout'
 

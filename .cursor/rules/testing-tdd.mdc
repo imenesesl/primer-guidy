@@ -81,16 +81,32 @@ describe('Button', () => {
 
 Playwright valida flujos completos de usuario. Viven en `e2e/` en la raíz de cada app.
 
-### Estructura
+### Shared E2E Infrastructure — `@primer-guidy/e2e-helpers`
+
+ALL emulator helpers, constants, and utilities live in `libs/e2e-helpers/`. NEVER duplicate E2E infrastructure in each app.
+
+```typescript
+// Shared helpers available from @primer-guidy/e2e-helpers
+import {
+  clearEmulators, createAuthUser, seedFirestoreProfile,  // Emulator management
+  getOobCodeForEmail, buildEmailLinkUrl,                  // Magic link helpers
+  signInOnPage,                                           // Auth helpers
+} from '@primer-guidy/e2e-helpers'
+```
+
+The shared bash script `scripts/run-e2e.sh` handles emulator lifecycle. Apps call it via `"test:e2e": "bash ../../scripts/run-e2e.sh"`.
+
+### Estructura por App
 
 ```
-apps/core-web/
+apps/<name>-web/
   e2e/
+    e2e.constants.ts          ← App-specific ONLY (E2E_USER)
+    global-setup.ts           ← Imports from @primer-guidy/e2e-helpers
+    global-teardown.ts        ← Imports from @primer-guidy/e2e-helpers
+    playwright.config.ts      ← App-specific port and settings
     flows/
-      auth.spec.ts            ← Flujo de autenticación
-      dashboard.spec.ts       ← Flujo de dashboard
-    fixtures/                 ← Test fixtures y helpers
-    playwright.config.ts
+      feature.spec.ts         ← App-specific test specs
 ```
 
 ### Qué testear con Playwright
@@ -103,13 +119,15 @@ apps/core-web/
 ### Ejemplo
 
 ```typescript
-// e2e/flows/dashboard.spec.ts
+// e2e/flows/home.spec.ts
 import { test, expect } from '@playwright/test'
+import { signInOnPage } from '@primer-guidy/e2e-helpers'
+import { E2E_USER } from '../e2e.constants'
 
-test('user can navigate to dashboard and see welcome message', async ({ page }) => {
+test('displays home after auth', async ({ page }) => {
   await page.goto('/')
-
-  await expect(page.getByRole('heading', { name: 'Primer Guidy' })).toBeVisible()
+  await signInOnPage(page, E2E_USER)
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
 ```
 

@@ -1,5 +1,6 @@
 import {
   getAuth,
+  connectAuthEmulator,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
@@ -48,8 +49,11 @@ const mapError = (error: unknown): AuthError => {
 export class FirebaseAuthAdapter implements IAuthProvider {
   private readonly auth
 
-  constructor(app: FirebaseApp) {
+  constructor(app: FirebaseApp, emulatorUrl?: string) {
     this.auth = getAuth(app)
+    if (emulatorUrl) {
+      connectAuthEmulator(this.auth, emulatorUrl, { disableWarnings: true })
+    }
   }
 
   async signInWithEmail(credentials: EmailCredentials): Promise<AuthUser> {

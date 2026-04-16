@@ -15,6 +15,7 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
 | Cloud services abstraction | `libs/cloud-services/` | tsc + Vitest | `libs/cloud-services/` |
+| Shared E2E helpers | `libs/e2e-helpers/` | Playwright | `libs/e2e-helpers/` |
 | Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
 
 ## Shared Design System — `@primer-guidy/components-web`
@@ -70,6 +71,14 @@ The root `package.json` MUST have a `dev:<name>` script for each web app:
 There is NO generic `dev` script. Each app has its own `dev:<name>` to avoid ambiguity.
 
 Recursive scripts (`build`, `typecheck`, `lint`, `test`) run across all packages automatically.
+
+## Shared Scripts — `scripts/`
+
+Cross-app tooling scripts live in `scripts/` at the monorepo root:
+
+- `scripts/run-e2e.sh` — Shared E2E runner (starts emulators, runs Playwright, cleans up)
+
+Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `package.json`.
 
 ## Naming Conventions
 

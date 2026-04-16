@@ -38,7 +38,9 @@ const BASE_PATH = IS_PROD ? `${DEPLOY_PREFIX}/core/` : '/'
 
 - Generated from `.github/pages/generate.ts` using `DEPLOY_PREFIX`
 - Uses `@primer/css` (CDN) for Primer styling
-- Lists ALL apps from `.github/pages/apps-registry.json`
+- Lists ALL apps and E2E reports from `.github/pages/apps-registry.json`
+- Registry has three sections: `apps`, `storybooks`, `reports`
+- E2E Playwright reports (with videos & traces) are deployed at `/e2e-report/<app>/`
 
 ## CI/CD — GitHub Actions
 
@@ -55,10 +57,11 @@ Both deploy jobs run in parallel after tests pass.
 
 1. Use `DEPLOY_PREFIX` in `rsbuild.config.ts` for `BASE_PATH`
 2. Set `basepath` from `import.meta.env.BASE_PATH` in `router.ts`
-3. Register in `.github/pages/apps-registry.json`
+3. Register in `.github/pages/apps-registry.json` (`apps` array + `reports` array if E2E exists)
 4. Add `dev:<name>` script in root `package.json`
 5. Add copy step in `deploy.yml` under both deploy jobs
 6. Add rewrite in `firebase.json`
+7. Add E2E report artifact upload/download steps in `deploy.yml` if E2E tests exist
 
 ## Rules
 

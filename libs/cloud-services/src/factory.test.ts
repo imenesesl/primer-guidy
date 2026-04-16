@@ -75,16 +75,16 @@ describe('createCloudServices', () => {
     })
   })
 
-  it('creates FirebaseAuthAdapter with the app', () => {
+  it('creates FirebaseAuthAdapter with the app and no emulator', () => {
     createCloudServices(validConfig)
 
-    expect(FirebaseAuthAdapter).toHaveBeenCalledWith(mockApp)
+    expect(FirebaseAuthAdapter).toHaveBeenCalledWith(mockApp, undefined)
   })
 
-  it('creates FirebaseFirestoreAdapter with the app', () => {
+  it('creates FirebaseFirestoreAdapter with the app and no emulator', () => {
     createCloudServices(validConfig)
 
-    expect(FirebaseFirestoreAdapter).toHaveBeenCalledWith(mockApp)
+    expect(FirebaseFirestoreAdapter).toHaveBeenCalledWith(mockApp, undefined, undefined)
   })
 
   it('creates FirebaseRealtimeDatabaseAdapter with the app', () => {
@@ -127,5 +127,21 @@ describe('createCloudServices', () => {
       projectId: 'proj',
       site: undefined,
     })
+  })
+
+  it('passes emulator config to adapters when provided', () => {
+    const configWithEmulators: CloudServicesConfig = {
+      ...validConfig,
+      emulators: {
+        authUrl: 'http://127.0.0.1:9099',
+        firestoreHost: '127.0.0.1',
+        firestorePort: 8080,
+      },
+    }
+
+    createCloudServices(configWithEmulators)
+
+    expect(FirebaseAuthAdapter).toHaveBeenCalledWith(mockApp, 'http://127.0.0.1:9099')
+    expect(FirebaseFirestoreAdapter).toHaveBeenCalledWith(mockApp, '127.0.0.1', 8080)
   })
 })

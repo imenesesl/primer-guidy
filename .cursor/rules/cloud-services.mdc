@@ -30,15 +30,20 @@ libs/cloud-services/
 
 ## Consumer Usage (Web Apps)
 
+Use `createCloudServicesFromEnv` in `__root.tsx` — it handles emulator config and E2E bypass automatically:
+
 ```tsx
-// Composition root — the ONLY place where factory is called
-import { createCloudServices, CloudServicesProvider } from '@primer-guidy/cloud-services'
+// __root.tsx — composition root
+import { createCloudServicesFromEnv } from '@primer-guidy/cloud-services'
+import { AppProviders } from '@primer-guidy/components-web'
 
-const services = createCloudServices({ projectId: '...', apiKey: '...' })
-
-<CloudServicesProvider value={services}>
-  {children}
-</CloudServicesProvider>
+const cloudServices = createCloudServicesFromEnv({
+  apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
+  authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
+  // ...other env vars
+  e2eBypass: import.meta.env.E2E_BYPASS,
+})
 
 // Inside modules — consume via hooks
 import { useAuth } from '@primer-guidy/cloud-services'
@@ -46,6 +51,8 @@ import { useAuth } from '@primer-guidy/cloud-services'
 const auth = useAuth()
 await auth.signInWithEmail({ email, password })
 ```
+
+NEVER use `createCloudServices` directly in web apps — prefer `createCloudServicesFromEnv` which encapsulates emulator detection and E2E setup.
 
 ## Adding a New Service
 

@@ -47,10 +47,28 @@ src/
 
 Utilities needed by multiple web apps (e.g., `buildThemeVars`, `PrimerColors`) MUST live in `components-web/src/utils/` and be exported from `index.ts`. NEVER duplicate utilities across apps.
 
-```typescript
-// Apps import shared utils from @primer-guidy/components-web
-import { buildThemeVars } from '@primer-guidy/components-web'
+### `AppProviders` — Standard Root Layout
+
+`AppProviders` (in `components-web/src/components/templates/AppProviders/`) wraps the full provider stack: QueryClientProvider, ThemeProvider, BaseStyles, CloudServicesProvider, and themed CSS variables. ALL web apps MUST use it in `__root.tsx`:
+
+```tsx
+// __root.tsx — minimal and consistent across all apps
+import { createCloudServicesFromEnv } from '@primer-guidy/cloud-services'
+import { AppProviders } from '@primer-guidy/components-web'
+
+const cloudServices = createCloudServicesFromEnv({ /* env vars */ })
+
+function RootLayout() {
+  const { queryClient } = Route.useRouteContext()
+  return (
+    <AppProviders queryClient={queryClient} cloudServices={cloudServices}>
+      <Outlet />
+    </AppProviders>
+  )
+}
 ```
+
+NEVER manually nest QueryClientProvider, ThemeProvider, BaseStyles, or CloudServicesProvider — use `AppProviders`.
 
 ## Layer Responsibilities
 

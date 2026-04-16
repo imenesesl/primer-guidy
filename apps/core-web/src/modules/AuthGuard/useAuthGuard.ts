@@ -4,24 +4,23 @@ import { getUserProfile } from '@/services/user'
 import { AuthGuardStatus } from './AuthGuard.types'
 import type { AuthGuardState } from './AuthGuard.types'
 import { getLoginAppUrl } from './AuthGuard.utils'
-import { E2E_MOCK_STATE } from './AuthGuard.e2e-fixture'
 
 const IS_E2E = import.meta.env.E2E_BYPASS === 'true'
 
 export const useAuthGuard = (): AuthGuardState => {
   const auth = useAuth()
   const firestore = useFirestore()
-  const [state, setState] = useState<AuthGuardState>(
-    IS_E2E ? E2E_MOCK_STATE : { status: AuthGuardStatus.Initializing, user: null },
-  )
+  const [state, setState] = useState<AuthGuardState>({
+    status: AuthGuardStatus.Initializing,
+    user: null,
+  })
 
   const redirectToLogin = useCallback(() => {
+    if (IS_E2E) return
     window.location.href = getLoginAppUrl()
   }, [])
 
   useEffect(() => {
-    if (IS_E2E) return
-
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (!authUser) {
         setState({ status: AuthGuardStatus.Unauthenticated, user: null })

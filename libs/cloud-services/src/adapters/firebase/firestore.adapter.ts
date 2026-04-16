@@ -1,5 +1,6 @@
 import {
   getFirestore,
+  connectFirestoreEmulator,
   doc,
   getDoc,
   getDocs,
@@ -52,8 +53,11 @@ const buildQuery = (
 export class FirebaseFirestoreAdapter implements IFirestoreProvider {
   private readonly db
 
-  constructor(app: FirebaseApp) {
+  constructor(app: FirebaseApp, emulatorHost?: string, emulatorPort?: number) {
     this.db = getFirestore(app)
+    if (emulatorHost && emulatorPort) {
+      connectFirestoreEmulator(this.db, emulatorHost, emulatorPort)
+    }
   }
 
   async getDoc<T>(collectionName: string, id: string): Promise<T | null> {

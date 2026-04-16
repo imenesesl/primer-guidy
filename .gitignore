@@ -22,3 +22,8 @@ deploy/
 # Playwright
 playwright-report/
 test-results/
+
+# Firebase Emulators
+firestore-debug.log
+ui-debug.log
+firebase-debug.log

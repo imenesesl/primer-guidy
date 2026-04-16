@@ -1,0 +1,10 @@
+{
+  "name": "@primer-guidy/e2e-helpers",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "@playwright/test": ">=1.0.0"
+  }
+}

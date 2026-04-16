@@ -3,5 +3,19 @@
     { "name": "Core", "route": "core", "description": "Main application platform", "icon": "🔷" },
     { "name": "Login", "route": "login", "description": "Authentication portal", "icon": "🔑" }
   ],
-  "storybooks": []
+  "storybooks": [],
+  "reports": [
+    {
+      "name": "Core E2E",
+      "route": "core",
+      "description": "Playwright report with videos & traces",
+      "icon": "🧪"
+    },
+    {
+      "name": "Login E2E",
+      "route": "login",
+      "description": "Playwright report with videos & traces",
+      "icon": "🧪"
+    }
+  ]
 }

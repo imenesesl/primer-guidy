@@ -14,7 +14,8 @@
     "generate-routes": "@tanstack/router-cli generate",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "bash ../../scripts/run-e2e.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -35,6 +36,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@primer-guidy/e2e-helpers": "workspace:*",
     "@primer-guidy/eslint-config": "workspace:*",
     "@primer-guidy/stylelint-config": "workspace:*",
     "@rsbuild/core": "^1.7.5",

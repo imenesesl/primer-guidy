@@ -1,15 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const E2E_PORT = 4173
+const E2E_PORT = 4174
 const CI_RETRIES = 2
-const CI_WORKERS = 1
 
 export default defineConfig({
   testDir: './flows',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? CI_RETRIES : 0,
-  workers: process.env['CI'] ? CI_WORKERS : undefined,
+  workers: 1,
   reporter: 'html',
   globalSetup: './global-setup.ts',
   globalTeardown: './global-teardown.ts',

@@ -14,6 +14,7 @@ interface Entry {
 interface Registry {
   apps: Entry[]
   storybooks: Entry[]
+  reports: Entry[]
 }
 
 const registry: Registry = JSON.parse(
@@ -46,6 +47,7 @@ const column = (title: string, entries: Entry[], base: string) =>
 const columns = [
   column('Live Apps', registry.apps, ''),
   column('Storybook', registry.storybooks, 'storybook/'),
+  column('E2E Reports', registry.reports, 'e2e-report/'),
 ]
   .filter(Boolean)
   .join('')
@@ -62,6 +64,6 @@ if (existsSync(fallbackPath)) {
   copyFileSync(fallbackPath, resolve(outDir, '404.html'))
 }
 
-const total = registry.apps.length + registry.storybooks.length
+const total = registry.apps.length + registry.storybooks.length + registry.reports.length
 // eslint-disable-next-line no-console
 console.log(`Landing: ${total} entries → prefix="${DEPLOY_PREFIX || '/'}"`)

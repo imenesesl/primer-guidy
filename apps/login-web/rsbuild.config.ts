@@ -21,6 +21,7 @@ export default defineConfig({
     define: {
       ...publicVars,
       'import.meta.env.BASE_PATH': JSON.stringify(BASE_PATH),
+      'import.meta.env.E2E_BYPASS': JSON.stringify(process.env.E2E_BYPASS ?? ''),
     },
   },
   resolve: {

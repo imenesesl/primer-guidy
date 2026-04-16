@@ -25,8 +25,13 @@ export {
   HostingErrorCode,
 } from './ports'
 
-export { createCloudServices } from './factory'
-export type { CloudServicesConfig, CloudServices } from './factory.types'
+export { createCloudServices, createCloudServicesFromEnv } from './factory'
+export type {
+  CloudServicesConfig,
+  CloudServices,
+  EmulatorConfig,
+  CloudServicesEnvConfig,
+} from './factory.types'
 
 export {
   CloudServicesProvider,
