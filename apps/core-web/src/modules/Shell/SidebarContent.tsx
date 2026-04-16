@@ -22,10 +22,12 @@ export const SidebarContent = ({ userName, sidebarItems }: SidebarContentProps) 
           aria-label={tLayout('actions.toggleRail')}
           onClick={toggleRail}
         />
-        {userName && (
+        {userName ? (
           <Text as="span" className={styles.sidebarUserName}>
             {userName}
           </Text>
+        ) : (
+          <div className={styles.sidebarUserNameSkeleton} />
         )}
       </div>
       <div className={styles.sidebarDivider} />

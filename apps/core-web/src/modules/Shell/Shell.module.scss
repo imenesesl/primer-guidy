@@ -21,6 +21,24 @@
   color: var(--primer-fg-default);
 }
 
+.sidebarUserNameSkeleton {
+  @apply flex-1 h-4 rounded;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
 .sidebarDivider {
   border-bottom: 1px solid var(--primer-border-muted);
 }
