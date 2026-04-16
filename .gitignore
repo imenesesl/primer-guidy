@@ -3,7 +3,6 @@ dist/
 *.local
 
 # Generated
-routeTree.gen.ts
 .tanstack/
 
 # IDE
