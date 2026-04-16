@@ -1,0 +1,33 @@
+{
+  "level": "collection",
+  "path": "users",
+  "description": "Registered user profiles created during account signup",
+  "schema": {
+    "uid": {
+      "type": "string",
+      "required": true,
+      "description": "Firebase Auth UID — used as document ID"
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "User display name"
+    },
+    "email": {
+      "type": "string",
+      "required": true,
+      "description": "User email address"
+    },
+    "avatarUrl": {
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Profile avatar URL from auth provider or null"
+    },
+    "createdAt": {
+      "type": "timestamp",
+      "required": true,
+      "description": "Account creation timestamp"
+    }
+  }
+}

@@ -1,13 +1,27 @@
 {
   "title": "Create Account",
   "subtitle": "Choose a method to create your account",
+  "nameLabel": "Full Name",
+  "namePlaceholder": "Your full name",
   "emailLabel": "Email Address",
   "emailPlaceholder": "email@example.com",
   "createWithEmail": "Create Account with Email",
   "createWithGoogle": "Create Account with Google",
   "or": "or",
+  "creatingAccount": "Creating your account...",
+  "linkSent": {
+    "title": "Check your email",
+    "message": "We sent a sign-in link to your email address. Click the link to complete your account."
+  },
   "alreadyHaveAccount": {
     "message": "Already have an account?",
     "cta": "Sign In"
+  },
+  "errors": {
+    "INVALID_EMAIL": "Please enter a valid email address",
+    "EMAIL_ALREADY_IN_USE": "This email is already registered. Try signing in instead.",
+    "POPUP_CLOSED": "Sign-in popup was closed. Please try again.",
+    "TOO_MANY_REQUESTS": "Too many attempts. Please try again later.",
+    "UNKNOWN": "An unexpected error occurred. Please try again."
   }
 }

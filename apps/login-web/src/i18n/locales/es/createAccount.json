@@ -1,0 +1,27 @@
+{
+  "title": "Crear cuenta",
+  "subtitle": "Elige un método para crear tu cuenta",
+  "nameLabel": "Nombre completo",
+  "namePlaceholder": "Tu nombre completo",
+  "emailLabel": "Correo electrónico",
+  "emailPlaceholder": "correo@ejemplo.com",
+  "createWithEmail": "Crear cuenta con correo",
+  "createWithGoogle": "Crear cuenta con Google",
+  "or": "o",
+  "creatingAccount": "Creando tu cuenta...",
+  "linkSent": {
+    "title": "Revisa tu correo",
+    "message": "Enviamos un enlace de inicio de sesión a tu correo. Haz clic en el enlace para completar tu cuenta."
+  },
+  "alreadyHaveAccount": {
+    "message": "¿Ya tienes una cuenta?",
+    "cta": "Iniciar sesión"
+  },
+  "errors": {
+    "INVALID_EMAIL": "Ingresa un correo válido",
+    "EMAIL_ALREADY_IN_USE": "Este correo ya está registrado. Intenta iniciar sesión.",
+    "POPUP_CLOSED": "Se cerró la ventana de inicio de sesión. Inténtalo de nuevo.",
+    "TOO_MANY_REQUESTS": "Demasiados intentos. Intenta más tarde.",
+    "UNKNOWN": "Ocurrió un error inesperado. Inténtalo de nuevo."
+  }
+}

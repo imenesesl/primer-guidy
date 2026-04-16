@@ -1,5 +1,41 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { IAuthProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
+
+const mockSignInWithGoogle = vi.fn()
+const mockSendSignInLink = vi.fn()
+const mockIsSignInWithEmailLink = vi.fn().mockReturnValue(false)
+const mockSetDoc = vi.fn()
+
+const mockAuth: IAuthProvider = {
+  signInWithEmail: vi.fn(),
+  signUpWithEmail: vi.fn(),
+  sendSignInLink: mockSendSignInLink,
+  signInWithEmailLink: vi.fn(),
+  isSignInWithEmailLink: mockIsSignInWithEmailLink,
+  signInWithGoogle: mockSignInWithGoogle,
+  signOut: vi.fn(),
+  sendEmailVerification: vi.fn(),
+  onAuthStateChanged: vi.fn(),
+  getCurrentUser: vi.fn().mockReturnValue(null),
+}
+
+const mockFirestore: IFirestoreProvider = {
+  getDoc: vi.fn(),
+  getDocs: vi.fn(),
+  setDoc: mockSetDoc,
+  addDoc: vi.fn(),
+  updateDoc: vi.fn(),
+  deleteDoc: vi.fn(),
+  onSnapshot: vi.fn(),
+}
+
+vi.mock('@primer-guidy/cloud-services', () => ({
+  useAuth: () => mockAuth,
+  useFirestore: () => mockFirestore,
+  AuthErrorCode: { UNKNOWN: 'UNKNOWN' },
+}))
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -17,6 +53,11 @@ vi.mock('@tanstack/react-router', () => ({
 import { CreateAccount } from './CreateAccount'
 
 describe('CreateAccount', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockIsSignInWithEmailLink.mockReturnValue(false)
+  })
+
   it('renders the create account heading', () => {
     render(<CreateAccount />)
 
@@ -29,11 +70,18 @@ describe('CreateAccount', () => {
     expect(screen.getByText('subtitle')).toBeInTheDocument()
   })
 
-  it('renders disabled email and google buttons', () => {
+  it('renders name and email fields', () => {
     render(<CreateAccount />)
 
-    expect(screen.getByRole('button', { name: /createWithEmail/i })).toBeDisabled()
-    expect(screen.getByRole('button', { name: /createWithGoogle/i })).toBeDisabled()
+    expect(screen.getByLabelText('nameLabel')).toBeInTheDocument()
+    expect(screen.getByLabelText('emailLabel')).toBeInTheDocument()
+  })
+
+  it('renders enabled email and google buttons', () => {
+    render(<CreateAccount />)
+
+    expect(screen.getByRole('button', { name: /createWithEmail/i })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: /createWithGoogle/i })).not.toBeDisabled()
   })
 
   it('renders a link back to sign in', () => {
@@ -41,5 +89,48 @@ describe('CreateAccount', () => {
 
     const link = screen.getByRole('link')
     expect(link).toHaveAttribute('href', '/')
+  })
+
+  it('calls sendSignInLink on valid form submission', async () => {
+    const user = userEvent.setup()
+    mockSendSignInLink.mockResolvedValue(undefined)
+
+    render(<CreateAccount />)
+
+    await user.type(screen.getByLabelText('nameLabel'), 'John Doe')
+    await user.type(screen.getByLabelText('emailLabel'), 'john@example.com')
+    await user.click(screen.getByRole('button', { name: /createWithEmail/i }))
+
+    expect(mockSendSignInLink).toHaveBeenCalledOnce()
+    expect(await screen.findByText('linkSent.title')).toBeInTheDocument()
+  })
+
+  it('calls signInWithGoogle and saves user on google button click', async () => {
+    const user = userEvent.setup()
+    const mockUser = {
+      uid: 'google-uid-123',
+      email: 'test@test.com',
+      displayName: 'Test User',
+      emailVerified: true,
+      photoURL: 'https://example.com/photo.jpg',
+    }
+    mockSignInWithGoogle.mockResolvedValue(mockUser)
+    mockSetDoc.mockResolvedValue(undefined)
+
+    render(<CreateAccount />)
+
+    await user.click(screen.getByRole('button', { name: /createWithGoogle/i }))
+
+    expect(mockSignInWithGoogle).toHaveBeenCalledOnce()
+    expect(mockSetDoc).toHaveBeenCalledWith(
+      'users',
+      'google-uid-123',
+      expect.objectContaining({
+        uid: 'google-uid-123',
+        name: 'Test User',
+        email: 'test@test.com',
+        avatarUrl: 'https://example.com/photo.jpg',
+      }),
+    )
   })
 })

@@ -1,0 +1,115 @@
+---
+description: "Database schema documentation — JSON files in services that mirror Firestore/Realtime structure"
+globs: "**/*.schema.json,**/services/**/*.ts"
+alwaysApply: true
+---
+
+# Database Schemas — Source of Truth for Data Structure
+
+Every collection or node in the database MUST have a corresponding `.schema.json` file in its service directory. These files document the exact structure, enforce type parity, and serve as the contract between frontend types and backend data.
+
+## Schema File Location
+
+Schema files live alongside their service types:
+
+```
+services/
+  user/
+    user.schema.json    → Documents the Firestore/Realtime structure
+    user.types.ts       → TypeScript types MUST match the schema
+    user.service.ts
+    index.ts
+```
+
+## Schema Format
+
+```json
+{
+  "level": "collection",
+  "path": "users",
+  "description": "Registered user profiles",
+  "schema": {
+    "uid": {
+      "type": "string",
+      "required": true,
+      "description": "Firebase Auth UID — used as document ID"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
+```
+
+## Level Values
+
+| Level | Database | Meaning |
+|-------|----------|---------|
+| `collection` | Firestore | A Firestore collection (contains documents) |
+| `document` | Firestore | A specific document within a collection |
+| `node` | Realtime Database | A node in the Realtime Database JSON tree |
+
+## Field Types
+
+Use JSON-compatible type names:
+
+| Type | Description |
+|------|-------------|
+| `string` | Text value |
+| `number` | Numeric value (integer or float) |
+| `boolean` | true/false |
+| `timestamp` | Firestore Timestamp or ISO date string |
+| `array` | Array of values (specify `items` for element type) |
+| `map` | Nested object (specify `properties` for sub-fields) |
+| `reference` | Firestore document reference path |
+
+## Field Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | string | Yes | Data type of the field |
+| `required` | boolean | Yes | Whether the field is mandatory |
+| `description` | string | No | What this field represents |
+| `default` | any | No | Default value if not provided |
+| `items` | object | No | Schema for array elements |
+| `properties` | object | No | Schema for map sub-fields |
+
+## Type Parity Rule
+
+The TypeScript interface in `<domain>.types.ts` MUST match the schema exactly:
+
+- Every `required: true` field → non-optional property in the interface
+- Every `required: false` field → optional property (`?`) or `| null`
+- Field `type` → maps to TypeScript type (`string` → `string`, `timestamp` → `Date | string`, etc.)
+
+```json
+{
+  "schema": {
+    "uid": { "type": "string", "required": true },
+    "name": { "type": "string", "required": true },
+    "avatarUrl": { "type": "string", "required": false }
+  }
+}
+```
+
+```typescript
+export interface UserDocument {
+  readonly uid: string
+  readonly name: string
+  readonly avatarUrl: string | null
+}
+```
+
+## Rules
+
+- EVERY Firestore collection or Realtime node with read/write access MUST have a `.schema.json`
+- Schema files MUST be kept in sync with any database structure changes
+- TypeScript types MUST match the schema — type mismatches are bugs
+- When adding a new field to the database, update the schema FIRST, then the types
+- Schema files are documentation AND contracts — they are reviewed in PRs
+- Collection/node names in `path` MUST match the actual database path used in service functions

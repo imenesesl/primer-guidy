@@ -1,2 +1,2 @@
-export { checkUserExists } from './user.service'
-export type { UserDocument } from './user.types'
+export { checkUserExists, createUser } from './user.service'
+export type { UserDocument, CreateUserData } from './user.types'

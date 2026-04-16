@@ -1,2 +1,3 @@
 export { CreateAccount } from './CreateAccount'
-export type { CreateAccountProps } from './CreateAccount.types'
+export type { CreateAccountFlowState } from './CreateAccount.types'
+export { CreateAccountStatus } from './CreateAccount.types'

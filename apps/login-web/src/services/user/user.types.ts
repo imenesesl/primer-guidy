@@ -1,5 +1,13 @@
 export interface UserDocument {
   readonly uid: string
-  readonly email: string | null
-  readonly displayName: string | null
+  readonly name: string
+  readonly email: string
+  readonly avatarUrl: string | null
+  readonly createdAt: string
+}
+
+export interface CreateUserData {
+  readonly name: string
+  readonly email: string
+  readonly avatarUrl: string | null
 }

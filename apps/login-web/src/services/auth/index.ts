@@ -1,2 +1,2 @@
-export { EmailSchema } from './auth.types'
-export type { EmailFormData } from './auth.types'
+export { EmailSchema, CreateAccountSchema } from './auth.types'
+export type { EmailFormData, CreateAccountFormData } from './auth.types'

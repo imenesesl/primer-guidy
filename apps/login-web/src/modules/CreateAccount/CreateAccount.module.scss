@@ -86,3 +86,23 @@
     text-decoration: underline;
   }
 }
+
+.googleButton.googleButton:hover:not(:disabled) {
+  background-color: var(--primer-neutral-muted);
+}
+
+.verifying {
+  @apply flex flex-col items-center gap-4;
+
+  color: var(--primer-fg-default);
+}
+
+.linkSentCard {
+  @apply flex flex-col items-center gap-3 text-center;
+
+  color: var(--primer-fg-default);
+}
+
+.linkSentIcon {
+  color: var(--primer-accent-fg);
+}

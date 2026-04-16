@@ -1,13 +1,26 @@
-import { FormControl, Heading, Text, TextInput, Button } from '@primer/react'
-import { MailIcon } from '@primer/octicons-react'
-import { Link } from '@tanstack/react-router'
+import { Flash, Heading, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
-import { LoginRoutes } from '@/routes/routes'
-import { GoogleIcon } from '@/modules/Login/GoogleIcon'
+import { useCreateAccountFlow } from './useCreateAccountFlow'
+import { CreateAccountStatus } from './CreateAccount.types'
+import { CreateAccountForm } from './CreateAccountForm'
+import { AuthDivider } from './AuthDivider'
+import { GoogleSignUpButton } from './GoogleSignUpButton'
+import { LinkSentView } from './LinkSentView'
+import { CreatingView } from './CreatingView'
+import { SignInLink } from './SignInLink'
 import styles from './CreateAccount.module.scss'
 
 export const CreateAccount = () => {
   const { t: tCreateAccount } = useTranslation('createAccount')
+  const flow = useCreateAccountFlow()
+
+  if (flow.status === CreateAccountStatus.LinkSent) {
+    return <LinkSentView onBack={flow.resetStatus} />
+  }
+
+  if (flow.status === CreateAccountStatus.CreatingUser) {
+    return <CreatingView />
+  }
 
   return (
     <div className={styles.root}>
@@ -19,46 +32,17 @@ export const CreateAccount = () => {
           {tCreateAccount('subtitle')}
         </Text>
 
-        <div className={styles.form}>
-          <FormControl>
-            <FormControl.Label className={styles.label}>
-              {tCreateAccount('emailLabel')}
-            </FormControl.Label>
-            <TextInput placeholder={tCreateAccount('emailPlaceholder')} type="email" block />
-          </FormControl>
+        <CreateAccountForm onSubmit={flow.onEmailSubmit} disabled={flow.isLoading} />
+        <AuthDivider />
+        <GoogleSignUpButton onClick={flow.onGoogleSignIn} disabled={flow.isLoading} />
 
-          <Button
-            variant="primary"
-            disabled
-            className={styles.emailButton}
-            leadingVisual={MailIcon}
-          >
-            {tCreateAccount('createWithEmail')}
-          </Button>
-        </div>
+        {flow.authError && (
+          <Flash variant="danger">
+            <Text as="p">{tCreateAccount(`errors.${flow.authError}`)}</Text>
+          </Flash>
+        )}
 
-        <div className={styles.divider}>
-          <div className={styles.dividerLine} />
-          <Text as="span" className={styles.dividerText}>
-            {tCreateAccount('or')}
-          </Text>
-          <div className={styles.dividerLine} />
-        </div>
-
-        <Button
-          disabled
-          className={styles.googleButton}
-          leadingVisual={() => <GoogleIcon className={styles.googleIcon} />}
-        >
-          {tCreateAccount('createWithGoogle')}
-        </Button>
-
-        <Text as="p" className={styles.footer}>
-          {tCreateAccount('alreadyHaveAccount.message')}{' '}
-          <Link to={LoginRoutes.Root} className={styles.footerLink}>
-            {tCreateAccount('alreadyHaveAccount.cta')}
-          </Link>
-        </Text>
+        <SignInLink />
       </div>
     </div>
   )

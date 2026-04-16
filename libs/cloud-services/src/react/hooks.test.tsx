@@ -29,6 +29,7 @@ const mockServices: CloudServices = {
   firestore: {
     getDoc: vi.fn(),
     getDocs: vi.fn(),
+    setDoc: vi.fn(),
     addDoc: vi.fn(),
     updateDoc: vi.fn(),
     deleteDoc: vi.fn(),

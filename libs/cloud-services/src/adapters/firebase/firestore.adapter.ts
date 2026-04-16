@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  setDoc,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -70,6 +71,19 @@ export class FirebaseFirestoreAdapter implements IFirestoreProvider {
       const q = buildQuery(this.db, collectionName, options)
       const snapshot = await getDocs(q)
       return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as T)
+    } catch (error) {
+      throw mapError(error)
+    }
+  }
+
+  async setDoc<T extends Record<string, unknown>>(
+    collectionName: string,
+    id: string,
+    data: T,
+  ): Promise<void> {
+    try {
+      const docRef = doc(this.db, collectionName, id)
+      await setDoc(docRef, data)
     } catch (error) {
       throw mapError(error)
     }

@@ -26,6 +26,7 @@ const mockAuth: IAuthProvider = {
 const mockFirestore: IFirestoreProvider = {
   getDoc: mockGetDoc,
   getDocs: vi.fn(),
+  setDoc: vi.fn(),
   addDoc: vi.fn(),
   updateDoc: vi.fn(),
   deleteDoc: vi.fn(),
