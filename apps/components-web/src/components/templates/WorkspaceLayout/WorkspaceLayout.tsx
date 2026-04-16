@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
-import { useLayoutStore } from '@/stores/layout.store'
+import { useLayoutStore } from '../../../stores/layout.store'
 import type { WorkspaceLayoutProps } from './WorkspaceLayout.types'
 import styles from './WorkspaceLayout.module.scss'
 

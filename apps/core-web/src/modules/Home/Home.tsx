@@ -2,7 +2,7 @@ import { Heading, Text, Button } from '@primer/react'
 import { SidebarCollapseIcon, SidebarExpandIcon, ColumnsIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
 import { getGreetingKey } from '@/utils/date.utils'
-import { useLayoutStore } from '@/stores/layout.store'
+import { useLayoutStore } from '@primer-guidy/components-web'
 import styles from './Home.module.scss'
 
 export const Home = () => {

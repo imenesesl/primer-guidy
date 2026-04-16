@@ -7,10 +7,14 @@ import {
   SidebarExpandIcon,
 } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
-import { WorkspaceLayout } from '@/components/templates/WorkspaceLayout'
-import { Rail } from '@/components/organisms/Rail'
-import { RailItem } from '@/components/atoms/RailItem'
-import { createLayoutStore, LayoutStoreProvider, useLayoutStore } from '@/stores/layout.store'
+import {
+  WorkspaceLayout,
+  Rail,
+  RailItem,
+  createLayoutStore,
+  LayoutStoreProvider,
+  useLayoutStore,
+} from '@primer-guidy/components-web'
 import type { ShellProps } from './Shell.types'
 import { buildThemeVars } from './Shell.utils'
 import styles from './Shell.module.scss'

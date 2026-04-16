@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, beforeEach } from 'vitest'
 import i18n from 'i18next'
-import { createLayoutStore, LayoutStoreProvider } from '@/stores/layout.store'
+import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
 import { Home } from './Home'
 
 const renderWithStore = (railVisible = true, sidebarVisible = true) => {

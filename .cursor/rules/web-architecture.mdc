@@ -9,23 +9,37 @@ alwaysApply: true
 ## Layer Flow
 
 ```
-routes → modules → components (atoms/molecules/organisms/templates)
-                 → services   (promises + hooks + types)
+routes → modules → @primer-guidy/components-web (atoms/molecules/organisms/templates)
+                 → @primer/react (direct Primer components)
+                 → services (promises + hooks + types)
 ```
 
-## Directory Structure
+## Web App Directory Structure
+
+Web apps contain ONLY app-specific code. NO `components/` directory — all UI components come from the shared design system.
 
 ```
 src/
   routes/          → Route definitions only (TanStack Router)
-  modules/         → Feature orchestrators (compose components + services)
-  components/      → Pure UI (Atomic Design: atoms, molecules, organisms, templates)
+  modules/         → Feature orchestrators (compose DS components + services)
   services/        → Data layer (promises, hooks, types — single source of truth)
   i18n/            → Internationalization config + locale files per namespace
-  stores/          → Client-only UI state (Zustand)
-  utils/           → Shared pure helpers
-  hooks/           → Shared custom hooks (non-service)
+  utils/           → App-specific pure helpers
+  hooks/           → App-specific custom hooks (non-service)
   test/            → Test setup and utilities
+```
+
+## Design System (`apps/components-web/`)
+
+All reusable UI components live in the shared design system package:
+
+```
+src/
+  components/      → Atomic Design: atoms/, molecules/, organisms/, templates/
+  stores/          → Shared UI state (Zustand stores consumed by components)
+  styles/          → Shared SCSS utilities (breakpoints)
+  test/            → Test setup
+  index.ts         → Public API — all exports go through here
 ```
 
 ## Layer Responsibilities
@@ -47,15 +61,16 @@ export const Route = createFileRoute('/dashboard')({
 
 ### `modules/`
 - Feature orchestrators — compose UI + data
-- Import components from `components/`
+- Import components from `@primer-guidy/components-web` or `@primer/react`
 - Import hooks/types from `services/`
 - Each module follows the standard component file structure
 - Modules are the ONLY consumer of service hooks
 
-### `components/`
+### Components (in `@primer-guidy/components-web`)
 - Pure UI only — NO data fetching, NO service imports
 - Receive data via props (types from `services/`)
 - Exception: `useTranslation` is allowed in components (see i18n rule)
+- Web apps NEVER have their own `components/` directory
 
 ### `services/`
 - Single source of truth for ALL types and data access
@@ -66,7 +81,8 @@ export const Route = createFileRoute('/dashboard')({
 ## Import Rules
 
 - `routes/` → imports from `modules/` ONLY
-- `modules/` → imports from `components/`, `services/`, and `utils/`
-- `components/` → imports from other `components/` only (+ `useTranslation` from i18n)
+- `modules/` → imports from `@primer-guidy/components-web`, `@primer/react`, `services/`, and `utils/`
+- `@primer-guidy/components-web` → imports from `@primer/react` and internal components only (+ `useTranslation`)
 - `services/` → imports from `utils/` and shared `libs/`
 - NEVER circular dependencies between layers
+- Web apps NEVER import from a local `components/` or `stores/` directory — use `@primer-guidy/components-web`

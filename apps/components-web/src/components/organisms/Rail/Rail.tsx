@@ -1,7 +1,7 @@
 import { Avatar } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useMatchRoute } from '@tanstack/react-router'
-import { RailItem } from '@/components/atoms/RailItem'
+import { RailItem } from '../../atoms/RailItem'
 import type { RailProps } from './Rail.types'
 import styles from './Rail.module.scss'
 

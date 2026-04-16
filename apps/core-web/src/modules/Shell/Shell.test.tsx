@@ -9,7 +9,7 @@ import {
   RouterProvider,
   createMemoryHistory,
 } from '@tanstack/react-router'
-import type { RailItemConfig } from '@/components/organisms/Rail'
+import type { RailItemConfig } from '@primer-guidy/components-web'
 import { Shell } from './Shell'
 
 const MockHomeIcon = vi.fn(() => <svg data-testid="home-icon" />)

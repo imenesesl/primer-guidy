@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { HomeIcon, HomeFillIcon, CommentDiscussionIcon, ZapIcon } from '@primer/octicons-react'
 import { Shell } from '@/modules/Shell'
-import type { RailItemConfig } from '@/components/organisms/Rail'
+import type { RailItemConfig } from '@primer-guidy/components-web'
 
 const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: HomeIcon, activeIcon: HomeFillIcon, labelKey: 'rail.items.home', path: '/' },

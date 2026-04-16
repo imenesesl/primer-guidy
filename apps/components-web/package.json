@@ -1,0 +1,31 @@
+{
+  "name": "@primer-guidy/components-web",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:css": "stylelint 'src/**/*.module.scss'",
+    "format": "prettier --write 'src/**/*.{ts,tsx,scss}'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@primer/octicons-react": "^19.24.1",
+    "@primer/react": "^38.20.0",
+    "@tanstack/react-router": "^1.168.22",
+    "clsx": "^2.1.1",
+    "i18next": "^26.0.5",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-i18next": "^17.0.3",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@primer-guidy/eslint-config": "workspace:*",
+    "@primer-guidy/stylelint-config": "workspace:*"
+  }
+}

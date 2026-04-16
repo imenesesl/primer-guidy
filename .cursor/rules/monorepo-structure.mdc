@@ -11,9 +11,40 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 
 | Type | Path | Tooling | Example |
 |------|------|---------|---------|
-| React web app | `apps/<name>-web/` | Rsbuild | `apps/dashboard-web/` |
+| React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/` |
+| Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
 | Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
+
+## Shared Design System — `@primer-guidy/components-web`
+
+ALL reusable UI components live in `apps/components-web/`. Web apps NEVER define their own `components/` directory.
+
+### Component Resolution Hierarchy
+
+1. **Does `@primer-guidy/components-web` have it?** → Import from there
+2. **Does `@primer/react` have it?** → Import directly from Primer
+3. **Neither?** → Create it in `apps/components-web/`, then import
+
+### What Lives in components-web
+
+- Atomic Design components: `atoms/`, `molecules/`, `organisms/`, `templates/`
+- Shared stores consumed by components (e.g., `layout.store`)
+- Shared SCSS utilities (breakpoints, etc.)
+
+### What Stays in Each Web App
+
+- `routes/` — App-specific routing
+- `modules/` — App-specific feature orchestrators
+- `services/` — App-specific data layer
+- `i18n/` — App-specific translations
+- `utils/` — App-specific helpers
+
+```tsx
+// In any web app
+import { WorkspaceLayout, Rail, RailItem, useLayoutStore } from '@primer-guidy/components-web'
+import { Button, Text, Heading } from '@primer/react'
+```
 
 ## Naming Conventions
 
