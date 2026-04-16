@@ -1,0 +1,74 @@
+@use '@/styles/breakpoints' as *;
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply grid h-screen w-full overflow-hidden;
+
+  grid-template-columns: auto 0 1fr;
+}
+
+.rail {
+  @apply flex flex-col h-screen overflow-y-auto overflow-x-hidden;
+  @apply transition-all duration-200 ease-in-out;
+
+  width: var(--layout-rail-width);
+  background-color: var(--primer-neutral-emphasis-plus);
+  filter: brightness(0.75);
+  border-right: 1px solid var(--primer-border-muted);
+}
+
+.railHidden {
+  @apply w-0 overflow-hidden;
+
+  border-right: none;
+}
+
+.sidebar {
+  @apply fixed top-0 left-0 h-screen z-40 overflow-y-auto overflow-x-hidden;
+  @apply transition-all duration-200 ease-in-out;
+
+  width: var(--layout-sidebar-width);
+  background-color: var(--primer-neutral-emphasis-plus);
+  border-right: 1px solid var(--primer-border-muted);
+}
+
+.sidebarHidden {
+  @apply w-0 overflow-hidden;
+
+  border-right: none;
+}
+
+.content {
+  @apply flex flex-col h-screen overflow-y-auto;
+
+  background-color: var(--primer-canvas-default);
+}
+
+.backdrop {
+  @apply fixed inset-0 z-30 block;
+
+  background-color: var(--primer-neutral-muted);
+}
+
+.backdropHidden {
+  @apply hidden;
+}
+
+@include md {
+  .root {
+    grid-template-columns: auto auto 1fr;
+  }
+
+  .sidebar {
+    @apply relative top-auto left-auto z-auto;
+  }
+
+  .backdrop {
+    @apply hidden;
+  }
+
+  .backdropHidden {
+    @apply hidden;
+  }
+}

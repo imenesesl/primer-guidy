@@ -1,0 +1,13 @@
+{
+  "rail": {
+    "label": "Barra de navegación"
+  },
+  "sidebar": {
+    "label": "Panel lateral"
+  },
+  "actions": {
+    "toggleRail": "Alternar barra de navegación",
+    "toggleSidebar": "Alternar panel lateral",
+    "closeSidebar": "Cerrar panel lateral"
+  }
+}

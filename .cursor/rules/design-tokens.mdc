@@ -1,20 +1,50 @@
 ---
-description: "Design tokens: Tailwind @apply + Primer CSS vars — zero hardcoded values, no custom token files"
+description: "Design tokens: Tailwind for layout, Primer for colors — zero hardcoded values"
 globs: "**/*.module.scss,**/*.ts,**/*.tsx"
 alwaysApply: true
 ---
 
 # Design Tokens — Zero Hardcoded Values
 
+## Two Sources of Truth
+
+| Category | Source | Usage |
+|----------|--------|-------|
+| Spacing | Tailwind | `@apply p-4 gap-2` |
+| Sizing | Tailwind | `@apply w-full min-h-screen` |
+| Radius | Tailwind | `@apply rounded-md` |
+| Shadows | Tailwind | `@apply shadow-sm` |
+| z-index | Tailwind | `@apply z-10`, `@apply z-30`, `@apply z-40` |
+| Opacity | Tailwind | `@apply opacity-70` |
+| Scale | Tailwind | `@apply scale-95` |
+| Display | Tailwind | `@apply hidden`, `@apply block` |
+| Transitions | Tailwind | `@apply transition-all duration-200 ease-in-out` |
+| **ALL colors** | **Primer via useTheme** | `var(--primer-fg-default)`, `var(--primer-canvas-subtle)` |
+| **ALL border colors** | **Primer via useTheme** | `var(--primer-border-default)` |
+| **Color adjustments** | CSS `filter` | `filter: brightness(0.75)` for darker shades |
+| Layout dimensions | Global CSS vars | `var(--layout-sidebar-width)` |
+
 ## No Custom Token Files
 
 NEVER create SCSS token files, variable maps, or custom design systems.
-Tailwind provides spacing, sizing, typography, radius, shadows.
-Primer provides colors via CSS custom properties at runtime.
 
-## SCSS Modules — @reference + @apply
+**Exception — Breakpoint SCSS variables:** `src/styles/_breakpoints.scss` defines Tailwind breakpoint values as SCSS variables (e.g., `$breakpoint-md: 48rem`) for use in SCSS mixins. This is the ONLY place where `rem` values are allowed as SCSS variables, because Sass cannot use Tailwind's `screen()` function.
 
-Every `.module.scss` uses `@reference` to access Tailwind, then `@apply`:
+## Global Layout Tokens
+
+Reusable layout dimensions live as CSS custom properties in `global.css` under `:root`. NEVER define them as local SCSS variables inside a single module.
+
+```css
+/* global.css */
+:root {
+  --layout-rail-width: 4.5rem;
+  --layout-sidebar-width: 16.25rem;
+}
+```
+
+## SCSS Modules — @reference + @apply + --primer-* vars
+
+Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--primer-*` CSS custom properties (injected via `useTheme` at Shell level) for colors:
 
 ```scss
 @reference "tailwindcss/theme";
@@ -22,20 +52,15 @@ Every `.module.scss` uses `@reference` to access Tailwind, then `@apply`:
 
 .root {
   @apply flex flex-col items-center p-4 gap-2 rounded-md;
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-default);
+}
+
+.emphasis {
+  background-color: var(--primer-neutral-emphasis-plus);
+  color: var(--primer-fg-on-emphasis);
 }
 ```
-
-## Where Values Come From
-
-| Category | Source | Usage |
-|----------|--------|-------|
-| Spacing | Tailwind | `@apply p-4 gap-2` or `var(--spacing-4)` |
-| Sizing | Tailwind | `@apply w-full min-h-screen` |
-| Typography | Tailwind | `@apply text-sm font-bold leading-normal` |
-| Radius | Tailwind | `@apply rounded-md` |
-| Shadows | Tailwind | `@apply shadow-sm` |
-| Colors | Primer | `var(--fgColor-default)`, `var(--bgColor-muted)` |
-| Border colors | Primer | `var(--borderColor-default)` |
 
 ## What is FORBIDDEN
 
@@ -43,21 +68,51 @@ Every `.module.scss` uses `@reference` to access Tailwind, then `@apply`:
 // FORBIDDEN — hardcoded color
 .card { color: #333; }
 
-// FORBIDDEN — hardcoded spacing
-.card { padding: 16px; }
+// FORBIDDEN — Tailwind color utilities
+.card { @apply bg-neutral-900 text-white; }
 
-// FORBIDDEN — hardcoded sizing
-.card { min-height: 100vh; }
+// FORBIDDEN — Primer CSS vars directly (they don't work in the DOM)
+.card { color: var(--fgColor-default); }
+.card { background-color: var(--bgColor-emphasis); }
 
-// FORBIDDEN — custom token files
-@use '@/styles/tokens' as *;
+// FORBIDDEN — arbitrary Tailwind values when Primer has a prop
+// (e.g., use <Text size="small"> instead of @apply text-[0.625rem])
 
-// REQUIRED
+// FORBIDDEN — raw CSS values that Tailwind provides as utilities
+.item { opacity: 0.7; }
+.item { width: 0; }
+.item:active { transform: scale(0.95); }
+.item { display: none; }
+.item { display: block; }
+
+// FORBIDDEN — raw CSS transitions
+.item { transition: opacity 200ms ease; }
+
+// ALLOWED — filter: brightness() for color shade adjustments
+.darker { filter: brightness(0.75); }
+.lighter { filter: brightness(1.2); }
+
+// REQUIRED — Tailwind for layout, --primer-* for colors
 .card {
-  @apply p-4 min-h-screen;
-  color: var(--fgColor-default);
+  @apply p-4 min-h-screen rounded-md;
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-default);
 }
+.item { @apply opacity-70; }
+.item { @apply w-0; }
+.item:active { @apply scale-95; }
+.item { @apply hidden; }
+.item { @apply block; }
+.item { @apply transition-all duration-200 ease-in-out; }
 ```
+
+## The Rule
+
+1. If Tailwind has a utility for layout/spacing/transition properties → use `@apply`
+2. If it's a color (background, foreground, border color, overlay) → use `--primer-*` CSS custom properties (injected via `useTheme` at Shell level)
+3. If a darker/lighter shade is needed and no `--primer-*` variable exists → use `filter: brightness()`
+4. If a Primer component has a built-in prop for it → use the prop instead of CSS
+   Always check Primer docs FIRST: `<Text size="small">` instead of custom CSS
 
 ## TypeScript / TSX — No Magic Numbers
 

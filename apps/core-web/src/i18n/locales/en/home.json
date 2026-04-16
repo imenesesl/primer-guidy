@@ -1,4 +1,8 @@
 {
   "title": "Primer Guidy",
-  "greeting": "{{greeting}}. Welcome to the core application."
+  "greeting": "{{greeting}}. Welcome to the core application.",
+  "actions": {
+    "toggleRail": "Toggle Rail",
+    "toggleSidebar": "Toggle Sidebar"
+  }
 }

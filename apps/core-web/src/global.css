@@ -1,1 +1,7 @@
+@import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';
+
+:root {
+  --layout-rail-width: 4.5rem;
+  --layout-sidebar-width: 16.25rem;
+}

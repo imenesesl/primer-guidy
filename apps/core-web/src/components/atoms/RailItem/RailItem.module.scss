@@ -1,0 +1,51 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center justify-center gap-0.5;
+  @apply py-1 px-1 opacity-70;
+  @apply transition-all duration-200 ease-in-out;
+
+  color: var(--primer-fg-on-emphasis);
+
+  &,
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
+    @apply no-underline;
+  }
+}
+
+.root:hover {
+  @apply opacity-100;
+
+  color: var(--primer-fg-on-emphasis);
+}
+
+.root:active {
+  @apply scale-95;
+}
+
+.iconWrapper {
+  @apply flex items-center justify-center rounded-lg p-1.5;
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.root:hover .iconWrapper:not(.iconActive) {
+  background-color: var(--primer-neutral-muted);
+}
+
+.iconActive {
+  background-color: var(--primer-accent-emphasis);
+}
+
+.active:hover .iconActive {
+  filter: brightness(0.85);
+}
+
+.active {
+  @apply opacity-100;
+
+  color: var(--primer-fg-on-emphasis);
+}

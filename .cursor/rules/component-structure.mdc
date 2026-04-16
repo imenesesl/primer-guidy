@@ -35,6 +35,7 @@ export interface UserCardProps {
 
 ### `ComponentName.tsx`
 ```tsx
+import clsx from 'clsx'
 import { Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import type { UserCardProps } from './UserCard.types'
@@ -44,7 +45,7 @@ export const UserCard = ({ variant, user, onSelect }: UserCardProps) => {
   const { t: tCommon } = useTranslation('common')
 
   return (
-    <div className={`${styles.root} ${styles[variant]}`} onClick={() => onSelect(user)}>
+    <div className={clsx(styles.root, styles[variant])} onClick={() => onSelect(user)}>
       <Text as="p">{user.name}</Text>
       <Text as="span">{tCommon('actions.edit')}</Text>
     </div>
@@ -74,3 +75,12 @@ export type { UserCardProps } from './UserCard.types'
 - `index.ts` is the ONLY entry point — never import from internal files outside the folder
 - Props types import from `services/` types when representing domain data
 - Visible strings use `useTranslation` — never hardcoded (see i18n rule)
+
+## Exceptions to Named Exports
+
+`export default` is allowed ONLY when a third-party library requires it:
+
+- `i18next` configuration (`export default i18n`)
+- Ambient type declarations (`*.d.ts` files)
+
+These exceptions NEVER apply to component, module, service, or hook files.

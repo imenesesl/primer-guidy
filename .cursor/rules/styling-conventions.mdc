@@ -1,12 +1,12 @@
 ---
-description: "Styling rules: SCSS Modules with Tailwind @apply + @reference, Primer CSS vars for colors — variant-only API"
+description: "Styling rules: SCSS Modules — Tailwind for layout/spacing/transitions, Primer for ALL colors — variant-only API"
 globs: "**/*.tsx,**/*.module.scss"
 alwaysApply: true
 ---
 
 # Styling Conventions
 
-## SCSS Modules + Tailwind (Standard)
+## SCSS Modules + Tailwind + Primer (Standard)
 
 - ALL component styles in `<ComponentName>.module.scss`
 - Every SCSS module MUST start with `@reference` to access Tailwind:
@@ -22,72 +22,206 @@ alwaysApply: true
 
 - Import in component: `import styles from './ComponentName.module.scss'`
 
-## Tailwind is the Single Source of Truth
+## Two Sources of Truth
 
-ALL layout/spacing/sizing/typography values come from Tailwind via `@apply` or `var(--spacing-*)`.
-ALL colors come from Primer CSS custom properties via `var(--fgColor-*)`, `var(--bgColor-*)`.
-NEVER create custom SCSS token files.
+| Category | Source | How |
+|----------|--------|-----|
+| Layout, spacing, sizing | Tailwind | `@apply flex p-4 gap-2 w-full` |
+| Transitions, transforms | Tailwind | `@apply transition-all duration-200 ease-in-out` |
+| Borders (width, radius) | Tailwind | `@apply rounded-md`, `border-right: 1px solid var(--borderColor-default)` |
+| z-index | Tailwind | `@apply z-10 z-30 z-40` |
+| Opacity, scale, display | Tailwind | `@apply opacity-70 scale-95 hidden block` |
+| **ALL colors** | **Primer via useTheme** | `var(--primer-fg-default)`, `var(--primer-canvas-subtle)` |
+| **ALL border colors** | **Primer via useTheme** | `var(--primer-border-default)`, `var(--primer-border-muted)` |
+| **Overlay colors** | **Primer via useTheme** | `var(--primer-neutral-muted)` |
+| **Color adjustments** | CSS `filter` | `filter: brightness(0.75)` for darker, `brightness(1.2)` for lighter |
+| Typography (when custom) | Tailwind | But prefer Primer `<Text size="small">` first |
 
-### What Goes Where
+## Colors — Primer Theme via useTheme + style prop
 
-| Need | Approach |
-|------|----------|
-| Layout, flexbox, grid | `@apply flex`, `@apply grid`, etc. |
-| Spacing (padding, gap) | `@apply p-4 gap-2` or `var(--spacing-4)` |
-| Sizing (w, h, min/max) | `@apply w-full min-h-screen` |
-| Colors (Primer) | `var(--fgColor-default)`, `var(--bgColor-muted)` |
-| Typography | `@apply text-sm font-semibold` |
-| Borders / radius | `@apply rounded-md border` |
-| Shadows | `@apply shadow-sm` |
-| Complex / stateful styles | SCSS with `var(--spacing-*)`, Primer `var()` |
+ALL colors come from Primer's theme object via `useTheme`. Colors are injected as `--primer-*` CSS custom properties on a root wrapper using the `style` prop, then referenced in SCSS.
 
-### Example: Mixed Usage
+Primer's built-in CSS variables (e.g., `--bgColor-default`) do NOT work directly in SCSS — they are not injected into the DOM. Always use `useTheme` to bridge colors.
+
+### The Pattern
+
+1. **Shell module** (or top-level orchestrator) calls `useTheme` and injects `--primer-*` CSS custom properties via `style` on a wrapper:
+
+```tsx
+const { theme } = useTheme()
+const themeVars = buildThemeVars(theme?.colors)
+
+return <div style={themeVars}>{children}</div>
+```
+
+2. **All SCSS files** reference `--primer-*` for colors:
 
 ```scss
-@reference "tailwindcss/theme";
-@reference "tailwindcss/utilities";
-
 .root {
-  @apply flex flex-col gap-4 p-6 rounded-lg;
-}
-
-.default {
-  color: var(--fgColor-default);
-  background-color: var(--bgColor-default);
-}
-
-.highlighted {
-  background-color: var(--bgColor-accent-muted);
-  border-left: 4px solid var(--borderColor-accent-emphasis);
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-default);
+  border: 1px solid var(--primer-border-default);
 }
 ```
 
-## Colors — Primer CSS Custom Properties
+### Available --primer-* Variables
 
-Colors come from Primer's `ThemeProvider` at runtime as CSS custom properties.
-Use `var(--fgColor-default)`, `var(--bgColor-muted)`, `var(--borderColor-default)`, etc. directly in SCSS.
-NEVER use hex, rgb, hsl, or named colors directly.
+| Variable | Purpose |
+|----------|---------|
+| `--primer-fg-default` | Default text |
+| `--primer-fg-muted` | Muted/secondary text |
+| `--primer-fg-on-emphasis` | Text on dark backgrounds |
+| `--primer-canvas-default` | Default background |
+| `--primer-canvas-subtle` | Subtle/muted background |
+| `--primer-canvas-inset` | Inset background |
+| `--primer-border-default` | Default borders |
+| `--primer-border-muted` | Subtle borders |
+| `--primer-neutral-emphasis` | Neutral dark |
+| `--primer-neutral-emphasis-plus` | Darkest neutral |
+| `--primer-neutral-muted` | Neutral muted/overlay |
+| `--primer-accent-emphasis` | Primary/accent |
+| `--primer-accent-fg` | Accent foreground |
+| `--primer-accent-muted` | Accent muted |
+| `--primer-success-emphasis` | Success/green |
+| `--primer-success-fg` | Success foreground |
+| `--primer-success-muted` | Success muted |
+
+### Brightness for Color Variants
+
+When a theme variable doesn't have the exact shade needed (e.g., no intermediate dark), use CSS `filter: brightness()` to derive it:
+
+```scss
+.rail {
+  background-color: var(--primer-neutral-emphasis-plus);
+  filter: brightness(0.75);
+}
+
+.button:hover {
+  filter: brightness(0.5);
+}
+```
+
+This keeps colors within the Primer palette while allowing tonal control.
+
+### What is FORBIDDEN
+
+```scss
+// FORBIDDEN — Tailwind color utilities
+.card { @apply bg-neutral-900 text-white; }
+
+// FORBIDDEN — hardcoded colors
+.card { color: #333; }
+
+// FORBIDDEN — Primer CSS vars directly (they don't work)
+.card { color: var(--fgColor-default); }
+.card { background-color: var(--bgColor-emphasis); }
+
+// REQUIRED — use --primer-* injected via useTheme
+.card { color: var(--primer-fg-default); }
+.card { background-color: var(--primer-canvas-default); }
+```
+
+**Before using arbitrary values** (e.g., `text-[0.625rem]`), ALWAYS check if the Primer component has a built-in prop. For example, use `<Text size="small">` instead of custom font sizes.
+
+## Conditional Classes — clsx
+
+ALWAYS use `clsx` for composing class names. NEVER use template literals, string concatenation, or `&&` short-circuit.
+
+Use the object syntax `{ [class]: condition }` for conditional classes:
+
+```tsx
+// BAD — template literals / ternaries
+<div className={`${styles.root} ${isActive ? styles.active : ''}`}>
+
+// BAD — short-circuit (not explicit enough)
+<div className={clsx(styles.root, isActive && styles.active)}>
+
+// GOOD — object syntax for conditionals
+import clsx from 'clsx'
+
+<div className={clsx(styles.root, { [styles.active]: isActive })}>
+<div className={clsx(styles.root, styles[variant])}>
+```
 
 ## Zero Inline JS Styles
 
-- NEVER use the `style` prop — PROHIBITED
+- NEVER use the `style` prop for layout, spacing, sizing, or visual styling
 - NEVER use `sx`, `css`, or any JS-in-CSS approach
-- ALL styling via `className` internally
+- The `style` prop is allowed ONLY for injecting Primer theme colors as `--primer-*` CSS custom properties via `useTheme` (see pattern above)
 
-## No className as Prop — Variant Only
+## Overriding Primer Component Styles
 
-Components NEVER accept `className`, `style`, or any styling-related prop.
-The ONLY way to alter appearance is via a typed `variant` prop.
+When Primer's built-in `variant` prop doesn't provide the needed visual (e.g., toggle buttons on dark backgrounds), use `variant="invisible"` + `className` to take full control. Double the selector for specificity to win over Primer's internal styles:
+
+```scss
+.toggleButton.toggleButton {
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-on-emphasis);
+
+  &:hover {
+    background-color: var(--primer-neutral-muted);
+    filter: brightness(0.5);
+  }
+}
+```
 
 ```tsx
+<IconButton
+  variant="invisible"
+  className={styles.toggleButton}
+  icon={ChevronLeftIcon}
+  aria-label={t('actions.toggle')}
+  onClick={onToggle}
+/>
+```
+
+## No className as Prop — Variant Only (Custom Components)
+
+Custom components NEVER accept `className`, `style`, or any styling-related prop.
+The ONLY way to alter appearance is via a typed `variant` prop.
+`className` is allowed ONLY when overriding third-party (Primer) components.
+
+```tsx
+import clsx from 'clsx'
 import styles from './Card.module.scss'
 
 export const Card = ({ variant, children }: CardProps) => (
-  <div className={`${styles.root} ${styles[variant]}`}>
+  <div className={clsx(styles.root, styles[variant])}>
     {children}
   </div>
 )
 ```
+
+## Responsive — Mobile-First with Tailwind Breakpoints
+
+Use mobile-first styles. Override at Tailwind breakpoints for larger screens.
+
+In `.css` files (processed by PostCSS), use Tailwind's `screen()` function:
+
+```css
+@media screen(md) { /* 768px+ */ }
+```
+
+In `.module.scss` files, use the breakpoint mixins from `src/styles/_breakpoints.scss`:
+
+```scss
+@use '@/styles/breakpoints' as *;
+
+.sidebar {
+  @apply fixed;
+}
+
+@include md {
+  .sidebar {
+    @apply relative;
+  }
+}
+```
+
+Available mixins: `sm` (40rem), `md` (48rem), `lg` (64rem), `xl` (80rem), `xxl` (96rem).
+
+NEVER hardcode breakpoint values in media queries — always use the mixins.
+NEVER use `max-width` — write mobile-first.
 
 ## No Margin — Ever
 

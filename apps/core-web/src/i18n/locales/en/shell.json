@@ -1,0 +1,16 @@
+{
+  "rail": {
+    "placeholder": "Rail",
+    "items": {
+      "home": "Home",
+      "channels": "Channels",
+      "activity": "Activity"
+    },
+    "avatar": {
+      "alt": "User avatar"
+    }
+  },
+  "sidebar": {
+    "placeholder": "Sidebar"
+  }
+}

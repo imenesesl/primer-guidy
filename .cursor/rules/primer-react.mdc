@@ -1,5 +1,5 @@
 ---
-description: "@primer/react usage following official documentation strictly"
+description: "@primer/react is the ONLY design system — ALL colors from Primer theme, components follow official docs"
 globs: "**/*.tsx"
 alwaysApply: true
 ---
@@ -14,8 +14,82 @@ ALL web apps use `@primer/react` as the ONLY design system. Follow the official 
 - NEVER create custom components that duplicate Primer functionality
 - NEVER override Primer component internals with custom CSS
 - Use `ThemeProvider` at the app root — all theming via Primer tokens
-- Primer components handle their own styling — use component props (`variant`, `size`, etc.)
+- Primer components handle their own styling — use component props (`variant`, `size`, `weight`, etc.)
+- Before using arbitrary values (e.g. `text-[0.625rem]`), ALWAYS check if the Primer component has a prop for it (e.g. `<Text size="small">`)
 - Layout/spacing around Primer components via SCSS Modules + Tailwind @apply (see styling-conventions rule)
+
+## Colors — Primer Theme via useTheme
+
+ALL colors come from Primer's theme object via `useTheme`. Primer's built-in CSS variables (`--bgColor-*`, `--fgColor-*`) do NOT work directly in the DOM. Instead, use `useTheme` to get colors from the JS theme object and inject them as `--primer-*` CSS custom properties via the `style` prop.
+
+The `style` prop is allowed ONLY for injecting `--primer-*` color variables. NEVER for layout, spacing, or sizing.
+
+### Centralized Color Injection
+
+Colors are injected once at the Shell module level (or top-level orchestrator). All descendant components consume them via `var(--primer-*)` in SCSS.
+
+```tsx
+import { useTheme } from '@primer/react'
+import { buildThemeVars } from './Shell.utils'
+
+const Shell = ({ children }: ShellProps) => {
+  const { theme } = useTheme()
+  const themeVars = buildThemeVars(theme?.colors)
+
+  return <div style={themeVars}>{children}</div>
+}
+```
+
+```scss
+// In any descendant SCSS
+.root {
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-default);
+  border: 1px solid var(--primer-border-default);
+}
+```
+
+NEVER use Tailwind color utilities (`bg-neutral-*`, `text-white`). NEVER use hardcoded hex/rgb/hsl values. NEVER use Primer CSS vars directly (`var(--bgColor-*)`).
+
+### Overriding Primer Component Styles
+
+When Primer's `variant` prop doesn't provide the needed visual, use `variant="invisible"` + `className` with doubled selector for specificity:
+
+```tsx
+<IconButton variant="invisible" className={styles.toggleButton} ... />
+```
+
+```scss
+.toggleButton.toggleButton {
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-on-emphasis);
+  &:hover {
+    background-color: var(--primer-neutral-muted);
+    filter: brightness(0.5);
+  }
+}
+```
+
+`className` is allowed ONLY for overriding Primer components. Custom components use `variant` props exclusively.
+
+### Brightness for Color Variants
+
+Use `filter: brightness()` to derive darker/lighter shades from `--primer-*` variables when no exact variable exists:
+
+```scss
+.rail { filter: brightness(0.75); }
+.button:hover { filter: brightness(0.5); }
+.activeIcon:hover { filter: brightness(0.85); }
+```
+
+## Exceptions — Raw HTML Allowed
+
+Native HTML elements are acceptable ONLY when Primer has no equivalent component for the semantic purpose:
+
+- `<button>` for invisible overlays/backdrops (Primer has no backdrop component)
+- `<div>`, `<span>`, `<nav>`, `<aside>`, `<main>`, `<section>` for semantic layout
+- NEVER use raw `<button>` for visible UI buttons — use Primer `Button` / `IconButton`
+- NEVER use raw `<input>`, `<select>`, `<h1>`–`<h6>` — use Primer equivalents
 
 ## Component Mapping
 

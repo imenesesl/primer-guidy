@@ -80,6 +80,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.72.1(react@19.2.5))
+      '@primer/octicons-react':
+        specifier: ^19.24.1
+        version: 19.24.1(react@19.2.5)
       '@primer/react':
         specifier: ^38.20.0
         version: 38.20.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react-is@17.0.2)(react@19.2.5)
@@ -89,6 +92,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.168.22
         version: 1.168.22(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       i18next:
         specifier: ^26.0.5
         version: 26.0.5(typescript@6.0.2)

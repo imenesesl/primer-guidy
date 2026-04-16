@@ -1,0 +1,120 @@
+---
+description: "Zero hardcoded domain data — modules and components receive ALL data via typed contracts (props/context/hooks), composition root is the only data source"
+alwaysApply: true
+---
+
+# Backend-Ready Contracts
+
+Design every module and component as if the backend already exists. The data source can change at any time — mock today, real API tomorrow. Modules and components MUST NEVER know or care where data comes from.
+
+## The Golden Rule
+
+**If a value will come from an API in production, it MUST come through a typed contract (props, context, or service hook). NEVER hardcode it.**
+
+## What is Domain Data
+
+Any value that would come from an API, database, or user session:
+
+- User info (name, avatar URL, email, role)
+- Navigation items, menu options, sidebar links
+- Lists of entities (channels, messages, projects, teams)
+- Feature flags, user preferences, org-level config
+- Counts, stats, metadata
+- ANY dynamic content that varies per user, session, or deployment
+
+## What is NOT Domain Data
+
+Static, deterministic values that never change per user:
+
+- i18n keys (`tCommon('actions.save')` — static, locale-driven)
+- Layout structure (template slots, grid definitions)
+- Math/regex constants (`const MAX_RETRIES = 3`)
+- Component-internal icons (a close button's X icon)
+
+## Contract = Interface
+
+The contract is the TypeScript interface. It defines what the consumer needs, not where it comes from.
+
+```typescript
+// Shell.types.ts — the contract
+export interface ShellProps {
+  readonly railItems: readonly RailItemConfig[]
+  readonly avatarSrc: string
+  readonly avatarAlt: string
+  readonly children: ReactNode
+}
+```
+
+## Module Consumes the Contract
+
+The module receives everything via props. It NEVER imports data, fetches data, or defines constants that represent domain state.
+
+```tsx
+// GOOD — module knows nothing about data source
+export const Shell = ({ railItems, avatarSrc, avatarAlt, children }: ShellProps) => (
+  <WorkspaceLayout rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarAlt={avatarAlt} />}>
+    {children}
+  </WorkspaceLayout>
+)
+
+// BAD — module defines its own data
+const NAV_ITEMS = [{ label: 'Home', path: '/' }]
+const AVATAR = 'https://example.com/avatar.png'
+
+export const Shell = ({ children }: { children: ReactNode }) => (
+  <WorkspaceLayout rail={<Rail items={NAV_ITEMS} avatarSrc={AVATAR} />}>
+    {children}
+  </WorkspaceLayout>
+)
+```
+
+## Composition Root Provides the Data
+
+The route file (composition root) is the ONLY place where data sources are wired. Today it can be a mock constant. Tomorrow it can be a service hook. The module never changes.
+
+```tsx
+// routes/_shell.tsx — composition root
+
+// TODAY: mock data (no backend yet)
+const RAIL_ITEMS: readonly RailItemConfig[] = [
+  { icon: HomeIcon, labelKey: 'rail.items.home', path: '/' },
+]
+const MOCK_AVATAR_SRC = 'https://avatars.githubusercontent.com/u/0?v=4'
+
+function ShellLayout() {
+  return (
+    <Shell railItems={RAIL_ITEMS} avatarSrc={MOCK_AVATAR_SRC} avatarAlt="...">
+      <Outlet />
+    </Shell>
+  )
+}
+
+// TOMORROW: real service hook (backend exists)
+function ShellLayout() {
+  const { data: navItems } = useGetNavItems()
+  const { data: user } = useGetCurrentUser()
+
+  return (
+    <Shell railItems={navItems} avatarSrc={user.avatarUrl} avatarAlt={user.name}>
+      <Outlet />
+    </Shell>
+  )
+}
+```
+
+## The Swap Test
+
+Ask yourself: **"Can I swap from mock to real API by ONLY changing the composition root?"**
+
+- If YES: the contract is correct.
+- If NO: you have hardcoded domain data somewhere. Fix it.
+
+## Rules
+
+- NEVER define domain data (arrays, URLs, user info, config) inside a module or component file
+- Modules receive ALL domain data via props — defined in `<Module>.types.ts`
+- Components receive ALL domain data via props — defined in `<Component>.types.ts`
+- The composition root (route file, provider wrapper) is the ONLY place that decides WHERE data comes from
+- Swapping from mock to real service MUST require ZERO changes in modules and components
+- Service types from `services/` define the contract — props types reference or extend them
+- When creating a new module, always ask: "What data will this need from a backend?" — those are your props

@@ -1,0 +1,41 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.themeRoot {
+  @apply contents;
+}
+
+.rail {
+  @apply flex flex-col items-center p-2 gap-2;
+}
+
+.sidebar {
+  @apply flex flex-col p-3 gap-2;
+
+  color: var(--primer-fg-on-emphasis);
+}
+
+.sidebarHeader {
+  @apply flex items-center;
+}
+
+.toggleButton.toggleButton {
+  @apply rounded-lg;
+  @apply transition-all duration-200 ease-in-out;
+
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-on-emphasis);
+
+  &:hover {
+    background-color: var(--primer-neutral-muted);
+    filter: brightness(0.7);
+  }
+}
+
+.contentHeader {
+  @apply flex items-center p-2;
+
+  background-color: var(--primer-neutral-emphasis-plus);
+  filter: brightness(0.75);
+  border-bottom: 1px solid var(--primer-border-muted);
+}

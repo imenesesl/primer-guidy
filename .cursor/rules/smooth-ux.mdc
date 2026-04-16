@@ -1,0 +1,80 @@
+---
+description: "UX polish: every interactive element must have smooth transitions, hover states, and visual feedback via Tailwind utilities"
+alwaysApply: true
+---
+
+# Smooth UX — Transitions & Visual Feedback
+
+Every interactive element MUST have smooth transitions, hover states, and visual feedback. No abrupt changes.
+
+## Transitions via Tailwind
+
+EVERY property change MUST be animated. Use Tailwind transition utilities:
+
+```scss
+.item {
+  @apply transition-all duration-200 ease-in-out;
+}
+```
+
+For specific properties only:
+
+```scss
+.item { @apply transition-opacity duration-200 ease-in-out; }
+.item { @apply transition-colors duration-200 ease-in-out; }
+.item { @apply transition-transform duration-200 ease-in-out; }
+```
+
+## Hover States are Mandatory
+
+Every clickable element MUST have a `:hover` state:
+
+```scss
+.item {
+  @apply opacity-70;
+  color: var(--primer-fg-on-emphasis);
+}
+
+.item:hover {
+  @apply opacity-100;
+}
+```
+
+For buttons on dark backgrounds, use `filter: brightness()` for hover feedback:
+
+```scss
+.button.button {
+  background-color: var(--primer-neutral-muted);
+
+  &:hover {
+    background-color: var(--primer-neutral-muted);
+    filter: brightness(0.5);
+  }
+}
+```
+
+## Active/Pressed Feedback
+
+Interactive elements SHOULD have `:active` with subtle scale:
+
+```scss
+.item:active {
+  @apply scale-95;
+}
+```
+
+## What is FORBIDDEN
+
+```scss
+// FORBIDDEN — raw CSS transitions
+.item { transition: opacity 200ms ease; }
+.item { transition: color var(--duration) var(--easing); }
+
+// FORBIDDEN — raw CSS values for animated properties
+.item { opacity: 0.7; }
+.item:active { transform: scale(0.95); }
+
+// REQUIRED — Tailwind utilities
+.item { @apply opacity-70 transition-all duration-200 ease-in-out; }
+.item:active { @apply scale-95; }
+```
