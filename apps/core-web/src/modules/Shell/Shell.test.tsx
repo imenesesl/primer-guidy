@@ -10,6 +10,7 @@ import {
   createMemoryHistory,
 } from '@tanstack/react-router'
 import type { RailItemConfig } from '@primer-guidy/components-web'
+import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
 import { Shell } from './Shell'
 
 const MockHomeIcon = vi.fn(() => <svg data-testid="home-icon" />)
@@ -26,7 +27,10 @@ const AVATAR_SRC = 'https://example.com/avatar.png'
 const AVATAR_NAME = 'Jane Doe'
 
 const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
-  const rootRoute = createRootRoute({ component: () => ui })
+  const layoutStore = createLayoutStore()
+  const rootRoute = createRootRoute({
+    component: () => <LayoutStoreProvider value={layoutStore}>{ui}</LayoutStoreProvider>,
+  })
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',

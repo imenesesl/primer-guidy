@@ -1,0 +1,16 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex items-center gap-4;
+}
+
+.line {
+  @apply flex-1 h-px;
+
+  background-color: var(--primer-border-muted);
+}
+
+.text.text {
+  color: var(--primer-fg-muted);
+}

@@ -34,20 +34,6 @@
   color: var(--primer-fg-default);
 }
 
-.divider {
-  @apply flex items-center gap-4;
-}
-
-.dividerLine {
-  @apply flex-1 h-px;
-
-  background-color: var(--primer-border-muted);
-}
-
-.dividerText.dividerText {
-  color: var(--primer-fg-muted);
-}
-
 .emailButton.emailButton {
   @apply w-full justify-center gap-2 cursor-pointer;
 }
@@ -69,10 +55,7 @@
 }
 
 .googleIcon {
-  @apply inline-flex shrink-0;
-
-  width: 1.125rem;
-  height: 1.125rem;
+  @apply inline-flex shrink-0 w-5 h-5;
 }
 
 .fullWidth.fullWidth {

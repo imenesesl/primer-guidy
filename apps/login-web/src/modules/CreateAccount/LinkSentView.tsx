@@ -1,11 +1,8 @@
 import { Button, Heading, Text } from '@primer/react'
 import { MailIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
+import type { LinkSentViewProps } from './LinkSentView.types'
 import styles from './CreateAccount.module.scss'
-
-interface LinkSentViewProps {
-  readonly onBack: () => void
-}
 
 export const LinkSentView = ({ onBack }: LinkSentViewProps) => {
   const { t: tCreateAccount } = useTranslation('createAccount')

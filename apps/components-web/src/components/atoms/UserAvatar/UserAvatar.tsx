@@ -1,6 +1,7 @@
+import React from 'react'
 import { Avatar } from '@primer/react'
 import type { UserAvatarProps } from './UserAvatar.types'
-import { getInitials, getInitialsFontSize } from './UserAvatar.utils'
+import { getInitials } from './UserAvatar.utils'
 import styles from './UserAvatar.module.scss'
 
 const DEFAULT_SIZE = 32
@@ -13,7 +14,7 @@ export const UserAvatar = ({ name, src, size = DEFAULT_SIZE }: UserAvatarProps) 
   return (
     <div
       className={styles.initials}
-      style={{ width: size, height: size, fontSize: getInitialsFontSize(size) }}
+      style={{ '--avatar-size': `${size}px` } as React.CSSProperties}
       role="img"
       aria-label={name}
     >

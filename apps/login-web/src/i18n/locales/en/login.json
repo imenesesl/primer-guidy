@@ -4,7 +4,6 @@
   "emailPlaceholder": "email@example.com",
   "signInWithoutPassword": "Sign in Without Password",
   "signInWithGoogle": "Sign in with Google",
-  "or": "or",
   "linkSent": {
     "title": "Check your email",
     "message": "We sent a sign-in link to your email address. Click the link to sign in."

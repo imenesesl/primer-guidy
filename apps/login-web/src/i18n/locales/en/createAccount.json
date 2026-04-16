@@ -7,7 +7,6 @@
   "emailPlaceholder": "email@example.com",
   "createWithEmail": "Create Account with Email",
   "createWithGoogle": "Create Account with Google",
-  "or": "or",
   "creatingAccount": "Creating your account...",
   "linkSent": {
     "title": "Check your email",

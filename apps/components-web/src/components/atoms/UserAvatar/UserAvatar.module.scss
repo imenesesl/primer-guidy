@@ -4,6 +4,9 @@
 .initials {
   @apply flex items-center justify-center rounded-full font-semibold select-none;
 
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  font-size: calc(var(--avatar-size) / 2);
   background-color: var(--primer-accent-emphasis);
   color: var(--primer-fg-on-emphasis);
 }

@@ -5,12 +5,8 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useTranslation } from 'react-i18next'
 import type { EmailFormData } from '@/services/auth'
 import { EmailSchema } from '@/services/auth'
+import type { LoginFormProps } from './LoginForm.types'
 import styles from './Login.module.scss'
-
-interface LoginFormProps {
-  readonly onSubmit: (data: EmailFormData) => Promise<void>
-  readonly disabled: boolean
-}
 
 export const LoginForm = ({ onSubmit, disabled }: LoginFormProps) => {
   const { t: tLogin } = useTranslation('login')
