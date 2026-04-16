@@ -1,0 +1,76 @@
+---
+description: File structure per component — styles, types, utils, tests, and index separated
+globs: "**/*.tsx"
+alwaysApply: true
+---
+
+# Component File Structure
+
+Every component MUST have its own folder with separated files. No exceptions.
+
+## Required Files
+
+```
+ComponentName/
+  ComponentName.tsx          → Component implementation
+  ComponentName.module.scss  → Styles (SCSS Module with tokens)
+  ComponentName.types.ts     → Props interface and local types
+  ComponentName.utils.ts     → Helper functions specific to this component
+  ComponentName.test.tsx     → Unit tests (TDD — see testing-tdd rule)
+  index.ts                   → Named re-export only
+```
+
+## File Responsibilities
+
+### `ComponentName.types.ts`
+```typescript
+import type { UserResponse } from '@/services/user'
+
+export interface UserCardProps {
+  variant: 'default' | 'compact'
+  user: UserResponse
+  onSelect: (user: UserResponse) => void
+}
+```
+
+### `ComponentName.tsx`
+```tsx
+import { Text } from '@primer/react'
+import { useTranslation } from 'react-i18next'
+import type { UserCardProps } from './UserCard.types'
+import styles from './UserCard.module.scss'
+
+export const UserCard = ({ variant, user, onSelect }: UserCardProps) => {
+  const { t: tCommon } = useTranslation('common')
+
+  return (
+    <div className={`${styles.root} ${styles[variant]}`} onClick={() => onSelect(user)}>
+      <Text as="p">{user.name}</Text>
+      <Text as="span">{tCommon('actions.edit')}</Text>
+    </div>
+  )
+}
+```
+
+### `ComponentName.utils.ts`
+```typescript
+export const formatUserDisplayName = (name: string, email: string) =>
+  `${name} (${email})`
+```
+
+### `index.ts`
+```typescript
+export { UserCard } from './UserCard'
+export type { UserCardProps } from './UserCard.types'
+```
+
+## Rules
+
+- NEVER put types inline in the component file
+- NEVER export default — always named exports
+- NEVER accept `className`, `style`, or styling props — use `variant` only (see styling-conventions rule)
+- If `utils` has no content, still create the file empty (consistency)
+- Styles MUST live in the `.module.scss` — never in the `.tsx`
+- `index.ts` is the ONLY entry point — never import from internal files outside the folder
+- Props types import from `services/` types when representing domain data
+- Visible strings use `useTranslation` — never hardcoded (see i18n rule)

@@ -1,0 +1,121 @@
+---
+description: Mandatory testing with TDD — unit tests with React Testing Library, E2E with Playwright
+globs: "**/*.ts,**/*.tsx,**/*.test.ts,**/*.test.tsx,**/*.spec.ts"
+alwaysApply: true
+---
+
+# Testing — TDD Obligatorio
+
+TODO código DEBE tener pruebas. Sin pruebas = no está terminado. Seguir TDD estrictamente.
+
+## TDD Workflow
+
+1. **RED** — Escribir el test PRIMERO. Debe fallar.
+2. **GREEN** — Escribir el código mínimo para que pase.
+3. **REFACTOR** — Limpiar sin romper tests.
+
+NUNCA escribir implementación sin su test previo. El test dicta el contrato.
+
+## Capa 1: Unit Tests — React Testing Library + Vitest
+
+Cada componente, hook, utilidad y servicio DEBE tener su archivo `.test.tsx` o `.test.ts`.
+
+### Estructura de archivos
+
+```
+ComponentName/
+  ComponentName.tsx
+  ComponentName.module.scss
+  ComponentName.types.ts
+  ComponentName.utils.ts
+  ComponentName.test.tsx      ← TEST OBLIGATORIO
+  index.ts
+```
+
+```
+hooks/
+  useAuth.ts
+  useAuth.test.ts             ← TEST OBLIGATORIO
+```
+
+```
+utils/
+  date.utils.ts
+  date.utils.test.ts          ← TEST OBLIGATORIO
+```
+
+### Principios de testing
+
+- Testear **comportamiento del usuario**, no detalles de implementación
+- Usar `screen`, `render`, `userEvent` — NUNCA acceder a `wrapper.instance()`
+- Queries por orden de prioridad: `getByRole` > `getByLabelText` > `getByText` > `getByTestId`
+- `getByTestId` es ÚLTIMO recurso — preferir queries accesibles
+
+### Ejemplo
+
+```tsx
+// Button.test.tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Button } from './Button'
+
+describe('Button', () => {
+  it('calls onClick when clicked', async () => {
+    const handleClick = vi.fn()
+    render(<Button label="Save" variant="primary" onClick={handleClick} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(handleClick).toHaveBeenCalledOnce()
+  })
+
+  it('renders as disabled when disabled prop is true', () => {
+    render(<Button label="Save" variant="primary" onClick={vi.fn()} disabled />)
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
+})
+```
+
+## Capa 2: E2E Tests — Playwright
+
+Playwright valida flujos completos de usuario. Viven en `e2e/` en la raíz de cada app.
+
+### Estructura
+
+```
+apps/core-web/
+  e2e/
+    flows/
+      auth.spec.ts            ← Flujo de autenticación
+      dashboard.spec.ts       ← Flujo de dashboard
+    fixtures/                 ← Test fixtures y helpers
+    playwright.config.ts
+```
+
+### Qué testear con Playwright
+
+- Navegación entre rutas
+- Formularios completos (submit, validación, feedback)
+- Flujos críticos de usuario de principio a fin
+- Estados de error y edge cases de UI
+
+### Ejemplo
+
+```typescript
+// e2e/flows/dashboard.spec.ts
+import { test, expect } from '@playwright/test'
+
+test('user can navigate to dashboard and see welcome message', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.getByRole('heading', { name: 'Primer Guidy' })).toBeVisible()
+})
+```
+
+## Reglas Obligatorias
+
+- NUNCA hacer merge/PR sin tests
+- Cobertura mínima: 80% por componente/módulo
+- Cada bug fix DEBE incluir un test que reproduce el bug ANTES del fix
+- Tests deben ser independientes — sin dependencias de orden ni estado compartido

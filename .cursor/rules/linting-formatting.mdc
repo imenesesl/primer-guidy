@@ -1,0 +1,48 @@
+---
+description: ESLint, Prettier, and Stylelint configuration standards
+alwaysApply: true
+---
+
+# Linting & Formatting
+
+ALL code MUST pass ESLint, Prettier, and Stylelint before commit.
+
+## ESLint
+
+Strict TypeScript rules enforced:
+
+- `@typescript-eslint/strict` preset
+- `no-explicit-any`: error
+- `no-unused-vars`: error
+- `consistent-type-imports`: error (use `import type`)
+- `no-magic-numbers`: error (extract constants — tests excluded)
+- `no-console`: warn (use logger utilities)
+- React rules: `react-hooks/exhaustive-deps`, `react/no-array-index-key`
+
+## Prettier
+
+Consistent formatting across the monorepo:
+
+- `singleQuote: true`
+- `semi: false`
+- `trailingComma: 'all'`
+- `printWidth: 100`
+- `tabWidth: 2`
+- `arrowParens: 'always'`
+
+## Stylelint
+
+SCSS Module files MUST pass Stylelint:
+
+- `stylelint-config-standard-scss` preset
+- `declaration-no-important`: error
+- `property-disallowed-list`: margin (all forms)
+- `declaration-strict-value`: colors, font-size, font-weight, line-height, border-radius, box-shadow, z-index MUST use tokens/variables
+- `selector-class-pattern`: camelCase (CSS Modules convention)
+- `no-descending-specificity`: error
+
+## Pre-commit
+
+- All three tools run on staged files via lint-staged + husky
+- CI pipeline MUST fail on any lint/format violation
+- NEVER disable lint rules with inline comments unless reviewed and justified

@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.env
+.env.*
+*.local
+
+# Generated
+routeTree.gen.ts
+.tanstack/
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+*.tsbuildinfo
+dist-landing/
+deploy/

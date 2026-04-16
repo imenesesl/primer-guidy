@@ -1,0 +1,57 @@
+---
+description: TanStack Router, TanStack Query, and Zustand conventions for React web apps
+globs: "**/*.tsx,**/*.ts"
+alwaysApply: true
+---
+
+# React Routing & State
+
+## TanStack Router
+
+- File-based routing via `@tanstack/react-router`
+- Route files live in `src/routes/`
+- Routes import from `modules/` — NEVER from `components/` directly
+- Use `createFileRoute` for route definitions
+
+```tsx
+// src/routes/dashboard.tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { Dashboard } from '@/modules/Dashboard'
+
+export const Route = createFileRoute('/dashboard')({
+  component: Dashboard,
+})
+```
+
+## TanStack Query
+
+- ALL server state managed via `@tanstack/react-query`
+- Hooks live inside `services/<domain>/` (see `services-layer` rule)
+- NEVER use `useEffect` + `fetch` — always `useQuery` / `useMutation`
+- Service hooks are consumed ONLY inside `modules/`
+
+## Zustand
+
+- Use ONLY when client-only state is needed (UI state, not server data)
+- One store per concern in `src/stores/`
+- Stores MUST have an interface and be injected via context (see DI rule)
+
+```tsx
+// stores/ui.store.ts
+interface UIStore {
+  sidebarOpen: boolean
+  toggleSidebar: () => void
+}
+
+export const createUIStore = (): StoreApi<UIStore> =>
+  createStore<UIStore>((set) => ({
+    sidebarOpen: false,
+    toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+  }))
+```
+
+## Hierarchy
+
+Server state → TanStack Query via service hooks (always first choice)
+Client-only UI state → Zustand (only when necessary)
+NEVER duplicate server state in Zustand.

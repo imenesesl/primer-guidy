@@ -1,0 +1,6 @@
+{
+  "apps": [
+    { "name": "Core", "route": "core", "description": "Main application platform", "icon": "🔷" }
+  ],
+  "storybooks": []
+}

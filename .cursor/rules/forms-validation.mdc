@@ -1,0 +1,71 @@
+---
+description: Form handling with react-hook-form and valibot validation
+globs: "**/*.tsx,**/*.ts"
+alwaysApply: true
+---
+
+# Forms & Validation
+
+Use `react-hook-form` for form state and `valibot` for schema validation. No exceptions.
+
+## Schema Definition
+
+Validation schemas live alongside their service types in `services/<domain>/`:
+
+```typescript
+// services/auth/auth.types.ts
+import * as v from 'valibot'
+
+export const LoginSchema = v.object({
+  email: v.pipe(v.string(), v.email()),
+  password: v.pipe(v.string(), v.minLength(8)),
+})
+
+export type LoginFormData = v.InferOutput<typeof LoginSchema>
+
+export interface LoginResponse {
+  token: string
+  user: UserResponse
+}
+```
+
+## Form Hook Pattern
+
+```tsx
+import { useForm } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useTranslation } from 'react-i18next'
+import { FormControl, TextInput } from '@primer/react'
+import type { LoginFormData } from '@/services/auth'
+import { LoginSchema } from '@/services/auth'
+
+export const LoginForm = ({ onSubmit }: LoginFormProps) => {
+  const { t: tAuth } = useTranslation('auth')
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: valibotResolver(LoginSchema),
+  })
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl>
+        <FormControl.Label>{tAuth('email')}</FormControl.Label>
+        <TextInput {...register('email')} />
+        {errors.email && (
+          <FormControl.Validation variant="error">
+            {tAuth(`validation.${errors.email.message}`)}
+          </FormControl.Validation>
+        )}
+      </FormControl>
+    </form>
+  )
+}
+```
+
+## Rules
+
+- NEVER use `useState` for form fields — always `react-hook-form`
+- NEVER validate manually — always via valibot schema + resolver
+- Schemas are the single source of truth for form types (`v.InferOutput`)
+- Schemas and their types live in `services/` — never in components
+- Form components receive `onSubmit` via props (DI) — never handle submission internally
+- Visible labels use `useTranslation` — never hardcoded strings (see i18n rule)

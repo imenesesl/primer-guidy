@@ -1,0 +1,31 @@
+---
+description: Monorepo structure, package conventions, and tooling standards
+alwaysApply: true
+---
+
+# Monorepo Structure
+
+This is a **100% TypeScript monorepo**. Every package, app, and library MUST be written entirely in TypeScript.
+
+## Package Types
+
+| Type | Path | Tooling | Example |
+|------|------|---------|---------|
+| React web app | `apps/<name>-web/` | Rsbuild | `apps/dashboard-web/` |
+| NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
+| Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
+
+## Naming Conventions
+
+- Package names: `@primer-guidy/<name>` (kebab-case)
+- Web apps suffix: `-web`
+- Server apps suffix: `-server`
+- Shared libs live in `libs/`
+
+## Constraints
+
+- NO JavaScript files (`.js`, `.jsx`) — TypeScript only (`.ts`, `.tsx`)
+- Every package MUST have its own `tsconfig.json` extending root config
+- Strict TypeScript: `strict: true` always enabled
+- NO `any` type — use `unknown` and narrow with type guards
+- Shared types/interfaces go in `libs/shared-types/`

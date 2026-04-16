@@ -1,0 +1,139 @@
+---
+description: Mandatory i18n with react-i18next — semantic keys, namespace per feature, no props drilling
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# i18n — Internacionalización Obligatoria
+
+TODA cadena visible al usuario DEBE venir de i18n. Cero strings hardcodeados en componentes.
+
+## Librería
+
+`react-i18next` + `i18next`. Configuración en `src/i18n/i18n.config.ts`.
+
+## Estructura de Traducciones
+
+```
+src/
+  i18n/
+    i18n.config.ts            → Inicialización de i18next
+    locales/
+      en/
+        common.json           → Keys reutilizables (acciones, labels, errores genéricos)
+        home.json             → Namespace del módulo Home
+        dashboard.json        → Namespace del módulo Dashboard
+      es/
+        common.json
+        home.json
+        dashboard.json
+```
+
+## Namespaces
+
+- `common` → Keys reutilizables en todo el app (botones, labels, mensajes genéricos)
+- Un namespace por módulo → Keys específicas de esa feature
+
+```json
+// locales/en/common.json
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email"
+  }
+}
+
+// locales/en/dashboard.json
+{
+  "title": "Dashboard",
+  "welcome": "Welcome back, {{userName}}",
+  "stats": {
+    "totalUsers": "{{count}} total users",
+    "activeToday": "{{count}} active today"
+  }
+}
+```
+
+## Keys — Semánticas y Claras
+
+- Estructura: `<contexto>.<significado>` → `actions.save`, `validation.required`
+- Interpolación clara: `{{userName}}` no `{{0}}` ni `{{val}}`
+- NUNCA keys crípticas: `btn1`, `txt_a`, `label3`
+- REUTILIZAR keys de `common` antes de crear una nueva
+
+```typescript
+// BAD — key críptica, t a secas
+t('btn1')
+t('welcome_msg', { 0: name })
+
+// GOOD — key semántica, tNamespace
+tCommon('actions.save')
+tDashboard('welcome', { userName: name })
+```
+
+## Uso en Componentes — Sin Props Drilling
+
+Componentes usan `useTranslation` directamente. Las traducciones NO se pasan por props.
+
+### Convención de nombres: `t<Namespace>`
+
+NUNCA usar `t` a secas — no es localizable qué namespace usa. Siempre renombrar según el namespace:
+
+```tsx
+// BAD — no se sabe de dónde viene `t`
+const { t } = useTranslation('dashboard')
+
+// GOOD — claro, localizable, consistente
+const { t: tDashboard } = useTranslation('dashboard')
+const { t: tCommon } = useTranslation('common')
+```
+
+### Ejemplo completo
+
+```tsx
+import { useTranslation } from 'react-i18next'
+
+export const DashboardHeader = ({ userName }: DashboardHeaderProps) => {
+  const { t: tDashboard } = useTranslation('dashboard')
+  const { t: tCommon } = useTranslation('common')
+
+  return (
+    <div>
+      <Heading>{tDashboard('title')}</Heading>
+      <Text>{tDashboard('welcome', { userName })}</Text>
+      <Button>{tCommon('actions.save')}</Button>
+    </div>
+  )
+}
+
+// BAD — props drilling con traducciones
+export const DashboardHeader = ({ title, welcomeMsg }: Props) => (
+  <div>
+    <Heading>{title}</Heading>
+    <Text>{welcomeMsg}</Text>
+  </div>
+)
+```
+
+## Contrato por Feature
+
+Cada módulo declara su namespace. El archivo de traducciones ES el contrato de esa feature:
+
+1. Módulo define qué keys necesita en su namespace JSON
+2. Componentes dentro del módulo usan `useTranslation('<namespace>')`
+3. Para keys compartidas: `useTranslation('common')`
+4. Feature es 100% independiente — cambiar traducciones no afecta otros módulos
+
+## Reglas Obligatorias
+
+- CERO strings hardcodeados en JSX — todo vía `t()`
+- Keys de `common` son la primera opción — solo crear key nueva si no existe
+- Cada módulo nuevo DEBE crear su namespace con al menos `en` y `es`
+- Interpolaciones con nombres descriptivos: `{{count}}`, `{{userName}}`, `{{date}}`
+- Tests deben mockear i18n — nunca depender de traducciones reales en unit tests

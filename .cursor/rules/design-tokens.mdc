@@ -1,0 +1,87 @@
+---
+description: "Design tokens: Tailwind @apply + Primer CSS vars — zero hardcoded values, no custom token files"
+globs: "**/*.module.scss,**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Design Tokens — Zero Hardcoded Values
+
+## No Custom Token Files
+
+NEVER create SCSS token files, variable maps, or custom design systems.
+Tailwind provides spacing, sizing, typography, radius, shadows.
+Primer provides colors via CSS custom properties at runtime.
+
+## SCSS Modules — @reference + @apply
+
+Every `.module.scss` uses `@reference` to access Tailwind, then `@apply`:
+
+```scss
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center p-4 gap-2 rounded-md;
+}
+```
+
+## Where Values Come From
+
+| Category | Source | Usage |
+|----------|--------|-------|
+| Spacing | Tailwind | `@apply p-4 gap-2` or `var(--spacing-4)` |
+| Sizing | Tailwind | `@apply w-full min-h-screen` |
+| Typography | Tailwind | `@apply text-sm font-bold leading-normal` |
+| Radius | Tailwind | `@apply rounded-md` |
+| Shadows | Tailwind | `@apply shadow-sm` |
+| Colors | Primer | `var(--fgColor-default)`, `var(--bgColor-muted)` |
+| Border colors | Primer | `var(--borderColor-default)` |
+
+## What is FORBIDDEN
+
+```scss
+// FORBIDDEN — hardcoded color
+.card { color: #333; }
+
+// FORBIDDEN — hardcoded spacing
+.card { padding: 16px; }
+
+// FORBIDDEN — hardcoded sizing
+.card { min-height: 100vh; }
+
+// FORBIDDEN — custom token files
+@use '@/styles/tokens' as *;
+
+// REQUIRED
+.card {
+  @apply p-4 min-h-screen;
+  color: var(--fgColor-default);
+}
+```
+
+## TypeScript / TSX — No Magic Numbers
+
+- `@typescript-eslint/no-magic-numbers` is enforced (tests excluded)
+- Extract ALL meaningful numbers into named constants
+- Allowed raw values: `0`, `1`, `-1`
+
+```typescript
+// FORBIDDEN
+const timeout = 1000 * 60
+
+// REQUIRED
+const ONE_SECOND_MS = 1000
+const ONE_MINUTE_S = 60
+const TIMEOUT_MS = ONE_SECOND_MS * ONE_MINUTE_S
+```
+
+## No Hardcoded Strings
+
+- ALL user-facing strings use i18n (`useTranslation`) — see i18n rule
+- API endpoints, config values, and keys MUST be constants or enums
+
+## Enforcement
+
+- **Stylelint** `declaration-strict-value`: fails on hardcoded colors, font-size, font-weight, line-height, border-radius, box-shadow, z-index
+- **ESLint** `no-magic-numbers`: fails on raw numbers in TS/TSX (tests excluded)
+- Both run in CI — violations block merge

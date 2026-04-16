@@ -1,0 +1,72 @@
+---
+description: Web app architecture — routes, modules, components, and services layers
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Web Architecture
+
+## Layer Flow
+
+```
+routes → modules → components (atoms/molecules/organisms/templates)
+                 → services   (promises + hooks + types)
+```
+
+## Directory Structure
+
+```
+src/
+  routes/          → Route definitions only (TanStack Router)
+  modules/         → Feature orchestrators (compose components + services)
+  components/      → Pure UI (Atomic Design: atoms, molecules, organisms, templates)
+  services/        → Data layer (promises, hooks, types — single source of truth)
+  i18n/            → Internationalization config + locale files per namespace
+  stores/          → Client-only UI state (Zustand)
+  utils/           → Shared pure helpers
+  hooks/           → Shared custom hooks (non-service)
+  test/            → Test setup and utilities
+```
+
+## Layer Responsibilities
+
+### `routes/`
+- ONLY route definitions (`createFileRoute`)
+- Import the module component and wire it to a path
+- NEVER contain UI logic or business logic
+
+```tsx
+// routes/dashboard.tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { Dashboard } from '@/modules/Dashboard'
+
+export const Route = createFileRoute('/dashboard')({
+  component: Dashboard,
+})
+```
+
+### `modules/`
+- Feature orchestrators — compose UI + data
+- Import components from `components/`
+- Import hooks/types from `services/`
+- Each module follows the standard component file structure
+- Modules are the ONLY consumer of service hooks
+
+### `components/`
+- Pure UI only — NO data fetching, NO service imports
+- Receive data via props (types from `services/`)
+- Exception: `useTranslation` is allowed in components (see i18n rule)
+
+### `services/`
+- Single source of truth for ALL types and data access
+- Types (Response, Request, Payload) are the contracts used everywhere
+- Validation schemas (valibot) live in service types (see forms-validation rule)
+- See services-layer rule for full structure
+
+## Import Rules
+
+- `routes/` → imports from `modules/` ONLY
+- `modules/` → imports from `components/`, `services/`, and `utils/`
+- `components/` → imports from other `components/` only (+ `useTranslation` from i18n)
+- `services/` → imports from `utils/` and shared `libs/`
+- NEVER circular dependencies between layers

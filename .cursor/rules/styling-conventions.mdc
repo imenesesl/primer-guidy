@@ -1,0 +1,95 @@
+---
+description: "Styling rules: SCSS Modules with Tailwind @apply + @reference, Primer CSS vars for colors — variant-only API"
+globs: "**/*.tsx,**/*.module.scss"
+alwaysApply: true
+---
+
+# Styling Conventions
+
+## SCSS Modules + Tailwind (Standard)
+
+- ALL component styles in `<ComponentName>.module.scss`
+- Every SCSS module MUST start with `@reference` to access Tailwind:
+
+```scss
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center p-4 gap-2;
+}
+```
+
+- Import in component: `import styles from './ComponentName.module.scss'`
+
+## Tailwind is the Single Source of Truth
+
+ALL layout/spacing/sizing/typography values come from Tailwind via `@apply` or `var(--spacing-*)`.
+ALL colors come from Primer CSS custom properties via `var(--fgColor-*)`, `var(--bgColor-*)`.
+NEVER create custom SCSS token files.
+
+### What Goes Where
+
+| Need | Approach |
+|------|----------|
+| Layout, flexbox, grid | `@apply flex`, `@apply grid`, etc. |
+| Spacing (padding, gap) | `@apply p-4 gap-2` or `var(--spacing-4)` |
+| Sizing (w, h, min/max) | `@apply w-full min-h-screen` |
+| Colors (Primer) | `var(--fgColor-default)`, `var(--bgColor-muted)` |
+| Typography | `@apply text-sm font-semibold` |
+| Borders / radius | `@apply rounded-md border` |
+| Shadows | `@apply shadow-sm` |
+| Complex / stateful styles | SCSS with `var(--spacing-*)`, Primer `var()` |
+
+### Example: Mixed Usage
+
+```scss
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col gap-4 p-6 rounded-lg;
+}
+
+.default {
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-default);
+}
+
+.highlighted {
+  background-color: var(--bgColor-accent-muted);
+  border-left: 4px solid var(--borderColor-accent-emphasis);
+}
+```
+
+## Colors — Primer CSS Custom Properties
+
+Colors come from Primer's `ThemeProvider` at runtime as CSS custom properties.
+Use `var(--fgColor-default)`, `var(--bgColor-muted)`, `var(--borderColor-default)`, etc. directly in SCSS.
+NEVER use hex, rgb, hsl, or named colors directly.
+
+## Zero Inline JS Styles
+
+- NEVER use the `style` prop — PROHIBITED
+- NEVER use `sx`, `css`, or any JS-in-CSS approach
+- ALL styling via `className` internally
+
+## No className as Prop — Variant Only
+
+Components NEVER accept `className`, `style`, or any styling-related prop.
+The ONLY way to alter appearance is via a typed `variant` prop.
+
+```tsx
+import styles from './Card.module.scss'
+
+export const Card = ({ variant, children }: CardProps) => (
+  <div className={`${styles.root} ${styles[variant]}`}>
+    {children}
+  </div>
+)
+```
+
+## No Margin — Ever
+
+NEVER use `margin` in any form. Use `padding` or `gap`.
+Enforced by Stylelint `property-disallowed-list`.

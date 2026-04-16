@@ -1,0 +1,128 @@
+---
+description: Services layer — promises, hooks per domain, and types as the single source of truth
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Services Layer
+
+Services are the SINGLE SOURCE OF TRUTH for types and data access. Every component, module, and utility uses service types as its contract.
+
+## Structure per Service
+
+```
+services/
+  user/
+    user.service.ts        → Promise functions (API calls)
+    user.hooks.ts          → TanStack Query hooks per operation
+    user.types.ts          → Response, Request, Payload types
+    user.service.test.ts   → Tests
+    index.ts               → Named re-exports
+```
+
+## Types — The Contract
+
+Types define the contract for the entire app. NEVER duplicate or redefine them elsewhere.
+
+```typescript
+// services/user/user.types.ts
+export interface UserResponse {
+  id: string
+  name: string
+  email: string
+}
+
+export interface CreateUserRequest {
+  name: string
+  email: string
+}
+
+export interface UpdateUserPayload {
+  id: string
+  data: Partial<CreateUserRequest>
+}
+
+export interface DeleteUserPayload {
+  id: string
+}
+```
+
+## Service — Promises
+
+Each function is a single API call. Pure async functions, no hooks.
+
+```typescript
+// services/user/user.service.ts
+import type { UserResponse, CreateUserRequest, UpdateUserPayload, DeleteUserPayload } from './user.types'
+
+const BASE_URL = '/api/users'
+
+export const getUsers = async (): Promise<UserResponse[]> =>
+  fetch(BASE_URL).then((res) => res.json())
+
+export const createUser = async (data: CreateUserRequest): Promise<UserResponse> =>
+  fetch(BASE_URL, { method: 'POST', body: JSON.stringify(data) }).then((res) => res.json())
+
+export const updateUser = async ({ id, data }: UpdateUserPayload): Promise<UserResponse> =>
+  fetch(`${BASE_URL}/${id}`, { method: 'PATCH', body: JSON.stringify(data) }).then((res) => res.json())
+
+export const deleteUser = async ({ id }: DeleteUserPayload): Promise<void> =>
+  fetch(`${BASE_URL}/${id}`, { method: 'DELETE' }).then(() => undefined)
+```
+
+## Hooks — One per Domain Operation
+
+Each hook wraps a single service function with TanStack Query.
+
+```typescript
+// services/user/user.hooks.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getUsers, createUser, updateUser, deleteUser } from './user.service'
+
+const USERS_KEY = ['users'] as const
+
+export const useGetUsers = () =>
+  useQuery({ queryKey: USERS_KEY, queryFn: getUsers })
+
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+  })
+}
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: updateUser,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+  })
+}
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+  })
+}
+```
+
+## Export Pattern
+
+```typescript
+// services/user/index.ts
+export { getUsers, createUser, updateUser, deleteUser } from './user.service'
+export { useGetUsers, useCreateUser, useUpdateUser, useDeleteUser } from './user.hooks'
+export type { UserResponse, CreateUserRequest, UpdateUserPayload, DeleteUserPayload } from './user.types'
+```
+
+## Rules
+
+- Types from services are THE contract — components receive them via props, modules consume them via hooks
+- NEVER define Response/Request/Payload types outside `services/`
+- One service per domain entity
+- One hook per operation (GET, POST, PATCH, DELETE)
+- Service promises are pure functions — no React, no hooks, no side effects
+- Hooks are thin wrappers over TanStack Query — no business logic inside

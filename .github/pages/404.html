@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    var repo = '/primer-guidy'
+    var segments = window.location.pathname.slice(repo.length).split('/').filter(Boolean)
+    if (segments.length > 0) {
+      window.location.replace(repo + '/' + segments[0] + '/?p=' + encodeURIComponent('/' + segments.slice(1).join('/')))
+    } else {
+      window.location.replace(repo + '/')
+    }
+  </script>
+</head>
+<body></body>
+</html>

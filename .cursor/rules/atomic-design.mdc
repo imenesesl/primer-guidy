@@ -1,0 +1,63 @@
+---
+description: Atomic Design structure for React web applications (no pages level)
+globs: "**/*.tsx"
+alwaysApply: true
+---
+
+# Atomic Design
+
+Components follow Atomic Design strictly — 4 levels only. NO pages level (pages are replaced by `modules/`).
+
+## Directory Structure
+
+```
+src/
+  components/
+    atoms/        → Smallest indivisible UI elements
+    molecules/    → Groups of atoms functioning together
+    organisms/    → Complex sections composed of molecules/atoms
+    templates/    → Page-level layouts with placeholder slots
+```
+
+## Rules per Level
+
+### Atoms
+- Single UI element (button, input, label, icon)
+- NO business logic, NO state management, NO service imports
+- Wrap `@primer/react` components here for project-wide consistency
+- Example: `atoms/Button/Button.tsx`
+
+### Molecules
+- Combine 2+ atoms into a functional group
+- Minimal local state only (e.g., input focus)
+- Example: `molecules/SearchField/SearchField.tsx` (Label + TextInput + IconButton)
+
+### Organisms
+- Compose molecules/atoms into distinct UI sections
+- May receive data via props — NEVER import from services directly
+- Example: `organisms/UserTable/UserTable.tsx`
+
+### Templates
+- Define page layout structure with slots
+- NO data fetching, NO business logic
+- Example: `templates/DashboardLayout/DashboardLayout.tsx`
+
+## Components are Pure UI
+
+- NEVER import from `services/` or `modules/`
+- Receive ALL data via props — types come from service types
+- Components are 100% reusable across any module
+
+## File Structure per Component
+
+Every component at every level follows the same file structure (see `component-structure`):
+
+```
+ComponentName/
+  ComponentName.tsx
+  ComponentName.module.scss
+  ComponentName.types.ts     → Props use types imported from services
+  ComponentName.utils.ts
+  ComponentName.test.tsx
+  index.ts
+```

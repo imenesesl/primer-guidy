@@ -1,0 +1,70 @@
+---
+description: "@primer/react usage following official documentation strictly"
+globs: "**/*.tsx"
+alwaysApply: true
+---
+
+# @primer/react Usage
+
+ALL web apps use `@primer/react` as the ONLY design system. Follow the official documentation exactly.
+
+## Mandatory Rules
+
+- ALWAYS use Primer components instead of raw HTML elements
+- NEVER create custom components that duplicate Primer functionality
+- NEVER override Primer component internals with custom CSS
+- Use `ThemeProvider` at the app root — all theming via Primer tokens
+- Primer components handle their own styling — use component props (`variant`, `size`, etc.)
+- Layout/spacing around Primer components via SCSS Modules + Tailwind @apply (see styling-conventions rule)
+
+## Component Mapping
+
+| Need | Primer Component |
+|------|-----------------|
+| Buttons | `Button`, `IconButton` |
+| Forms | `TextInput`, `Select`, `Checkbox`, `Radio`, `FormControl` |
+| Layout | `PageLayout`, `SplitPageLayout` |
+| Navigation | `NavList`, `UnderlineNav`, `Header` |
+| Feedback | `Flash`, `Banner`, `Spinner`, `ProgressBar` |
+| Overlays | `Dialog`, `ActionMenu`, `Overlay` |
+| Data | `DataTable`, `Label`, `Token`, `TreeView` |
+| Typography | `Heading`, `Text` |
+
+## Atoms Wrapping Primer
+
+Atoms wrap Primer components following the full component file structure (see component-structure rule):
+
+```
+atoms/Button/
+  Button.tsx
+  Button.module.scss
+  Button.types.ts
+  Button.utils.ts
+  Button.test.tsx
+  index.ts
+```
+
+```tsx
+// atoms/Button/Button.types.ts
+import type { ButtonProps as PrimerButtonProps } from '@primer/react'
+
+export interface ButtonProps extends Pick<PrimerButtonProps, 'variant' | 'size' | 'disabled'> {
+  label: string
+  onClick: () => void
+}
+```
+
+```tsx
+// atoms/Button/Button.tsx
+import { Button as PrimerButton } from '@primer/react'
+import type { ButtonProps } from './Button.types'
+
+export const Button = ({ label, ...rest }: ButtonProps) => (
+  <PrimerButton {...rest}>{label}</PrimerButton>
+)
+```
+
+## References
+
+- Docs: https://primer.style/components
+- Always verify component API against latest docs before using

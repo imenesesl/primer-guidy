@@ -1,0 +1,57 @@
+---
+description: SOLID principles enforcement for all TypeScript code
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# SOLID Principles
+
+Every module, class, function, and component MUST follow SOLID strictly.
+
+## S — Single Responsibility
+
+Each file/class/function does ONE thing. If a function name requires "and", split it.
+
+```typescript
+// BAD
+class UserService {
+  createUser() { /* ... */ }
+  sendEmail() { /* ... */ }
+}
+
+// GOOD
+class UserService { createUser() { /* ... */ } }
+class EmailService { sendEmail() { /* ... */ } }
+```
+
+## O — Open/Closed
+
+Extend behavior via composition or interfaces, never modify existing code.
+
+```typescript
+// GOOD — extend via strategy
+interface PaymentStrategy { pay(amount: number): Promise<void> }
+class StripePayment implements PaymentStrategy { /* ... */ }
+class PayPalPayment implements PaymentStrategy { /* ... */ }
+```
+
+## L — Liskov Substitution
+
+Subtypes MUST be substitutable for their base types without breaking behavior.
+
+## I — Interface Segregation
+
+Split large interfaces into small, focused ones. Consumers depend only on what they use.
+
+```typescript
+// BAD
+interface Repository { find(): void; save(): void; delete(): void; export(): void; }
+
+// GOOD
+interface Readable { find(): void }
+interface Writable { save(): void; delete(): void }
+```
+
+## D — Dependency Inversion
+
+Depend on abstractions (interfaces), never on concretions. See `dependency-injection` rule.

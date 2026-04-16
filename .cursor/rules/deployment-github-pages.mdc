@@ -1,0 +1,94 @@
+---
+description: GitHub Pages deployment — each web app under its own route, Primer-powered landing page
+globs: "**/*.ts,**/*.tsx,**/*.yml"
+alwaysApply: true
+---
+
+# Deployment — GitHub Pages
+
+Every web app deploys to GitHub Pages under a specific sub-route. The root (`/`) is a Primer-styled landing page listing all apps.
+
+## URL Structure
+
+```
+https://<user>.github.io/primer-guidy/          → Landing page (app list)
+https://<user>.github.io/primer-guidy/core/      → core-web app
+https://<user>.github.io/primer-guidy/dashboard/  → dashboard-web app (future)
+```
+
+## Requirements per Web App
+
+### 1. Rsbuild — `assetPrefix` and `base`
+
+Every app's `rsbuild.config.ts` MUST set the correct base path for production:
+
+```typescript
+const BASE_PATH = '/primer-guidy/core/'
+
+export default defineConfig({
+  output: {
+    assetPrefix: BASE_PATH,
+  },
+})
+```
+
+### 2. TanStack Router — `basepath`
+
+The router MUST use the same base path:
+
+```typescript
+export const router = createRouter({
+  routeTree,
+  basepath: '/primer-guidy/core/',
+  context: { queryClient },
+})
+```
+
+### 3. SPA Fallback — `404.html`
+
+GitHub Pages does not support SPA routing natively. Each app MUST include a `404.html` redirect script in its build output to handle client-side routing.
+
+## Landing Page
+
+- Lives at the root of the deployed site
+- Generated automatically during CI from `.github/pages/generate.ts`
+- Uses `@primer/css` (CDN) for consistent design with the rest of the monorepo
+- Lists ALL web apps with name, description, and link
+
+## CI/CD — GitHub Actions
+
+Workflow `.github/workflows/deploy.yml` with 5 jobs:
+
+```
+install → analyze ──────┐
+        → test-unit ────┤→ deploy-pages → deploy-firebase
+        → test-e2e ─────┘
+```
+
+| Job | Runs | What |
+|-----|------|------|
+| `install` | Always | Install deps, cache `node_modules` |
+| `analyze` | Always | `tsc --noEmit`, ESLint, Stylelint, Prettier |
+| `test-unit` | Always | Vitest unit + integration tests |
+| `test-e2e` | Always | Playwright E2E tests |
+| `deploy-pages` | main only, after 3 pass | Build, generate landing, deploy to GH Pages |
+| `deploy-firebase` | main only, after GH Pages | Placeholder for future Firebase deployment |
+
+- PRs run `analyze`, `test-unit`, `test-e2e` — no deploy
+- Pushes to `main` run everything including deploy
+
+## Adding a New App
+
+When creating a new web app:
+
+1. Set `assetPrefix` in `rsbuild.config.ts`
+2. Set `basepath` in `router.ts`
+3. Register it in `.github/pages/apps-registry.json`
+4. CI handles the rest automatically
+
+## Rules
+
+- NEVER deploy without the correct `assetPrefix` — assets will 404
+- NEVER hardcode absolute paths in components — use relative or router-aware paths
+- The landing page MUST always be up-to-date with all current apps
+- ALL deployments go through CI — no manual deploys

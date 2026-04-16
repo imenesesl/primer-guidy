@@ -1,0 +1,15 @@
+{
+  "name": "@primer-guidy/stylelint-config",
+  "private": true,
+  "version": "0.0.1",
+  "exports": {
+    ".": "./index.json"
+  },
+  "dependencies": {
+    "stylelint-config-standard-scss": "^17.0.0",
+    "stylelint-declaration-strict-value": "^1.11.1"
+  },
+  "peerDependencies": {
+    "stylelint": "^17.0.0"
+  }
+}

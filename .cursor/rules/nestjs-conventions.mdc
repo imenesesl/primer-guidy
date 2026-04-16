@@ -1,0 +1,62 @@
+---
+description: NestJS server conventions with single responsibility per service
+globs: "**/*-server/**/*.ts"
+alwaysApply: true
+---
+
+# NestJS Conventions
+
+## Module Structure
+
+```
+src/
+  modules/
+    <feature>/
+      <feature>.module.ts
+      <feature>.controller.ts
+      <feature>.service.ts
+      <feature>.repository.ts
+      interfaces/
+      dto/
+      guards/
+```
+
+## Single Responsibility per Service
+
+Each service handles ONE domain concern. Never mix responsibilities.
+
+```typescript
+// BAD — mixed concerns
+@Injectable()
+class UserService {
+  createUser() { /* ... */ }
+  sendWelcomeEmail() { /* ... */ }
+  generateReport() { /* ... */ }
+}
+
+// GOOD — separated
+@Injectable()
+class UserService { createUser() { /* ... */ } }
+@Injectable()
+class NotificationService { sendWelcomeEmail() { /* ... */ } }
+@Injectable()
+class ReportService { generateReport() { /* ... */ } }
+```
+
+## Layer Responsibilities
+
+| Layer | Responsibility |
+|-------|---------------|
+| Controller | HTTP handling, validation, response shaping |
+| Service | Business logic, orchestration |
+| Repository | Data access, query building |
+
+- Controllers NEVER access repositories directly
+- Services NEVER handle HTTP concerns (request/response objects)
+- Repositories NEVER contain business logic
+
+## DTOs & Validation
+
+- Use `class-validator` + `class-transformer` for all DTOs
+- Separate `CreateDto`, `UpdateDto`, `ResponseDto` per entity
+- NEVER expose internal entities in API responses

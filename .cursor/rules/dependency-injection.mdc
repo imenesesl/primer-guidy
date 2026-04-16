@@ -1,0 +1,73 @@
+---
+description: Dependency Injection pattern for all TypeScript code
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Dependency Injection
+
+ALL code MUST use Dependency Injection. Depend on abstractions, never concretions.
+
+## NestJS (Server)
+
+Use NestJS built-in DI container. Always inject via constructor with interfaces.
+
+```typescript
+interface IUserRepository {
+  findById(id: string): Promise<User>
+}
+
+@Injectable()
+class UserRepository implements IUserRepository {
+  findById(id: string): Promise<User> { /* ... */ }
+}
+
+@Injectable()
+class UserService {
+  constructor(
+    @Inject('IUserRepository') private readonly userRepo: IUserRepository,
+  ) {}
+}
+
+@Module({
+  providers: [
+    { provide: 'IUserRepository', useClass: UserRepository },
+    UserService,
+  ],
+})
+export class UserModule {}
+```
+
+## React (Web)
+
+Use React Context as DI container. Services injected via providers.
+
+```tsx
+interface IAuthService {
+  login(credentials: Credentials): Promise<User>
+}
+
+const AuthServiceContext = createContext<IAuthService | null>(null)
+
+export const useAuthService = (): IAuthService => {
+  const service = useContext(AuthServiceContext)
+  if (!service) throw new Error('AuthService not provided')
+  return service
+}
+```
+
+Composition root (app entry / root route) is the ONLY place where `new` is allowed:
+
+```tsx
+// __root.tsx or providers — composition root only
+<AuthServiceContext.Provider value={new AuthServiceImpl()}>
+  {children}
+</AuthServiceContext.Provider>
+```
+
+## Rules
+
+- NEVER instantiate dependencies with `new` inside a class/component (except composition root)
+- Composition root = app entry, root route, or provider wrappers
+- EVERY service/repository MUST have a corresponding interface
+- Test doubles (mocks) replace implementations via DI — no monkey-patching

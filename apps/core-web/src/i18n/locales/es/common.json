@@ -1,0 +1,26 @@
+{
+  "greetings": {
+    "morning": "Buenos días",
+    "afternoon": "Buenas tardes",
+    "evening": "Buenas noches"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Ingresa un correo electrónico válido",
+    "minLength": "Debe tener al menos {{min}} caracteres"
+  },
+  "status": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "empty": "No se encontraron resultados"
+  }
+}

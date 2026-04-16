@@ -1,0 +1,55 @@
+---
+description: Strict reusability — every feature, component, and helper must be contract-driven
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: true
+---
+
+# Reusability
+
+Every feature, component, and helper MUST be 100% reusable. Zero hardcoded dependencies.
+
+## Contract-Driven Design
+
+Every reusable unit depends ONLY on its interface (contract), never on concrete implementations.
+
+```typescript
+// GOOD — depends on contract (types from services)
+import type { UserResponse } from '@/services/user'
+
+interface UserListProps {
+  users: UserResponse[]
+  onSelect: (user: UserResponse) => void
+}
+
+// BAD — hardcoded dependency inside component
+const UserList = () => {
+  const users = useGetUsers() // tightly coupled — this belongs in modules/
+}
+```
+
+## Before Creating Anything New
+
+1. **Search existing** atoms, molecules, organisms, helpers, and hooks
+2. If a similar one exists, **extend it** via props/generics — do NOT duplicate
+3. If none exists, create it as **generic and reusable** from the start
+
+## Helpers & Utilities
+
+- Shared helpers go in `libs/shared-utils/`
+- App-specific helpers go in `src/utils/`
+- EVERY helper must be a pure function with typed input/output
+- NEVER duplicate logic — extract and reuse
+
+## Hooks
+
+- Shared hooks go in `src/hooks/`
+- Each hook has its own file: `use<Name>.ts`
+- Hooks in `src/hooks/` MUST accept dependencies via parameters for testability
+- Service hooks in `services/` are the exception — they wrap TanStack Query with service functions directly (see services-layer rule)
+- Reusable across features — if it's feature-specific, it belongs inside the module folder
+
+## Rules
+
+- NEVER copy-paste code — always extract shared logic
+- NEVER create a component that only works in one context
+- If you need to hardcode something, inject it from the parent via props or context
