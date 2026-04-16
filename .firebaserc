@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "guidy-app-ai"
+  },
+  "targets": {
+    "guidy-app-ai": {
+      "hosting": {
+        "app": [
+          "guidy-ai"
+        ]
+      }
+    }
+  }
+}

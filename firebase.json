@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "target": "app",
+    "public": "deploy",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/core/**", "destination": "/core/index.html" },
+      { "source": "/login/**", "destination": "/login/index.html" },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}

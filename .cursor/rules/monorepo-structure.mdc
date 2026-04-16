@@ -14,6 +14,7 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 | React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/`, `apps/login-web/` |
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
+| Cloud services abstraction | `libs/cloud-services/` | tsc + Vitest | `libs/cloud-services/` |
 | Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
 
 ## Shared Design System — `@primer-guidy/components-web`
@@ -43,8 +44,17 @@ ALL reusable UI components live in `apps/components-web/`. Web apps NEVER define
 ```tsx
 // In any web app
 import { WorkspaceLayout, Rail, RailItem, useLayoutStore } from '@primer-guidy/components-web'
+import { useAuth, useFirestore, CloudServicesProvider } from '@primer-guidy/cloud-services'
 import { Button, Text, Heading } from '@primer/react'
 ```
+
+## Cloud Services — `@primer-guidy/cloud-services`
+
+Provider-agnostic abstraction for cloud services (auth, database, firestore, hosting). See `cloud-services.mdc` rule for full architecture.
+
+- Web apps NEVER import from `firebase/*` directly
+- Import ONLY from `@primer-guidy/cloud-services`
+- Uses Port/Adapter pattern — Firebase is the hidden implementation
 
 ## Root Scripts Convention
 

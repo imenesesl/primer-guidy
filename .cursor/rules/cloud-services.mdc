@@ -1,0 +1,61 @@
+---
+description: Cloud services abstraction — Port/Adapter pattern, never expose provider (Firebase) to consumers
+alwaysApply: true
+---
+
+# Cloud Services — Provider-Agnostic Abstraction
+
+All cloud service access (auth, database, storage, hosting) goes through `@primer-guidy/cloud-services`. The underlying provider (Firebase) is NEVER exposed to consumers.
+
+## Architecture — Port/Adapter (Hexagonal)
+
+```
+libs/cloud-services/
+  src/
+    ports/         → Interfaces (public contracts)
+    adapters/      → Provider implementations (private, e.g. Firebase)
+    react/         → React Context + hooks for DI
+    factory.ts     → Creates adapter instances from config
+    index.ts       → Public API: ports + factory + react only
+```
+
+## Mandatory Rules
+
+- Web apps NEVER import from `firebase/*` or any provider SDK directly
+- Web apps import ONLY from `@primer-guidy/cloud-services`
+- Ports (interfaces) are the ONLY public contract — adapters are implementation details
+- The factory accepts a generic config and returns port-typed instances
+- React Context provides DI at the composition root (`__root.tsx` or providers)
+- Each port has its own error types — NEVER leak provider-specific errors
+
+## Consumer Usage (Web Apps)
+
+```tsx
+// Composition root — the ONLY place where factory is called
+import { createCloudServices, CloudServicesProvider } from '@primer-guidy/cloud-services'
+
+const services = createCloudServices({ projectId: '...', apiKey: '...' })
+
+<CloudServicesProvider value={services}>
+  {children}
+</CloudServicesProvider>
+
+// Inside modules — consume via hooks
+import { useAuth } from '@primer-guidy/cloud-services'
+
+const auth = useAuth()
+await auth.signInWithEmail({ email, password })
+```
+
+## Adding a New Service
+
+1. Create port interface in `ports/<service>.port.ts` + types in `ports/<service>.types.ts`
+2. Create adapter in `adapters/firebase/<service>.adapter.ts`
+3. Add to `CloudServices` interface in `factory.types.ts`
+4. Add to factory in `factory.ts`
+5. Add hook in `react/hooks.ts`
+6. Re-export from `index.ts`
+
+## Server Apps
+
+Server apps (NestJS) do NOT use this package. They implement custom endpoints with their own provider access via NestJS DI.

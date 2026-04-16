@@ -1,96 +1,67 @@
 ---
-description: GitHub Pages deployment — each web app under its own route, Primer-powered landing page
+description: Deployment — dual target (GitHub Pages + Firebase Hosting) with DEPLOY_PREFIX
 globs: "**/*.ts,**/*.tsx,**/*.yml"
 alwaysApply: true
 ---
 
-# Deployment — GitHub Pages
+# Deployment — GitHub Pages + Firebase Hosting
 
-Every web app deploys to GitHub Pages under a specific sub-route. The root (`/`) is a Primer-styled landing page listing all apps.
+Every web app deploys to both GitHub Pages and Firebase Hosting. The root (`/`) is a Primer-styled landing page listing all apps.
 
 ## URL Structure
 
-```
-https://<user>.github.io/primer-guidy/          → Landing page (app list)
-https://<user>.github.io/primer-guidy/core/      → core-web app
-https://<user>.github.io/primer-guidy/login/     → login-web app
-```
+| Target | Landing | core-web | login-web |
+|--------|---------|----------|-----------|
+| GitHub Pages | `<user>.github.io/primer-guidy/` | `/primer-guidy/core/` | `/primer-guidy/login/` |
+| Firebase | `guidy-ai.web.app/` | `/core/` | `/login/` |
 
-## Requirements per Web App
+## DEPLOY_PREFIX — Single Toggle
 
-### 1. Rsbuild — `assetPrefix` and `base`
-
-Every app's `rsbuild.config.ts` MUST set the correct base path for production:
+Base paths are controlled by `DEPLOY_PREFIX` env var at build time:
 
 ```typescript
-const BASE_PATH = '/primer-guidy/core/'
-
-export default defineConfig({
-  output: {
-    assetPrefix: BASE_PATH,
-  },
-})
+const DEPLOY_PREFIX = process.env.DEPLOY_PREFIX ?? ''
+const BASE_PATH = IS_PROD ? `${DEPLOY_PREFIX}/core/` : '/'
 ```
 
-### 2. TanStack Router — `basepath`
+| Target | DEPLOY_PREFIX | Result |
+|--------|--------------|--------|
+| Firebase | (empty) | `/core/` |
+| GitHub Pages | `/primer-guidy` | `/primer-guidy/core/` |
 
-The router MUST use the same base path:
+## SPA Routing
 
-```typescript
-export const router = createRouter({
-  routeTree,
-  basepath: '/primer-guidy/core/',
-  context: { queryClient },
-})
-```
-
-### 3. SPA Fallback — `404.html`
-
-GitHub Pages does not support SPA routing natively. Each app MUST include a `404.html` redirect script in its build output to handle client-side routing.
+- **GitHub Pages**: Root `404.html` script redirects to the correct app
+- **Firebase**: `firebase.json` rewrites handle SPA routing natively
 
 ## Landing Page
 
-- Lives at the root of the deployed site
-- Generated automatically during CI from `.github/pages/generate.ts`
-- Uses `@primer/css` (CDN) for consistent design with the rest of the monorepo
-- Lists ALL web apps with name, description, and link
+- Generated from `.github/pages/generate.ts` using `DEPLOY_PREFIX`
+- Uses `@primer/css` (CDN) for Primer styling
+- Lists ALL apps from `.github/pages/apps-registry.json`
 
 ## CI/CD — GitHub Actions
 
-Workflow `.github/workflows/deploy.yml` with 5 jobs:
-
 ```
 install → analyze ──────┐
-        → test-unit ────┤→ deploy-pages → deploy-firebase
-        → test-e2e ─────┘
+        → test-unit ────┤→ deploy-pages (DEPLOY_PREFIX=/primer-guidy)
+        → test-e2e ─────┤→ deploy-firebase (no prefix)
+                        ┘
 ```
 
-| Job | Runs | What |
-|-----|------|------|
-| `install` | Always | Install deps, cache `node_modules` |
-| `analyze` | Always | `tsc --noEmit`, ESLint, Stylelint, Prettier |
-| `test-unit` | Always | Vitest unit + integration tests |
-| `test-e2e` | Always | Playwright E2E tests |
-| `deploy-pages` | main only, after 3 pass | Build, generate landing, deploy to GH Pages |
-| `deploy-firebase` | main only, after GH Pages | Placeholder for future Firebase deployment |
-
-- PRs run `analyze`, `test-unit`, `test-e2e` — no deploy
-- Pushes to `main` run everything including deploy
+Both deploy jobs run in parallel after tests pass.
 
 ## Adding a New App
 
-When creating a new web app:
-
-1. Set `assetPrefix` in `rsbuild.config.ts`
-2. Set `basepath` in `router.ts`
-3. Register it in `.github/pages/apps-registry.json`
+1. Use `DEPLOY_PREFIX` in `rsbuild.config.ts` for `BASE_PATH`
+2. Set `basepath` from `import.meta.env.BASE_PATH` in `router.ts`
+3. Register in `.github/pages/apps-registry.json`
 4. Add `dev:<name>` script in root `package.json`
-5. Add copy step in `deploy.yml` under "Assemble deploy output"
-6. CI handles the rest automatically
+5. Add copy step in `deploy.yml` under both deploy jobs
+6. Add rewrite in `firebase.json`
 
 ## Rules
 
-- NEVER deploy without the correct `assetPrefix` — assets will 404
-- NEVER hardcode absolute paths in components — use relative or router-aware paths
-- The landing page MUST always be up-to-date with all current apps
+- NEVER hardcode base paths — always use `DEPLOY_PREFIX`
+- The landing page MUST always list all current apps
 - ALL deployments go through CI — no manual deploys

@@ -1,9 +1,9 @@
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const REPO = 'primer-guidy'
+const DEPLOY_PREFIX = process.env.DEPLOY_PREFIX ?? ''
 
 interface Entry {
   name: string
@@ -21,7 +21,7 @@ const registry: Registry = JSON.parse(
 )
 
 const card = (e: Entry, base: string) => `
-      <a href="/${REPO}/${base}${e.route}/" class="Box-row d-flex flex-items-center flex-justify-between no-underline color-fg-default">
+      <a href="${DEPLOY_PREFIX}/${base}${e.route}/" class="Box-row d-flex flex-items-center flex-justify-between no-underline color-fg-default">
         <div class="d-flex flex-items-center" style="gap:0.75rem">
           <span class="f3">${e.icon}</span>
           <div>
@@ -56,8 +56,12 @@ const html = template.replace('<!-- {{COLUMNS}} -->', columns)
 const outDir = resolve(__dirname, '..', '..', 'dist-landing')
 mkdirSync(outDir, { recursive: true })
 writeFileSync(resolve(outDir, 'index.html'), html)
-copyFileSync(resolve(__dirname, '404.html'), resolve(outDir, '404.html'))
+
+const fallbackPath = resolve(__dirname, '404.html')
+if (existsSync(fallbackPath)) {
+  copyFileSync(fallbackPath, resolve(outDir, '404.html'))
+}
 
 const total = registry.apps.length + registry.storybooks.length
 // eslint-disable-next-line no-console
-console.log(`Landing: ${total} entries generated.`)
+console.log(`Landing: ${total} entries → prefix="${DEPLOY_PREFIX || '/'}"`)

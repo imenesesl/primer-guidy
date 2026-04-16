@@ -151,9 +151,13 @@ jobs:
 
       - name: Build all apps
         run: pnpm build
+        env:
+          DEPLOY_PREFIX: /primer-guidy
 
       - name: Generate landing page
         run: pnpm generate:landing
+        env:
+          DEPLOY_PREFIX: /primer-guidy
 
       - name: Assemble deploy output
         run: |
@@ -176,12 +180,48 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # ── Job 5: Deploy to Firebase (placeholder) ────────────────────
+  # ── Job 5: Deploy to Firebase Hosting ──────────────────────────
   deploy-firebase:
     name: Firebase
-    needs: deploy-pages
+    needs: [analyze, test-unit, test-e2e]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploying to Firebase
-        run: echo "Deploying to Firebase — not yet configured"
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            libs/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Build all apps (no prefix)
+        run: pnpm build
+
+      - name: Generate landing page (no prefix)
+        run: pnpm generate:landing
+
+      - name: Assemble deploy output
+        run: |
+          mkdir -p deploy
+          cp dist-landing/index.html deploy/
+          if [ -d "apps/core-web/dist" ]; then
+            cp -r apps/core-web/dist deploy/core
+          fi
+          if [ -d "apps/login-web/dist" ]; then
+            cp -r apps/login-web/dist deploy/login
+          fi
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          target: app

@@ -1,0 +1,21 @@
+{
+  "name": "@primer-guidy/cloud-services",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "firebase": "^11.9.0",
+    "react": "^19.2.5"
+  },
+  "devDependencies": {
+    "@primer-guidy/eslint-config": "workspace:*"
+  }
+}
