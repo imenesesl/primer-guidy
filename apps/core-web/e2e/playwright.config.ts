@@ -1,14 +1,18 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const E2E_PORT = 4173
+const CI_RETRIES = 2
+const CI_WORKERS = 1
+
 export default defineConfig({
   testDir: './flows',
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
-  retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: process.env['CI'] ? CI_RETRIES : 0,
+  workers: process.env['CI'] ? CI_WORKERS : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: `http://localhost:${E2E_PORT}`,
     trace: 'on-first-retry',
   },
   projects: [
@@ -18,8 +22,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
+    command: `pnpm dev --port ${E2E_PORT}`,
+    url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env['CI'],
+    env: { E2E_BYPASS: 'true' },
   },
 })

@@ -18,3 +18,7 @@ Thumbs.db
 *.tsbuildinfo
 dist-landing/
 deploy/
+
+# Playwright
+playwright-report/
+test-results/
