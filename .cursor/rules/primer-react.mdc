@@ -18,6 +18,47 @@ ALL web apps use `@primer/react` as the ONLY design system. Follow the official 
 - Before using arbitrary values (e.g. `text-[0.625rem]`), ALWAYS check if the Primer component has a prop for it (e.g. `<Text size="small">`)
 - Layout/spacing around Primer components via SCSS Modules + Tailwind @apply (see styling-conventions rule)
 
+## Primer-First Hierarchy
+
+ALWAYS prefer Primer components over native HTML tags. Before writing ANY HTML element, check if Primer has an equivalent:
+
+| Native HTML | Primer Replacement | Usage |
+|-------------|-------------------|-------|
+| `<button>` | `<Button>`, `<IconButton>` | ALL visible buttons |
+| `<span>` | `<Text as="span">` | ALL inline text and icon wrappers |
+| `<p>` | `<Text as="p">` | ALL paragraph text |
+| `<h1>`–`<h6>` | `<Heading as="h1">` etc. | ALL headings |
+| `<input>` | `<TextInput>` | ALL text inputs |
+| `<select>` | `<Select>` | ALL selects |
+| `<img>` | `<Avatar>` | Profile images |
+| `<a>` | `<Link>` (TanStack) | ALL navigation links |
+
+### Native HTML Allowed ONLY For
+
+- `<div>` — generic layout containers (no Primer equivalent for arbitrary wrappers)
+- `<nav>`, `<aside>`, `<main>`, `<section>`, `<header>`, `<footer>` — semantic landmarks
+- `<form>` — form wrappers
+- Invisible/non-visual elements (e.g., backdrop overlay when Primer has no equivalent)
+
+### The Check
+
+Before writing any native HTML tag:
+1. Does Primer have a component for this? → **Use it**
+2. Does the native tag have a semantic purpose Primer can't fill? → **Allowed**
+3. Neither? → **Use Primer's closest equivalent with `as` prop**
+
+```tsx
+// BAD — native tags when Primer has equivalents
+<button onClick={handleClick}>Save</button>
+<span className={styles.wrapper}><Icon /></span>
+<p>Description text</p>
+
+// GOOD — Primer components
+<Button onClick={handleClick}>Save</Button>
+<Text as="span" className={styles.wrapper}><Icon /></Text>
+<Text as="p">Description text</Text>
+```
+
 ## Colors — Primer Theme via useTheme
 
 ALL colors come from Primer's theme object via `useTheme`. Primer's built-in CSS variables (`--bgColor-*`, `--fgColor-*`) do NOT work directly in the DOM. Instead, use `useTheme` to get colors from the JS theme object and inject them as `--primer-*` CSS custom properties via the `style` prop.
@@ -84,12 +125,13 @@ Use `filter: brightness()` to derive darker/lighter shades from `--primer-*` var
 
 ## Exceptions — Raw HTML Allowed
 
-Native HTML elements are acceptable ONLY when Primer has no equivalent component for the semantic purpose:
+Native HTML elements are acceptable ONLY when Primer has no equivalent:
 
-- `<button>` for invisible overlays/backdrops (Primer has no backdrop component)
-- `<div>`, `<span>`, `<nav>`, `<aside>`, `<main>`, `<section>` for semantic layout
-- NEVER use raw `<button>` for visible UI buttons — use Primer `Button` / `IconButton`
-- NEVER use raw `<input>`, `<select>`, `<h1>`–`<h6>` — use Primer equivalents
+- `<div>` for generic layout containers
+- `<nav>`, `<aside>`, `<main>`, `<section>`, `<header>`, `<footer>` for semantic landmarks
+- `<form>` for form wrappers
+- Invisible overlays/backdrops (Primer has no backdrop component)
+- NEVER use `<button>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<input>`, `<select>`, `<a>` — Primer has equivalents for all of these
 
 ## Component Mapping
 

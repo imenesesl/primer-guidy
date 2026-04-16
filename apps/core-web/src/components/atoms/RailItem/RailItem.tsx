@@ -1,18 +1,30 @@
 import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
-import { Text } from '@primer/react'
+import { Button, Text } from '@primer/react'
 import type { RailItemProps } from './RailItem.types'
 import styles from './RailItem.module.scss'
 
 const ICON_SIZE = 20
 
-export const RailItem = ({
-  icon: Icon,
-  activeIcon: ActiveIcon,
-  label,
-  path,
-  active,
-}: RailItemProps) => {
+export const RailItem = (props: RailItemProps) => {
+  const { icon: Icon, 'aria-label': ariaLabel } = props
+
+  if (props.variant === 'action') {
+    return (
+      <Button
+        variant="invisible"
+        aria-label={ariaLabel}
+        className={styles.root}
+        onClick={props.onClick}
+      >
+        <Text as="span" className={clsx(styles.iconWrapper, styles.iconFixed)}>
+          <Icon size={ICON_SIZE} />
+        </Text>
+      </Button>
+    )
+  }
+
+  const { activeIcon: ActiveIcon, label, path, active } = props
   const ResolvedIcon = active && ActiveIcon ? ActiveIcon : Icon
 
   return (
@@ -22,9 +34,12 @@ export const RailItem = ({
       activeProps={{}}
       className={clsx(styles.root, { [styles.active as string]: active })}
     >
-      <span className={clsx(styles.iconWrapper, { [styles.iconActive as string]: active })}>
+      <Text
+        as="span"
+        className={clsx(styles.iconWrapper, { [styles.iconActive as string]: active })}
+      >
         <ResolvedIcon size={ICON_SIZE} />
-      </span>
+      </Text>
       <Text as="span" size="small" weight="medium">
         {label}
       </Text>

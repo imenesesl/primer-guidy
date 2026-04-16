@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import {
   createRouter,
@@ -28,7 +29,7 @@ const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
   return render(<RouterProvider router={router} />)
 }
 
-describe('RailItem', () => {
+describe('RailItem — navigation variant', () => {
   it('renders the icon and label', async () => {
     renderWithRouter(<RailItem icon={MockIcon} label="Home" path="/" active={false} />)
 
@@ -79,5 +80,29 @@ describe('RailItem', () => {
     renderWithRouter(<RailItem icon={MockIcon} label="Home" path="/" active />)
 
     expect(await screen.findByTestId('default-icon')).toBeInTheDocument()
+  })
+})
+
+describe('RailItem — action variant', () => {
+  it('renders as a button with the icon', () => {
+    render(<RailItem variant="action" icon={MockIcon} aria-label="Toggle" onClick={vi.fn()} />)
+
+    expect(screen.getByRole('button', { name: 'Toggle' })).toBeInTheDocument()
+    expect(screen.getByTestId('default-icon')).toBeInTheDocument()
+  })
+
+  it('does not render a label or link', () => {
+    render(<RailItem variant="action" icon={MockIcon} aria-label="Toggle" onClick={vi.fn()} />)
+
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
+
+  it('calls onClick when clicked', async () => {
+    const handleClick = vi.fn()
+    render(<RailItem variant="action" icon={MockIcon} aria-label="Toggle" onClick={handleClick} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle' }))
+
+    expect(handleClick).toHaveBeenCalledOnce()
   })
 })

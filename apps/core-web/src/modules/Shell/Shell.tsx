@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Text, IconButton, useTheme } from '@primer/react'
+import { Text, useTheme } from '@primer/react'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { WorkspaceLayout } from '@/components/templates/WorkspaceLayout'
 import { Rail } from '@/components/organisms/Rail'
+import { RailItem } from '@/components/atoms/RailItem'
 import { createLayoutStore, LayoutStoreProvider, useLayoutStore } from '@/stores/layout.store'
 import type { ShellProps } from './Shell.types'
 import { buildThemeVars } from './Shell.utils'
@@ -23,12 +24,10 @@ const SidebarContent = () => {
   return (
     <nav className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <IconButton
+        <RailItem
+          variant="action"
           icon={railVisible ? ChevronLeftIcon : ChevronRightIcon}
           aria-label={tLayout('actions.toggleRail')}
-          variant="invisible"
-          size="small"
-          className={styles.toggleButton}
           onClick={toggleRail}
         />
       </div>
@@ -44,12 +43,10 @@ const ContentHeader = () => {
 
   return (
     <div className={styles.contentHeader}>
-      <IconButton
+      <RailItem
+        variant="action"
         icon={sidebarVisible ? SidebarCollapseIcon : SidebarExpandIcon}
         aria-label={tLayout('actions.toggleSidebar')}
-        variant="invisible"
-        size="small"
-        className={styles.toggleButton}
         onClick={toggleSidebar}
       />
     </div>

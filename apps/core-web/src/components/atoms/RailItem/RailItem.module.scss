@@ -5,8 +5,10 @@
   @apply flex flex-col items-center justify-center gap-0.5;
   @apply py-1 px-1 opacity-70;
   @apply transition-all duration-200 ease-in-out;
+  @apply border-0 cursor-pointer;
 
   color: var(--primer-fg-on-emphasis);
+  background: none;
 
   &,
   &:hover,
@@ -32,7 +34,7 @@
   @apply transition-all duration-200 ease-in-out;
 }
 
-.root:hover .iconWrapper:not(.iconActive) {
+.root:hover .iconWrapper:not(.iconActive, .iconFixed) {
   background-color: var(--primer-neutral-muted);
 }
 
@@ -42,6 +44,14 @@
 
 .active:hover .iconActive {
   filter: brightness(0.85);
+}
+
+.iconFixed {
+  background-color: var(--primer-neutral-muted);
+}
+
+.root:hover .iconFixed {
+  filter: brightness(0.5);
 }
 
 .active {

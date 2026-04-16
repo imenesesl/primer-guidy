@@ -15,7 +15,6 @@
   width: var(--layout-rail-width);
   background-color: var(--primer-neutral-emphasis-plus);
   filter: brightness(0.75);
-  border-right: 1px solid var(--primer-border-muted);
 }
 
 .railHidden {
@@ -30,7 +29,6 @@
 
   width: var(--layout-sidebar-width);
   background-color: var(--primer-neutral-emphasis-plus);
-  border-right: 1px solid var(--primer-border-muted);
 }
 
 .sidebarHidden {
