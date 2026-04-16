@@ -1,5 +1,7 @@
 import { Flash, Heading, Text } from '@primer/react'
+import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { LoginRoutes } from '@/routes/routes'
 import { useLoginFlow } from './useLoginFlow'
 import { LoginStatus } from './Login.types'
 import { AuthBanner } from './AuthBanner'
@@ -40,6 +42,13 @@ export const Login = () => {
             <Text as="p">{tLogin(`errors.${flow.authError}`)}</Text>
           </Flash>
         )}
+
+        <Text as="p" className={styles.createAccountText}>
+          {tLogin('noAccount')}{' '}
+          <Link to={LoginRoutes.CreateAccount} className={styles.createAccountLink}>
+            {tLogin('createAccount')}
+          </Link>
+        </Text>
       </div>
     </div>
   )

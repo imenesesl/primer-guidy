@@ -14,6 +14,8 @@
     "message": "You need to create an account first before signing in.",
     "cta": "Create Account"
   },
+  "noAccount": "Don't have an account?",
+  "createAccount": "Create one",
   "errors": {
     "INVALID_EMAIL": "Please enter a valid email address",
     "POPUP_CLOSED": "Sign-in popup was closed. Please try again.",

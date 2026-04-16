@@ -71,14 +71,18 @@
   @apply w-full justify-center cursor-pointer;
 }
 
-.footer {
-  @apply flex items-center justify-center gap-2;
+.footer.footer {
+  @apply text-center;
 
   color: var(--primer-fg-muted);
 }
 
-.footerLink.footerLink {
+.footerLink {
   @apply cursor-pointer;
 
   color: var(--primer-accent-fg);
+
+  &:hover {
+    text-decoration: underline;
+  }
 }

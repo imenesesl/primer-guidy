@@ -1,4 +1,4 @@
-import { Button, FormControl, Heading, Text, TextInput } from '@primer/react'
+import { FormControl, Heading, Text, TextInput, Button } from '@primer/react'
 import { MailIcon } from '@primer/octicons-react'
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
@@ -53,14 +53,12 @@ export const CreateAccount = () => {
           {tCreateAccount('createWithGoogle')}
         </Button>
 
-        <div className={styles.footer}>
-          <Text as="span">{tCreateAccount('alreadyHaveAccount.message')}</Text>
-          <Link to={LoginRoutes.Root}>
-            <Button variant="invisible" size="small" className={styles.footerLink}>
-              {tCreateAccount('alreadyHaveAccount.cta')}
-            </Button>
+        <Text as="p" className={styles.footer}>
+          {tCreateAccount('alreadyHaveAccount.message')}{' '}
+          <Link to={LoginRoutes.Root} className={styles.footerLink}>
+            {tCreateAccount('alreadyHaveAccount.cta')}
           </Link>
-        </div>
+        </Text>
       </div>
     </div>
   )

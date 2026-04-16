@@ -94,3 +94,19 @@
 .linkSentIcon {
   color: var(--primer-accent-fg);
 }
+
+.createAccountText.createAccountText {
+  @apply text-center;
+
+  color: var(--primer-fg-muted);
+}
+
+.createAccountLink {
+  @apply cursor-pointer;
+
+  color: var(--primer-accent-fg);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
