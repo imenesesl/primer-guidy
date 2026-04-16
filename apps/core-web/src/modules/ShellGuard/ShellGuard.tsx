@@ -4,7 +4,7 @@ import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components
 import { Shell } from '@/modules/Shell'
 import { useAuthGuard, ContentSkeleton, AuthGuardStatus } from '@/modules/AuthGuard'
 import { UserProvider } from '@/context/user.context'
-import { RAIL_ITEMS, SIDEBAR_ITEMS } from './ShellGuard.utils'
+import { RAIL_ITEMS, SIDEBAR_ITEMS_MAP } from './ShellGuard.utils'
 
 export const ShellGuard = () => {
   const { status, user } = useAuthGuard()
@@ -14,7 +14,7 @@ export const ShellGuard = () => {
     <LayoutStoreProvider value={layoutStore}>
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={user?.avatarUrl ?? undefined}
         avatarName={user?.name}
         userName={user?.name}

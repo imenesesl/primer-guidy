@@ -1,0 +1,15 @@
+{
+  "title": "Activity",
+  "tabs": {
+    "notifications": "Notifications",
+    "history": "History"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Your recent notifications"
+  },
+  "history": {
+    "title": "History",
+    "description": "Activity history log"
+  }
+}

@@ -1,17 +1,20 @@
 import { Text } from '@primer/react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
-import { useMatchRoute } from '@tanstack/react-router'
+import { useMatchRoute, useLocation } from '@tanstack/react-router'
 import { RailItem, SidebarItem, useLayoutStore } from '@primer-guidy/components-web'
+import { resolveSidebarItems } from './SidebarContent.utils'
 import type { SidebarContentProps } from './SidebarContent.types'
 import styles from './Shell.module.scss'
 
-export const SidebarContent = ({ userName, sidebarItems }: SidebarContentProps) => {
+export const SidebarContent = ({ userName, sidebarItemsMap }: SidebarContentProps) => {
   const { t: tShell } = useTranslation('shell')
   const { t: tLayout } = useTranslation('layout')
   const railVisible = useLayoutStore((s) => s.railVisible)
   const toggleRail = useLayoutStore((s) => s.toggleRail)
   const matchRoute = useMatchRoute()
+  const location = useLocation()
+  const sidebarItems = resolveSidebarItems(location.pathname, sidebarItemsMap)
 
   return (
     <nav className={styles.sidebar}>

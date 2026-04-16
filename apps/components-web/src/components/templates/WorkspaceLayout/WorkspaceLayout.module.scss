@@ -14,7 +14,7 @@
 
   width: var(--layout-rail-width);
   background-color: var(--primer-canvas-inset);
-  border-right: 1px solid var(--primer-border-muted);
+  border-right: var(--spacing-px) solid var(--primer-border-muted);
 }
 
 .railHidden {
@@ -29,7 +29,7 @@
 
   width: var(--layout-sidebar-width);
   background-color: var(--primer-canvas-subtle);
-  border-right: 1px solid var(--primer-border-default);
+  border-right: var(--spacing-px) solid var(--primer-border-default);
 }
 
 .sidebarHidden {

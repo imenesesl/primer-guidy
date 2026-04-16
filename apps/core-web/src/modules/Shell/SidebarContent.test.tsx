@@ -6,6 +6,7 @@ import type { SidebarItemConfig } from '@primer-guidy/components-web'
 
 const mockToggleRail = vi.fn()
 let mockRailVisible = true
+let mockPathname = '/'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -15,6 +16,7 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('@tanstack/react-router', () => ({
   useMatchRoute: () => () => null,
+  useLocation: () => ({ pathname: mockPathname }),
 }))
 
 vi.mock('@primer-guidy/components-web', () => ({
@@ -35,6 +37,8 @@ vi.mock('./Shell.module.scss', () => ({
     sidebar: 'sidebar',
     sidebarHeader: 'sidebarHeader',
     sidebarUserName: 'sidebarUserName',
+    sidebarUserNameSkeleton: 'sidebarUserNameSkeleton',
+    sidebarDivider: 'sidebarDivider',
     sidebarNav: 'sidebarNav',
   },
 }))
@@ -47,38 +51,45 @@ const SIDEBAR_ITEMS: readonly SidebarItemConfig[] = [
   { icon: MockIcon, labelKey: 'sidebar.items.directories', path: '/directories' },
 ]
 
+const SIDEBAR_ITEMS_MAP: Record<string, readonly SidebarItemConfig[]> = {
+  '/': SIDEBAR_ITEMS,
+}
+
 describe('SidebarContent', () => {
   beforeEach(() => {
     mockRailVisible = true
+    mockPathname = '/'
     mockToggleRail.mockClear()
   })
 
   it('renders the sidebar navigation', () => {
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     expect(screen.getByRole('navigation')).toBeInTheDocument()
   })
 
   it('renders the toggle rail button', () => {
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     expect(screen.getByRole('button', { name: 'actions.toggleRail' })).toBeInTheDocument()
   })
 
   it('renders the user name when provided', () => {
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} userName="Jane Doe" />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} userName="Jane Doe" />)
 
     expect(screen.getByText('Jane Doe')).toBeInTheDocument()
   })
 
-  it('does not render user name when not provided', () => {
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+  it('renders skeleton when user name is not provided', () => {
+    const { container } = render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
-    expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument()
+    expect(container.querySelector('.sidebarUserNameSkeleton')).toBeInTheDocument()
   })
 
-  it('renders sidebar navigation items', () => {
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+  it('renders sidebar navigation items for current route', () => {
+    mockPathname = '/'
+
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     expect(screen.getByText('sidebar.items.directories')).toBeInTheDocument()
   })
@@ -86,7 +97,7 @@ describe('SidebarContent', () => {
   it('calls toggleRail when the button is clicked', async () => {
     const user = userEvent.setup()
 
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     await user.click(screen.getByRole('button', { name: 'actions.toggleRail' }))
 
@@ -96,7 +107,7 @@ describe('SidebarContent', () => {
   it('renders when rail is visible', () => {
     mockRailVisible = true
 
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     expect(screen.getByRole('button', { name: 'actions.toggleRail' })).toBeInTheDocument()
   })
@@ -104,7 +115,7 @@ describe('SidebarContent', () => {
   it('renders when rail is hidden', () => {
     mockRailVisible = false
 
-    render(<SidebarContent sidebarItems={SIDEBAR_ITEMS} />)
+    render(<SidebarContent sidebarItemsMap={SIDEBAR_ITEMS_MAP} />)
 
     expect(screen.getByRole('button', { name: 'actions.toggleRail' })).toBeInTheDocument()
   })

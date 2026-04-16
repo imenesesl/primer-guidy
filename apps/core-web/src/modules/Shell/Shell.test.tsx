@@ -9,24 +9,20 @@ import {
   RouterProvider,
   createMemoryHistory,
 } from '@tanstack/react-router'
-import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
+import type { RailItemConfig } from '@primer-guidy/components-web'
 import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
 import { Shell } from './Shell'
 
 const MockHomeIcon = vi.fn(() => <svg data-testid="home-icon" />)
 const MockChannelsIcon = vi.fn(() => <svg data-testid="channels-icon" />)
 const MockActivityIcon = vi.fn(() => <svg data-testid="activity-icon" />)
-const MockDirIcon = vi.fn(() => <svg data-testid="dir-icon" />)
-
 const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: MockHomeIcon, labelKey: 'rail.items.home', path: '/' },
   { icon: MockChannelsIcon, labelKey: 'rail.items.channels', path: '/channels' },
   { icon: MockActivityIcon, labelKey: 'rail.items.activity', path: '/activity' },
 ]
 
-const SIDEBAR_ITEMS: readonly SidebarItemConfig[] = [
-  { icon: MockDirIcon, labelKey: 'sidebar.items.directories', path: '/directories' },
-]
+const SIDEBAR_ITEMS_MAP = {}
 
 const AVATAR_SRC = 'https://example.com/avatar.png'
 const AVATAR_NAME = 'Jane Doe'
@@ -73,7 +69,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -90,7 +86,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -103,7 +99,7 @@ describe('Shell', () => {
 
   it('renders initials when avatarSrc is not provided', async () => {
     renderWithRouter(
-      <Shell railItems={RAIL_ITEMS} sidebarItems={SIDEBAR_ITEMS} avatarName={AVATAR_NAME}>
+      <Shell railItems={RAIL_ITEMS} sidebarItemsMap={SIDEBAR_ITEMS_MAP} avatarName={AVATAR_NAME}>
         <div>Page Content</div>
       </Shell>,
     )
@@ -116,7 +112,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -131,7 +127,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -148,7 +144,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -170,7 +166,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >
@@ -185,7 +181,7 @@ describe('Shell', () => {
     renderWithRouter(
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItems={SIDEBAR_ITEMS}
+        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
         avatarSrc={AVATAR_SRC}
         avatarName={AVATAR_NAME}
       >

@@ -19,7 +19,7 @@
   @apply flex flex-col gap-6 w-full max-w-sm p-8 rounded-xl;
 
   background-color: var(--primer-canvas-default);
-  border: 1px solid var(--primer-border-default);
+  border: var(--spacing-px) solid var(--primer-border-default);
 }
 
 .heading.heading {
@@ -43,7 +43,7 @@
 
   background-color: var(--primer-canvas-subtle);
   color: var(--primer-fg-default);
-  border: 1px solid var(--primer-border-default);
+  border: var(--spacing-px) solid var(--primer-border-default);
 }
 
 .googleButton.googleButton:hover:not(:disabled) {

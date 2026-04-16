@@ -1,0 +1,15 @@
+{
+  "title": "Channels",
+  "tabs": {
+    "general": "General",
+    "announcements": "Announcements"
+  },
+  "general": {
+    "title": "General",
+    "description": "General discussion channel"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "description": "Important announcements"
+  }
+}

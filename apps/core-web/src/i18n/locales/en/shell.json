@@ -12,7 +12,11 @@
   },
   "sidebar": {
     "items": {
-      "directories": "Directories"
+      "directories": "Directories",
+      "general": "General",
+      "announcements": "Announcements",
+      "notifications": "Notifications",
+      "history": "History"
     }
   },
   "breadcrumb": {
@@ -20,6 +24,10 @@
     "directories": "Directories",
     "users": "Users",
     "channels": "Channels",
-    "activity": "Activity"
+    "general": "General",
+    "announcements": "Announcements",
+    "activity": "Activity",
+    "notifications": "Notifications",
+    "history": "History"
   }
 }

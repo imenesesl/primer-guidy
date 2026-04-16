@@ -11,16 +11,21 @@ export const Rail = ({ items, avatarSrc, avatarName }: RailProps) => {
   const { t: tShell } = useTranslation('shell')
   const matchRoute = useMatchRoute()
 
+  const activeStates = items.map(
+    (item) => !item.fallbackActive && Boolean(matchRoute({ to: item.path, fuzzy: true })),
+  )
+  const anyActive = activeStates.some(Boolean)
+
   return (
     <nav className={styles.root}>
-      {items.map((item) => (
+      {items.map((item, index) => (
         <RailItem
           key={item.path}
           icon={item.icon}
           activeIcon={item.activeIcon}
           label={tShell(item.labelKey)}
           path={item.path}
-          active={item.alwaysActive || Boolean(matchRoute({ to: item.path, fuzzy: true }))}
+          active={activeStates[index] || (item.fallbackActive === true && !anyActive)}
         />
       ))}
       <div className={styles.spacer} />

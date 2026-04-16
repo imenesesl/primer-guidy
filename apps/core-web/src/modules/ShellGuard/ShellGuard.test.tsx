@@ -62,7 +62,26 @@ describe('ShellGuard', () => {
       rail: {
         items: { home: 'Home', channels: 'Channels', activity: 'Activity' },
       },
-      sidebar: { items: { directories: 'Directories' } },
+      sidebar: {
+        items: {
+          directories: 'Directories',
+          general: 'General',
+          announcements: 'Announcements',
+          notifications: 'Notifications',
+          history: 'History',
+        },
+      },
+      breadcrumb: {
+        home: 'Home',
+        directories: 'Directories',
+        users: 'Users',
+        channels: 'Channels',
+        general: 'General',
+        announcements: 'Announcements',
+        activity: 'Activity',
+        notifications: 'Notifications',
+        history: 'History',
+      },
     })
     i18n.addResourceBundle('en', 'layout', {
       rail: { label: 'Navigation rail' },
@@ -104,7 +123,7 @@ describe('ShellGuard', () => {
 
     await renderWithRouter()
 
-    expect(await screen.findByText('Home')).toBeInTheDocument()
+    expect((await screen.findAllByText('Home')).length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('Channels')).toBeInTheDocument()
     expect(screen.getByText('Activity')).toBeInTheDocument()
   })

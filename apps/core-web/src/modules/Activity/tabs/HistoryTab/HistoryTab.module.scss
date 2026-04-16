@@ -1,0 +1,14 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col gap-2 p-6;
+}
+
+.heading {
+  color: var(--primer-fg-default);
+}
+
+.description {
+  color: var(--primer-fg-muted);
+}

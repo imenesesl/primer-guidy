@@ -40,7 +40,7 @@
 }
 
 .sidebarDivider {
-  border-bottom: 1px solid var(--primer-border-muted);
+  border-bottom: var(--spacing-px) solid var(--primer-border-muted);
 }
 
 .sidebarNav {
@@ -51,7 +51,7 @@
   @apply flex items-center gap-2 p-2 sticky top-0 z-10;
 
   background-color: var(--primer-canvas-subtle);
-  border-bottom: 1px solid var(--primer-border-default);
+  border-bottom: var(--spacing-px) solid var(--primer-border-default);
 }
 
 .breadcrumb {

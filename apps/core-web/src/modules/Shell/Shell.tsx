@@ -7,7 +7,7 @@ import { ContentHeader } from './ContentHeader'
 
 export const Shell = ({
   railItems,
-  sidebarItems,
+  sidebarItemsMap,
   avatarSrc,
   avatarName,
   userName,
@@ -20,7 +20,7 @@ export const Shell = ({
     <div style={themeVars} className={styles.themeRoot}>
       <WorkspaceLayout
         rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarName={avatarName} />}
-        sidebar={<SidebarContent userName={userName} sidebarItems={sidebarItems} />}
+        sidebar={<SidebarContent userName={userName} sidebarItemsMap={sidebarItemsMap} />}
       >
         <ContentHeader />
         {children}
