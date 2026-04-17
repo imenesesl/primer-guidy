@@ -14,7 +14,7 @@ vi.mock('@primer-guidy/cloud-services', () => ({
   useRealtimeDatabase: () => ({
     get: mockGet,
     set: mockSet,
-    update: vi.fn(),
+    update: mockUpdate,
     remove: vi.fn(),
     push: vi.fn(),
     onValue: vi.fn(),
@@ -24,11 +24,14 @@ vi.mock('@primer-guidy/cloud-services', () => ({
     getDocs: vi.fn(),
     setDoc: mockSetDoc,
     addDoc: vi.fn(),
-    updateDoc: vi.fn(),
+    updateDoc: mockUpdateDoc,
     deleteDoc: vi.fn(),
     onSnapshot: vi.fn(),
   }),
 }))
+
+const mockUpdate = vi.fn()
+const mockUpdateDoc = vi.fn()
 
 vi.mock('@/services/student', () => ({
   getStudentCredential: (...args: unknown[]) => {
@@ -45,9 +48,18 @@ vi.mock('@/services/student', () => ({
   },
   createStudentProfile: (...args: unknown[]) => {
     const firestore = args[0] as { setDoc: typeof mockSetDoc }
-    const uid = args[1] as string
     const data = args[2] as Record<string, unknown>
-    return firestore.setDoc('students', uid, data)
+    return firestore.setDoc('students', data.identificationNumber, data)
+  },
+  updateStudentUid: (...args: unknown[]) => {
+    const realtimeDb = args[0] as { update: typeof mockUpdate }
+    const firestore = args[1] as { updateDoc: typeof mockUpdateDoc }
+    const id = args[2] as string
+    const uid = args[3] as string
+    return Promise.all([
+      realtimeDb.update(`student-credentials/${id}`, { uid }),
+      firestore.updateDoc('students', id, { uid }),
+    ])
   },
   hashPassword: (password: string) => Promise.resolve(`hashed_${password}`),
 }))
@@ -101,9 +113,11 @@ describe('useFlowAuth', () => {
       expect(result.current.status).toBe(FlowAuthStatus.Idle)
     })
 
-    it('redirects to learning on successful login', async () => {
+    it('redirects to learning and updates uid on successful login', async () => {
       mockGet.mockResolvedValue({ password: 'hashed_test1234', uid: 'uid-1' })
       mockSignInAnonymously.mockResolvedValue({ uid: 'anon-uid' })
+      mockUpdate.mockResolvedValue(undefined)
+      mockUpdateDoc.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -112,6 +126,8 @@ describe('useFlowAuth', () => {
       })
 
       expect(mockSignInAnonymously).toHaveBeenCalledOnce()
+      expect(mockUpdate).toHaveBeenCalledWith('student-credentials/12345678', { uid: 'anon-uid' })
+      expect(mockUpdateDoc).toHaveBeenCalledWith('students', '12345678', { uid: 'anon-uid' })
       expect(window.location.href).toContain('learning')
     })
 
@@ -166,7 +182,7 @@ describe('useFlowAuth', () => {
         password: 'hashed_test1234',
         uid: 'new-uid',
       })
-      expect(mockSetDoc).toHaveBeenCalledWith('students', 'new-uid', {
+      expect(mockSetDoc).toHaveBeenCalledWith('students', '12345678', {
         identificationNumber: '12345678',
         name: 'Jane Doe',
       })

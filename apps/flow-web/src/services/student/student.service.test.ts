@@ -5,6 +5,7 @@ import {
   getStudentCredential,
   createStudentCredential,
   createStudentProfile,
+  updateStudentUid,
 } from './student.service'
 
 const mockRealtimeDb: IRealtimeDatabaseProvider = {
@@ -79,7 +80,7 @@ describe('createStudentCredential', () => {
 })
 
 describe('createStudentProfile', () => {
-  it('writes profile to firestore with uid as document id', async () => {
+  it('writes profile to firestore with identificationNumber as document id', async () => {
     vi.mocked(mockFirestore.setDoc).mockResolvedValue(undefined)
 
     await createStudentProfile(mockFirestore, 'uid-1', {
@@ -87,11 +88,27 @@ describe('createStudentProfile', () => {
       name: 'Jane Doe',
     })
 
-    expect(mockFirestore.setDoc).toHaveBeenCalledWith('students', 'uid-1', {
+    expect(mockFirestore.setDoc).toHaveBeenCalledWith('students', '12345678', {
       uid: 'uid-1',
       identificationNumber: '12345678',
       name: 'Jane Doe',
       createdAt: expect.any(String),
+    })
+  })
+})
+
+describe('updateStudentUid', () => {
+  it('updates uid in both realtime database and firestore', async () => {
+    vi.mocked(mockRealtimeDb.update).mockResolvedValue(undefined)
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await updateStudentUid(mockRealtimeDb, mockFirestore, '12345678', 'new-uid')
+
+    expect(mockRealtimeDb.update).toHaveBeenCalledWith('student-credentials/12345678', {
+      uid: 'new-uid',
+    })
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith('students', '12345678', {
+      uid: 'new-uid',
     })
   })
 })

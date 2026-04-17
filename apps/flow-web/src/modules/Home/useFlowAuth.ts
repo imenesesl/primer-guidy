@@ -4,6 +4,7 @@ import {
   getStudentCredential,
   createStudentCredential,
   createStudentProfile,
+  updateStudentUid,
   hashPassword,
 } from '@/services/student'
 import type { LoginFormData } from '@/services/auth'
@@ -43,7 +44,8 @@ export const useFlowAuth = (): FlowAuthState => {
         return
       }
 
-      await auth.signInAnonymously()
+      const user = await auth.signInAnonymously()
+      await updateStudentUid(realtimeDb, firestore, data.identificationNumber, user.uid)
       window.location.href = getLearningUrl()
     } catch {
       setAuthError('unknown')
