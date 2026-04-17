@@ -1,0 +1,6 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.loading {
+  @apply flex justify-center items-center min-h-screen;
+}

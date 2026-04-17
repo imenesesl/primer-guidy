@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { Spinner } from '@primer/react'
 import { useAuthGuard, AuthGuardStatus } from '@/modules/AuthGuard'
+import styles from './_protected.module.scss'
 
 export const Route = createFileRoute('/_protected')({
   component: ProtectedLayout,
@@ -11,14 +12,7 @@ function ProtectedLayout() {
 
   if (status !== AuthGuardStatus.Authenticated) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-        }}
-      >
+      <div className={styles.loading}>
         <Spinner size="large" />
       </div>
     )

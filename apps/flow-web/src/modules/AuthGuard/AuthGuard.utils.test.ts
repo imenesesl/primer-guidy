@@ -12,9 +12,9 @@ describe('getHomeUrl', () => {
     expect(getHomeUrl()).toBe('/')
   })
 
-  it('returns BASE_PATH when set to a non-root path', () => {
+  it('returns BASE_PATH without trailing slash for non-root path', () => {
     vi.stubEnv('BASE_PATH', '/primer-guidy/flow/')
 
-    expect(getHomeUrl()).toBe('/primer-guidy/flow/')
+    expect(getHomeUrl()).toBe('/primer-guidy/flow')
   })
 })
