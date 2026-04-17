@@ -9,12 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LearningRouteImport } from './routes/learning'
+import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProtectedLearningRouteImport } from './routes/_protected/learning'
 
-const LearningRoute = LearningRouteImport.update({
-  id: '/learning',
-  path: '/learning',
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +22,46 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedLearningRoute = ProtectedLearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/learning': typeof LearningRoute
+  '/learning': typeof ProtectedLearningRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/learning': typeof LearningRoute
+  '/learning': typeof ProtectedLearningRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/learning': typeof LearningRoute
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/_protected/learning': typeof ProtectedLearningRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/learning'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/learning'
-  id: '__root__' | '/' | '/learning'
+  id: '__root__' | '/' | '/_protected' | '/_protected/learning'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LearningRoute: typeof LearningRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/learning': {
-      id: '/learning'
-      path: '/learning'
-      fullPath: '/learning'
-      preLoaderRoute: typeof LearningRouteImport
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +71,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/learning': {
+      id: '/_protected/learning'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof ProtectedLearningRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
   }
 }
 
+interface ProtectedRouteChildren {
+  ProtectedLearningRoute: typeof ProtectedLearningRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedLearningRoute: ProtectedLearningRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LearningRoute: LearningRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
