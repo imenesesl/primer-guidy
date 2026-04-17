@@ -53,7 +53,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -108,7 +108,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -162,7 +162,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -238,7 +238,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
