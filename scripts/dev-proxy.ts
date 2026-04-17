@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process'
 const PROXY_PORT = 3000
 const LOGIN_PORT = 3001
 const CORE_PORT = 3002
+const FLOW_PORT = 3003
 
 const HTTP_REDIRECT = 302
 const HTTP_NOT_FOUND = 404
@@ -14,6 +15,7 @@ const HTTP_BAD_GATEWAY = 502
 const routes: readonly { readonly prefix: string; readonly target: number }[] = [
   { prefix: '/login', target: LOGIN_PORT },
   { prefix: '/core', target: CORE_PORT },
+  { prefix: '/flow', target: FLOW_PORT },
 ]
 
 const getRoute = (url: string) => routes.find((r) => url.startsWith(r.prefix))
@@ -89,15 +91,22 @@ const core = spawn('pnpm', ['--filter', '@primer-guidy/core-web', 'dev'], {
   env,
 })
 
+const flow = spawn('pnpm', ['--filter', '@primer-guidy/flow-web', 'dev'], {
+  stdio: 'inherit',
+  env,
+})
+
 proxy.listen(PROXY_PORT, () => {
   console.log(`\n  Dev proxy running at http://localhost:${PROXY_PORT}`)
   console.log(`  /login/ → localhost:${LOGIN_PORT}`)
-  console.log(`  /core/  → localhost:${CORE_PORT}\n`)
+  console.log(`  /core/  → localhost:${CORE_PORT}`)
+  console.log(`  /flow/  → localhost:${FLOW_PORT}\n`)
 })
 
 const cleanup = () => {
   login.kill()
   core.kill()
+  flow.kill()
   process.exit()
 }
 

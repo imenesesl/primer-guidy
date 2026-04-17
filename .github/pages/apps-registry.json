@@ -1,7 +1,8 @@
 {
   "apps": [
     { "name": "Core", "route": "core", "description": "Main application platform", "icon": "🔷" },
-    { "name": "Login", "route": "login", "description": "Authentication portal", "icon": "🔑" }
+    { "name": "Login", "route": "login", "description": "Authentication portal", "icon": "🔑" },
+    { "name": "Flow", "route": "flow", "description": "Workflow management", "icon": "🌊" }
   ],
   "storybooks": [],
   "reports": [

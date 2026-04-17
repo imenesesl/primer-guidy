@@ -10,6 +10,7 @@
     "dev": "npx tsx scripts/dev-proxy.ts",
     "dev:core": "pnpm --filter @primer-guidy/core-web dev",
     "dev:login": "pnpm --filter @primer-guidy/login-web dev",
+    "dev:flow": "pnpm --filter @primer-guidy/flow-web dev",
     "build": "pnpm -r build",
     "generate:landing": "npx tsx .github/pages/generate.ts",
     "typecheck": "pnpm -r --if-present typecheck",

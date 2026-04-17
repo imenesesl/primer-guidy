@@ -205,6 +205,9 @@ jobs:
           if [ -d "apps/login-web/dist" ]; then
             cp -r apps/login-web/dist deploy/login
           fi
+          if [ -d "apps/flow-web/dist" ]; then
+            cp -r apps/flow-web/dist deploy/flow
+          fi
           mkdir -p deploy/e2e-report
           if [ -d "e2e-reports/core" ]; then
             cp -r e2e-reports/core deploy/e2e-report/core
@@ -258,6 +261,9 @@ jobs:
           fi
           if [ -d "apps/login-web/dist" ]; then
             cp -r apps/login-web/dist deploy/login
+          fi
+          if [ -d "apps/flow-web/dist" ]; then
+            cp -r apps/flow-web/dist deploy/flow
           fi
 
       - name: Deploy to Firebase Hosting

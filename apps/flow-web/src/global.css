@@ -1,0 +1,16 @@
+@import '@primer/primitives/dist/css/functional/themes/dark.css';
+@import '@primer/primitives/dist/css/functional/themes/light.css';
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
+
+:root {
+  --spacing-px: 1px;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}

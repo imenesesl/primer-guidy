@@ -1,0 +1,41 @@
+{
+  "name": "@primer-guidy/flow-web",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview",
+    "typecheck": "npx @tanstack/router-cli generate && tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:css": "stylelint 'src/**/*.module.scss'",
+    "format": "prettier --write 'src/**/*.{ts,tsx,scss}'",
+    "generate-routes": "@tanstack/router-cli generate",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@primer-guidy/cloud-services": "workspace:*",
+    "@primer-guidy/components-web": "workspace:*",
+    "@primer/octicons-react": "^19.24.1",
+    "@primer/primitives": "^11.7.0",
+    "@primer/react": "^38.20.0",
+    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-router": "^1.168.22",
+    "i18next": "^26.0.5",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-i18next": "^17.0.3",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@primer-guidy/eslint-config": "workspace:*",
+    "@primer-guidy/stylelint-config": "workspace:*",
+    "@rsbuild/core": "^1.7.5",
+    "@rsbuild/plugin-react": "^1.4.6",
+    "@rsbuild/plugin-sass": "^1.5.1",
+    "@tanstack/router-cli": "^1.166.33",
+    "@tanstack/router-plugin": "^1.167.22"
+  }
+}

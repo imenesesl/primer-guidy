@@ -1,0 +1,16 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center justify-center h-screen gap-4;
+
+  background-color: var(--primer-canvas-default);
+}
+
+.title {
+  color: var(--primer-fg-default);
+}
+
+.subtitle {
+  color: var(--primer-fg-muted);
+}
