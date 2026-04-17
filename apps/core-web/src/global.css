@@ -4,6 +4,7 @@
 @import 'tailwindcss/utilities';
 
 :root {
+  --spacing-px: 1px;
   --layout-rail-width: 4.5rem;
   --layout-sidebar-width: 16.25rem;
 }

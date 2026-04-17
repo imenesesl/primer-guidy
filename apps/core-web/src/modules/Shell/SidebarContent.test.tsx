@@ -38,7 +38,6 @@ vi.mock('./Shell.module.scss', () => ({
     sidebarHeader: 'sidebarHeader',
     sidebarUserName: 'sidebarUserName',
     sidebarUserNameSkeleton: 'sidebarUserNameSkeleton',
-    sidebarDivider: 'sidebarDivider',
     sidebarNav: 'sidebarNav',
   },
 }))

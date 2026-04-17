@@ -3,6 +3,10 @@
 @import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';
 
+:root {
+  --spacing-px: 1px;
+}
+
 * {
   scrollbar-width: none;
 }

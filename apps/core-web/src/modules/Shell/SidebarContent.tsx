@@ -33,7 +33,6 @@ export const SidebarContent = ({ userName, sidebarItemsMap }: SidebarContentProp
           <div className={styles.sidebarUserNameSkeleton} />
         )}
       </div>
-      <div className={styles.sidebarDivider} />
       <div className={styles.sidebarNav}>
         {sidebarItems.map((item) => (
           <SidebarItem
