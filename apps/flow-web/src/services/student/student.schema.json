@@ -1,0 +1,27 @@
+{
+  "level": "collection",
+  "path": "students",
+  "description": "Student profiles in Firestore — document ID is the Anonymous Auth UID",
+  "schema": {
+    "uid": {
+      "type": "string",
+      "required": true,
+      "description": "Firebase Anonymous Auth UID — used as document ID"
+    },
+    "identificationNumber": {
+      "type": "string",
+      "required": true,
+      "description": "Student identification number — matches key in Realtime Database"
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Student display name"
+    },
+    "createdAt": {
+      "type": "timestamp",
+      "required": true,
+      "description": "Account creation timestamp"
+    }
+  }
+}

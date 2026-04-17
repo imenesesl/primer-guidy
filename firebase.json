@@ -6,6 +6,7 @@
     "rewrites": [
       { "source": "/core/**", "destination": "/core/index.html" },
       { "source": "/login/**", "destination": "/login/index.html" },
+      { "source": "/flow/**", "destination": "/flow/index.html" },
       { "source": "**", "destination": "/index.html" }
     ]
   },

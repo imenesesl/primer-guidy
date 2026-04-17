@@ -8,7 +8,7 @@ import { AUTH_FORM_ID, AuthTab } from './Home.types'
 import type { LoginFormProps } from './LoginForm.types'
 import styles from './Home.module.scss'
 
-export const LoginForm = ({ onSubmit }: LoginFormProps) => {
+export const LoginForm = ({ onSubmit, disabled }: LoginFormProps) => {
   const { t: tHome } = useTranslation('home')
   const {
     register,
@@ -24,7 +24,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormControl>
+      <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>
           {tHome('fields.identificationNumber')}
         </FormControl.Label>
@@ -32,6 +32,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
           block
           inputMode="numeric"
           pattern="[0-9]*"
+          disabled={disabled}
           {...register('identificationNumber')}
         />
         {errors.identificationNumber && (
@@ -40,9 +41,9 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
           </FormControl.Validation>
         )}
       </FormControl>
-      <FormControl>
+      <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>{tHome('fields.password')}</FormControl.Label>
-        <TextInput block type="password" {...register('password')} />
+        <TextInput block type="password" disabled={disabled} {...register('password')} />
         {errors.password && (
           <FormControl.Validation variant="error">
             {tHome('validation.passwordMinLength')}

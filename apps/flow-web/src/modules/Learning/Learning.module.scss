@@ -1,0 +1,15 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center justify-center min-h-screen;
+
+  background-color: var(--primer-canvas-inset);
+}
+
+.card {
+  @apply flex flex-col items-center gap-4 w-full max-w-md p-8 rounded-xl;
+
+  background-color: var(--primer-canvas-default);
+  border: var(--spacing-px) solid var(--primer-border-default);
+}

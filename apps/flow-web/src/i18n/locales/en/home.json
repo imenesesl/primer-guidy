@@ -16,5 +16,16 @@
     "identificationNumberRequired": "Enter at least 8 digits",
     "nameRequired": "Name is required",
     "passwordMinLength": "Password must be at least 8 characters"
+  },
+  "errors": {
+    "studentNotFound": "No account found with that identification number",
+    "wrongPassword": "Incorrect password",
+    "identificationAlreadyExists": "An account with that identification number already exists",
+    "registrationFailed": "Registration failed. Please try again.",
+    "unknown": "An unexpected error occurred. Please try again."
+  },
+  "banner": {
+    "message": "You need to create an account first before signing in.",
+    "cta": "Create Account"
   }
 }

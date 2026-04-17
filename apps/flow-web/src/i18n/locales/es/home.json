@@ -16,5 +16,16 @@
     "identificationNumberRequired": "Ingrese al menos 8 dígitos",
     "nameRequired": "El nombre es requerido",
     "passwordMinLength": "La contraseña debe tener al menos 8 caracteres"
+  },
+  "errors": {
+    "studentNotFound": "No se encontró una cuenta con ese número de identificación",
+    "wrongPassword": "Contraseña incorrecta",
+    "identificationAlreadyExists": "Ya existe una cuenta con ese número de identificación",
+    "registrationFailed": "Error al crear la cuenta. Intente nuevamente.",
+    "unknown": "Ocurrió un error inesperado. Intente nuevamente."
+  },
+  "banner": {
+    "message": "Necesita crear una cuenta antes de iniciar sesión.",
+    "cta": "Crear Cuenta"
   }
 }

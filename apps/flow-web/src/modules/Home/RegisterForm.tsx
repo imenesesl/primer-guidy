@@ -8,7 +8,7 @@ import { AUTH_FORM_ID, AuthTab } from './Home.types'
 import type { RegisterFormProps } from './RegisterForm.types'
 import styles from './Home.module.scss'
 
-export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
+export const RegisterForm = ({ onSubmit, disabled }: RegisterFormProps) => {
   const { t: tHome } = useTranslation('home')
   const {
     register,
@@ -24,7 +24,7 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormControl>
+      <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>
           {tHome('fields.identificationNumber')}
         </FormControl.Label>
@@ -32,6 +32,7 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
           block
           inputMode="numeric"
           pattern="[0-9]*"
+          disabled={disabled}
           {...register('identificationNumber')}
         />
         {errors.identificationNumber && (
@@ -40,18 +41,18 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
           </FormControl.Validation>
         )}
       </FormControl>
-      <FormControl>
+      <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>{tHome('fields.name')}</FormControl.Label>
-        <TextInput block {...register('name')} />
+        <TextInput block disabled={disabled} {...register('name')} />
         {errors.name && (
           <FormControl.Validation variant="error">
             {tHome('validation.nameRequired')}
           </FormControl.Validation>
         )}
       </FormControl>
-      <FormControl>
+      <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>{tHome('fields.password')}</FormControl.Label>
-        <TextInput block type="password" {...register('password')} />
+        <TextInput block type="password" disabled={disabled} {...register('password')} />
         {errors.password && (
           <FormControl.Validation variant="error">
             {tHome('validation.passwordMinLength')}

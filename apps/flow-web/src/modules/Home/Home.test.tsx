@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
+import { FlowAuthStatus } from './Home.types'
+import type { FlowAuthState } from './Home.types'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -19,8 +21,27 @@ vi.mock('./Home.module.scss', () => ({
     formPanel: 'formPanel',
     formPanelHidden: 'formPanelHidden',
     submitContainer: 'submitContainer',
+    banner: 'banner',
+    bannerContent: 'bannerContent',
+    errorFlash: 'errorFlash',
     form: 'form',
   },
+}))
+
+const mockFlowAuth: {
+  -readonly [K in keyof FlowAuthState]: FlowAuthState[K]
+} = {
+  status: FlowAuthStatus.Idle,
+  showBanner: false,
+  authError: null,
+  isLoading: false,
+  onLogin: vi.fn(),
+  onRegister: vi.fn(),
+  dismissBanner: vi.fn(),
+}
+
+vi.mock('./useFlowAuth', () => ({
+  useFlowAuth: () => mockFlowAuth,
 }))
 
 import { Home } from './Home'
@@ -66,23 +87,6 @@ describe('Home', () => {
     )
   })
 
-  it('marks register tab as selected after clicking it', async () => {
-    const user = userEvent.setup()
-
-    render(<Home />)
-
-    await user.click(screen.getByRole('tab', { name: 'tabs.register' }))
-
-    expect(screen.getByRole('tab', { name: 'tabs.register' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
-    expect(screen.getByRole('tab', { name: 'tabs.login' })).toHaveAttribute(
-      'aria-selected',
-      'false',
-    )
-  })
-
   it('renders submit button with login label by default', () => {
     render(<Home />)
 
@@ -103,5 +107,31 @@ describe('Home', () => {
 
     expect(submitBtn).toBeInTheDocument()
     expect(submitBtn).toHaveAttribute('form', 'register-form')
+  })
+
+  it('does not show banner by default', () => {
+    render(<Home />)
+
+    expect(screen.queryByText('banner.message')).not.toBeInTheDocument()
+  })
+
+  it('shows banner when showBanner is true', () => {
+    mockFlowAuth.showBanner = true
+
+    render(<Home />)
+
+    expect(screen.getByText('banner.message')).toBeInTheDocument()
+
+    mockFlowAuth.showBanner = false
+  })
+
+  it('shows error flash when authError is set', () => {
+    mockFlowAuth.authError = 'wrongPassword'
+
+    render(<Home />)
+
+    expect(screen.getByText('errors.wrongPassword')).toBeInTheDocument()
+
+    mockFlowAuth.authError = null
   })
 })

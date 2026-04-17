@@ -9,3 +9,29 @@ export const AUTH_FORM_ID = {
   [AuthTab.Login]: 'login-form',
   [AuthTab.Register]: 'register-form',
 } as const
+
+export enum FlowAuthStatus {
+  Idle = 'idle',
+  Authenticating = 'authenticating',
+}
+
+export type FlowAuthError =
+  | 'studentNotFound'
+  | 'wrongPassword'
+  | 'identificationAlreadyExists'
+  | 'registrationFailed'
+  | 'unknown'
+
+export interface FlowAuthState {
+  readonly status: FlowAuthStatus
+  readonly showBanner: boolean
+  readonly authError: FlowAuthError | null
+  readonly isLoading: boolean
+  readonly onLogin: (data: { identificationNumber: string; password: string }) => Promise<void>
+  readonly onRegister: (data: {
+    identificationNumber: string
+    name: string
+    password: string
+  }) => Promise<void>
+  readonly dismissBanner: () => void
+}

@@ -13,6 +13,7 @@ const mockServices: CloudServices = {
     signInWithEmailLink: vi.fn(),
     isSignInWithEmailLink: vi.fn(),
     signInWithGoogle: vi.fn(),
+    signInAnonymously: vi.fn(),
     signOut: vi.fn(),
     sendEmailVerification: vi.fn(),
     onAuthStateChanged: vi.fn(),

@@ -32,6 +32,7 @@ const mockAuth = {
   signInWithEmailLink: vi.fn(),
   isSignInWithEmailLink: vi.fn(),
   signInWithGoogle: vi.fn(),
+  signInAnonymously: vi.fn(),
   signOut: vi.fn().mockResolvedValue(undefined),
   sendEmailVerification: vi.fn(),
   onAuthStateChanged: vi.fn((cb: (user: AuthUser | null) => void) => {

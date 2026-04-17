@@ -2,9 +2,17 @@
 @reference "tailwindcss/utilities";
 
 .root {
-  @apply flex flex-col items-center justify-center min-h-screen;
+  @apply flex flex-col items-center justify-center min-h-screen gap-4;
 
   background-color: var(--primer-canvas-inset);
+}
+
+.banner {
+  @apply fixed top-0 left-0 w-full z-50;
+}
+
+.bannerContent {
+  @apply flex items-center justify-between gap-4;
 }
 
 .card {
@@ -60,7 +68,11 @@
 }
 
 .submitContainer {
-  @apply px-8 pb-8;
+  @apply flex flex-col gap-4 px-8 pb-8;
+}
+
+.errorFlash {
+  @apply w-full;
 }
 
 .form {
