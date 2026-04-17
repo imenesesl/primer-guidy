@@ -116,6 +116,11 @@ jobs:
             libs/*/node_modules
           key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 

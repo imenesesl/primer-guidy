@@ -7,7 +7,6 @@ import {
   RouterProvider,
   createMemoryHistory,
 } from '@tanstack/react-router'
-import i18n from 'i18next'
 import { AuthGuardStatus } from '@/modules/AuthGuard'
 import type { AuthGuardState } from '@/modules/AuthGuard'
 import type { UserDocument } from '@/services/user'
@@ -29,6 +28,19 @@ vi.mock('@/context/user.context', () => ({
   UserProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
+vi.mock('@primer-guidy/components-web', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    createLayoutStore: () => ({}),
+    LayoutStoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  }
+})
+
+vi.mock('@/modules/Shell', () => ({
+  Shell: ({ children }: { children: React.ReactNode }) => <div data-testid="shell">{children}</div>,
+}))
+
 const mockUser: UserDocument = {
   uid: 'user-123',
   name: 'Jane Doe',
@@ -44,7 +56,7 @@ const renderWithRouter = async (initialPath = '/') => {
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',
-    component: () => <div>Page Content</div>,
+    component: () => <div data-testid="outlet-content">Page Content</div>,
   })
   const routeTree = rootRoute.addChildren([indexRoute])
   const router = createRouter({
@@ -62,40 +74,6 @@ describe('ShellGuard', () => {
 
   beforeEach(() => {
     mockAuthGuardState.current = { status: AuthGuardStatus.Initializing, user: null }
-    i18n.addResourceBundle('en', 'shell', {
-      rail: {
-        items: { home: 'Home', channels: 'Channels', activity: 'Activity' },
-      },
-      sidebar: {
-        items: {
-          directories: 'Directories',
-          general: 'General',
-          announcements: 'Announcements',
-          notifications: 'Notifications',
-          history: 'History',
-        },
-      },
-      breadcrumb: {
-        home: 'Home',
-        directories: 'Directories',
-        users: 'Users',
-        channels: 'Channels',
-        general: 'General',
-        announcements: 'Announcements',
-        activity: 'Activity',
-        notifications: 'Notifications',
-        history: 'History',
-      },
-    })
-    i18n.addResourceBundle('en', 'layout', {
-      rail: { label: 'Navigation rail' },
-      sidebar: { label: 'Sidebar nav' },
-      actions: {
-        toggleRail: 'Toggle navigation rail',
-        toggleSidebar: 'Toggle sidebar',
-        closeSidebar: 'Close sidebar',
-      },
-    })
   })
 
   it('renders content skeleton when status is initializing', async () => {
@@ -103,8 +81,7 @@ describe('ShellGuard', () => {
 
     await renderWithRouter()
 
-    await screen.findByLabelText('Navigation rail')
-    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
+    expect(await screen.findByTestId('content-skeleton')).toBeInTheDocument()
   })
 
   it('renders content skeleton when status is loading profile', async () => {
@@ -112,8 +89,7 @@ describe('ShellGuard', () => {
 
     await renderWithRouter()
 
-    await screen.findByLabelText('Navigation rail')
-    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
+    expect(await screen.findByTestId('content-skeleton')).toBeInTheDocument()
   })
 
   it('renders outlet content when authenticated', async () => {
@@ -124,13 +100,13 @@ describe('ShellGuard', () => {
     expect(await screen.findByText('Page Content')).toBeInTheDocument()
   })
 
-  it('renders rail items', async () => {
+  it('wraps authenticated content in shell', async () => {
     mockAuthGuardState.current = { status: AuthGuardStatus.Authenticated, user: mockUser }
 
     await renderWithRouter()
 
-    expect((await screen.findAllByText('Home')).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('Channels')).toBeInTheDocument()
-    expect(screen.getByText('Activity')).toBeInTheDocument()
+    const shell = await screen.findByTestId('shell')
+    expect(shell).toBeInTheDocument()
+    expect(screen.getByTestId('outlet-content')).toBeInTheDocument()
   })
 })
