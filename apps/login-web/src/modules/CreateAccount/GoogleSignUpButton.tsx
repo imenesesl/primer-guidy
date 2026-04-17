@@ -1,8 +1,8 @@
 import { Button } from '@primer/react'
 import { useTranslation } from 'react-i18next'
-import { GoogleIcon } from '@/modules/Login/GoogleIcon'
+import { GoogleIcon } from '@primer-guidy/components-web'
 import type { GoogleSignUpButtonProps } from './GoogleSignUpButton.types'
-import styles from './CreateAccount.module.scss'
+import styles from '@/styles/auth.module.scss'
 
 export const GoogleSignUpButton = ({ onClick, disabled }: GoogleSignUpButtonProps) => {
   const { t: tCreateAccount } = useTranslation('createAccount')

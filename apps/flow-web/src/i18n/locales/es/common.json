@@ -1,0 +1,9 @@
+{
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "back": "Volver",
+    "dismiss": "Cerrar"
+  }
+}

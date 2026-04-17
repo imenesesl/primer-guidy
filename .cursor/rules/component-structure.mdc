@@ -13,12 +13,19 @@ Every component MUST have its own folder with separated files. No exceptions.
 ```
 ComponentName/
   ComponentName.tsx          → Component implementation
-  ComponentName.module.scss  → Styles (SCSS Module with tokens)
   ComponentName.types.ts     → Props interface and local types
-  ComponentName.utils.ts     → Helper functions specific to this component
   ComponentName.test.tsx     → Unit tests (TDD — see testing-tdd rule)
-  index.ts                   → Named re-export only
+  index.ts                   → Named re-export only (ALWAYS exists)
 ```
+
+## Optional Files
+
+```
+  ComponentName.module.scss  → Styles (create ONLY when the component has its own styles)
+  ComponentName.utils.ts     → Helper functions (create ONLY when needed)
+```
+
+Wrapper/provider components (e.g., `AppProviders`, `AuthGuard`) that compose other components without adding visual styles do NOT need `.module.scss`. Sub-components within a module may import the parent's `.module.scss` instead of creating their own. NEVER create empty files — if the component has no styles, omit the file.
 
 ## File Responsibilities
 
@@ -70,11 +77,26 @@ export type { UserCardProps } from './UserCard.types'
 - NEVER put types inline in the component file
 - NEVER export default — always named exports
 - NEVER accept `className`, `style`, or styling props — use `variant` only (see styling-conventions rule)
-- If `utils` has no content, still create the file empty (consistency)
-- Styles MUST live in the `.module.scss` — never in the `.tsx`
-- `index.ts` is the ONLY entry point — never import from internal files outside the folder
+- `.utils.ts` is OPTIONAL — create ONLY when the component has helper functions. NEVER create empty files
+- `.module.scss` is OPTIONAL — create ONLY when the component has its own styles. Wrappers/providers may omit it
+- When styles exist, they MUST live in `.module.scss` — never inline in `.tsx`
+- `index.ts` is the ONLY entry point — ALWAYS exists, never import from internal files outside the folder
 - Props types import from `services/` types when representing domain data
 - Visible strings use `useTranslation` — never hardcoded (see i18n rule)
+
+## Exception — Icons Atom
+
+The `Icons` atom groups multiple SVG icon components in a single folder. It does NOT follow the one-component-per-folder convention:
+
+```
+atoms/Icons/
+  GoogleIcon.tsx       → One file per icon (no .module.scss needed)
+  Icons.types.ts       → Shared IconProps type
+  Icons.test.tsx       → Tests for all icons
+  index.ts             → Named re-exports
+```
+
+Icons are pure SVG components that receive `SVGProps<SVGSVGElement>`. They have no styles, no state, and no translations. ALL custom SVG icons MUST live here — NEVER in app modules or utils.
 
 ## Exceptions to Named Exports
 

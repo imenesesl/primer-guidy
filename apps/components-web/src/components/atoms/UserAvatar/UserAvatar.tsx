@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Avatar } from '@primer/react'
 import type { UserAvatarProps } from './UserAvatar.types'
 import { getInitials } from './UserAvatar.utils'

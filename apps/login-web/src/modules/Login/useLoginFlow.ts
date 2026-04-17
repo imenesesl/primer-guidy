@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useAuth, useFirestore, AuthErrorCode } from '@primer-guidy/cloud-services'
+import { useAuth, AuthErrorCode } from '@primer-guidy/cloud-services'
 import type { AuthError } from '@primer-guidy/cloud-services'
-import { checkUserExists } from '@/services/user'
+import { useCheckUserExists } from '@/services/user'
 import type { EmailFormData } from '@/services/auth'
+import { getCoreAppUrl } from '@/utils/url.utils'
 import {
   clearStoredEmailForSignIn,
-  getCoreAppUrl,
   getEmailLinkRedirectUrl,
   getStoredEmailForSignIn,
   storeEmailForSignIn,
@@ -15,7 +15,7 @@ import { LoginStatus } from './Login.types'
 
 export const useLoginFlow = (): LoginFlowState => {
   const auth = useAuth()
-  const firestore = useFirestore()
+  const checkUserExists = useCheckUserExists()
 
   const [status, setStatus] = useState(LoginStatus.Idle)
   const [showAccountBanner, setShowAccountBanner] = useState(false)
@@ -26,7 +26,7 @@ export const useLoginFlow = (): LoginFlowState => {
     async (user: { uid: string }) => {
       setStatus(LoginStatus.CheckingUser)
       try {
-        const exists = await checkUserExists(firestore, user.uid)
+        const exists = await checkUserExists.mutateAsync(user.uid)
         if (exists) {
           window.location.href = getCoreAppUrl()
         } else {
@@ -39,7 +39,7 @@ export const useLoginFlow = (): LoginFlowState => {
         setStatus(LoginStatus.Idle)
       }
     },
-    [auth, firestore],
+    [auth, checkUserExists],
   )
 
   useEffect(() => {

@@ -7,10 +7,11 @@ import { LoginRoutes } from '@/routes/routes'
 import { useLoginFlow } from './useLoginFlow'
 import { LoginStatus } from './Login.types'
 import { LoginForm } from './LoginForm'
-import { AuthDivider } from '@/components/atoms/AuthDivider'
+import { AuthDivider } from '@primer-guidy/components-web'
 import { GoogleSignInButton } from './GoogleSignInButton'
-import { LinkSentView } from './LinkSentView'
+import { LinkSentView } from '@/modules/LinkSentView'
 import { VerifyingView } from './VerifyingView'
+import authStyles from '@/styles/auth.module.scss'
 import styles from './Login.module.scss'
 
 export const Login = () => {
@@ -46,7 +47,7 @@ export const Login = () => {
   }, [flow.authError, showBanner, tLogin])
 
   if (flow.status === LoginStatus.LinkSent) {
-    return <LinkSentView onBack={flow.resetStatus} />
+    return <LinkSentView onBack={flow.resetStatus} namespace="login" />
   }
 
   if (flow.status === LoginStatus.CheckingUser) {
@@ -54,9 +55,9 @@ export const Login = () => {
   }
 
   return (
-    <div className={styles.root}>
-      <div className={styles.card}>
-        <Heading as="h2" className={styles.heading}>
+    <div className={authStyles.root}>
+      <div className={authStyles.card}>
+        <Heading as="h2" className={authStyles.heading}>
           {tLogin('title')}
         </Heading>
 

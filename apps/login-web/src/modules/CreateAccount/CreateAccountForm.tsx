@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { CreateAccountSchema } from '@/services/auth'
 import type { CreateAccountFormData } from '@/services/auth'
 import type { CreateAccountFormProps } from './CreateAccountForm.types'
-import styles from './CreateAccount.module.scss'
+import styles from '@/styles/auth.module.scss'
 
 export const CreateAccountForm = ({ onSubmit, disabled }: CreateAccountFormProps) => {
   const { t: tCreateAccount } = useTranslation('createAccount')

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useAuth, useFirestore, AuthErrorCode } from '@primer-guidy/cloud-services'
+import { useAuth, AuthErrorCode } from '@primer-guidy/cloud-services'
 import type { AuthError, AuthUser } from '@primer-guidy/cloud-services'
 import type { CreateAccountFormData } from '@/services/auth'
-import { createUser } from '@/services/user'
+import { useCreateUser } from '@/services/user'
+import { getCoreAppUrl } from '@/utils/url.utils'
 import {
   clearStoredSignUpData,
-  getCoreAppUrl,
   getCreateAccountRedirectUrl,
   getStoredSignUpEmail,
   getStoredSignUpName,
@@ -16,7 +16,7 @@ import { CreateAccountStatus } from './CreateAccount.types'
 
 export const useCreateAccountFlow = (): CreateAccountFlowState => {
   const auth = useAuth()
-  const firestore = useFirestore()
+  const createUser = useCreateUser()
 
   const [status, setStatus] = useState(CreateAccountStatus.Idle)
   const [authError, setAuthError] = useState<AuthErrorCode | null>(null)
@@ -26,10 +26,13 @@ export const useCreateAccountFlow = (): CreateAccountFlowState => {
     async (user: AuthUser, name: string) => {
       setStatus(CreateAccountStatus.CreatingUser)
       try {
-        await createUser(firestore, user.uid, {
-          name,
-          email: user.email ?? '',
-          avatarUrl: user.photoURL ?? null,
+        await createUser.mutateAsync({
+          uid: user.uid,
+          data: {
+            name,
+            email: user.email ?? '',
+            avatarUrl: user.photoURL ?? null,
+          },
         })
         window.location.href = getCoreAppUrl()
       } catch {
@@ -37,7 +40,7 @@ export const useCreateAccountFlow = (): CreateAccountFlowState => {
         setStatus(CreateAccountStatus.Idle)
       }
     },
-    [firestore],
+    [createUser],
   )
 
   useEffect(() => {

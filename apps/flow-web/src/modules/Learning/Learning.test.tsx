@@ -15,13 +15,13 @@ import { Learning } from './Learning'
 
 describe('Learning', () => {
   it('renders the learning title', () => {
-    render(<Learning />)
+    render(<Learning studentName="Alice" />)
 
     expect(screen.getByRole('heading', { name: 'title' })).toBeInTheDocument()
   })
 
   it('renders welcome text', () => {
-    render(<Learning />)
+    render(<Learning studentName="Alice" />)
 
     expect(screen.getByText('welcome')).toBeInTheDocument()
   })

@@ -10,6 +10,8 @@ Services are the SINGLE SOURCE OF TRUTH for types and data access. Every compone
 
 ## Structure per Service
 
+### Full service (async I/O)
+
 ```
 services/
   user/
@@ -19,6 +21,17 @@ services/
     user.service.test.ts   → Tests
     index.ts               → Named re-exports
 ```
+
+### Schema-only service (validation only — no async I/O)
+
+```
+services/
+  auth/
+    auth.types.ts          → Valibot schemas + inferred form types
+    index.ts               → Named re-exports
+```
+
+Schema-only services define validation schemas and their inferred types for forms. They do NOT have `.service.ts`, `.hooks.ts`, or `.service.test.ts` because there are no async operations to wrap. This is a valid variant — not every service has I/O.
 
 ## Types — The Contract
 
@@ -118,11 +131,61 @@ export { useGetUsers, useCreateUser, useUpdateUser, useDeleteUser } from './user
 export type { UserResponse, CreateUserRequest, UpdateUserPayload, DeleteUserPayload } from './user.types'
 ```
 
+## Subscription Hooks
+
+For real-time data (auth state, Firestore snapshots, RTDB listeners), use `useSubscription` from `@primer-guidy/components-web` inside `.hooks.ts`:
+
+```typescript
+// services/user/user.hooks.ts
+import { useSubscription } from '@primer-guidy/components-web'
+import { useAuth, useFirestore } from '@primer-guidy/cloud-services'
+import type { AuthUser } from '@primer-guidy/cloud-services'
+
+export const useAuthState = () => {
+  const auth = useAuth()
+  return useSubscription<AuthUser | null>(
+    (cb) => auth.onAuthStateChanged(cb),
+  )
+}
+```
+
+`useSubscription` handles the subscribe/unsubscribe lifecycle and returns `{ data, status, error, isLoading }` — same mental model as TanStack Query.
+
+### Choosing the right hook pattern
+
+| Operation | Pattern | Example |
+|-----------|---------|---------|
+| Read (cacheable) | `useQuery` | `useUserProfile(uid)` |
+| Write / action | `useMutation` | `useCreateUser()`, `useCheckUserExists()` |
+| Real-time listener | `useSubscription` | `useAuthState()`, `useOnSnapshot()` |
+
+## Cloud Services in Hooks
+
+Service hooks access cloud-services providers via React hooks (`useFirestore()`, `useAuth()`, `useRealtimeDatabase()`) — NEVER pass providers as arguments to hooks:
+
+```typescript
+// CORRECT — hook resolves its own provider
+export const useUserProfile = (uid: string | null) => {
+  const firestore = useFirestore()
+  return useQuery({
+    queryKey: ['user-profile', uid],
+    queryFn: () => getUserProfile(firestore, uid!),
+    enabled: uid !== null,
+  })
+}
+
+// WRONG — provider leaked into hook API
+export const useUserProfile = (firestore: IFirestoreProvider, uid: string) => ...
+```
+
+Service `.service.ts` functions remain pure (provider as argument) — hooks bridge the gap.
+
 ## Rules
 
 - Types from services are THE contract — components receive them via props, modules consume them via hooks
 - NEVER define Response/Request/Payload types outside `services/`
 - One service per domain entity
-- One hook per operation (GET, POST, PATCH, DELETE)
+- One hook per operation (GET, POST, PATCH, DELETE, subscribe)
 - Service promises are pure functions — no React, no hooks, no side effects
-- Hooks are thin wrappers over TanStack Query — no business logic inside
+- Hooks are thin wrappers over TanStack Query or `useSubscription` — no business logic inside
+- Schema-only services (validation + types) are a valid variant — they do NOT need `.service.ts`, `.hooks.ts`, or tests

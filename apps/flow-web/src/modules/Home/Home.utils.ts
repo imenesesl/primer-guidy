@@ -1,4 +1,2 @@
-export const getLearningUrl = (): string => {
-  const basePath = (import.meta.env.BASE_PATH as string) ?? '/'
-  return `${window.location.origin}${basePath}learning`
-}
+export const getLearningUrl = (origin: string, basePath: string): string =>
+  `${origin}${basePath}learning`

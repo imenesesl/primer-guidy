@@ -13,6 +13,7 @@
 
 .root {
   --shimmer-travel: 200%;
+  --shimmer-duration: 1.5s;
 
   @apply flex flex-col items-center h-full py-4 px-2 gap-2;
 }
@@ -35,5 +36,5 @@
     var(--primer-canvas-subtle) 75%
   );
   background-size: var(--shimmer-travel) 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: shimmer var(--shimmer-duration) infinite linear;
 }

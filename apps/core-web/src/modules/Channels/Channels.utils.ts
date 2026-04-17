@@ -1,5 +1,5 @@
 import { CoreRoutes } from '@/routes/routes'
-import type { TabConfig } from './Channels.types'
+import type { TabConfig } from '@/modules/TabLayout'
 
 export const CHANNEL_TABS: readonly TabConfig[] = [
   { labelKey: 'tabs.general', path: CoreRoutes.ChannelsGeneral },

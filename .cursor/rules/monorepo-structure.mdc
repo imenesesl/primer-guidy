@@ -68,7 +68,7 @@ The root `package.json` MUST have a `dev:<name>` script for each web app:
 }
 ```
 
-There is NO generic `dev` script. Each app has its own `dev:<name>` to avoid ambiguity.
+The generic `dev` script is reserved for the dev proxy (`scripts/dev-proxy.ts`). It MUST NOT start any single app — each app has its own `dev:<name>` to avoid ambiguity.
 
 Recursive scripts (`build`, `typecheck`, `lint`, `test`) run across all packages automatically.
 
@@ -89,8 +89,10 @@ Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `packag
 
 ## Constraints
 
-- NO JavaScript files (`.js`, `.jsx`) — TypeScript only (`.ts`, `.tsx`)
-- Every package MUST have its own `tsconfig.json` extending root config
+- NO JavaScript files (`.js`, `.jsx`) — TypeScript only (`.ts`, `.tsx`). Exception: `.mjs` files are allowed for tooling configs (e.g., `eslint.config.mjs`)
+- Every package with TypeScript source MUST have its own `tsconfig.json` extending root config. Exceptions:
+  - Pure JS config packages with no TS source (e.g., `eslint-config`) do not need a `tsconfig.json`
+  - Packages that need to emit (`outDir`/`declaration`) use a standalone `tsconfig.json` since `tsconfig.base.json` has `noEmit: true`
 - Strict TypeScript: `strict: true` always enabled
 - NO `any` type — use `unknown` and narrow with type guards
 - Shared types/interfaces go in `libs/shared-types/`

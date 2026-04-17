@@ -24,8 +24,10 @@ src/
   modules/         → Feature orchestrators (compose DS components + services)
   services/        → Data layer (promises, hooks, types — single source of truth)
   i18n/            → Internationalization config + locale files per namespace
-  utils/           → App-specific pure helpers
+  utils/           → App-specific pure helpers (NO SVG icons — icons live in components-web/atoms/Icons)
   hooks/           → App-specific custom hooks (non-service)
+  context/         → React Context providers for app-level DI
+  styles/          → Reusable SCSS utilities (breakpoints, mixins)
   test/            → Test setup and utilities
 ```
 
@@ -36,6 +38,7 @@ All reusable UI components AND shared utilities live in the shared design system
 ```
 src/
   components/      → Atomic Design: atoms/, molecules/, organisms/, templates/
+  hooks/           → Shared React hooks (useSubscription, etc.)
   stores/          → Shared UI state (Zustand stores consumed by components)
   styles/          → Shared SCSS utilities (breakpoints)
   utils/           → Shared utilities (buildThemeVars, PrimerColors, etc.)
@@ -73,8 +76,17 @@ NEVER manually nest QueryClientProvider, ThemeProvider, BaseStyles, or CloudServ
 ## Layer Responsibilities
 
 ### `routes/`
-- ONLY route definitions (`createFileRoute`)
-- Import the module component and wire it to a path
+
+Two distinct roles:
+
+**`__root.tsx` — Composition Root (single injection point)**
+- The ONLY place in the app that wires providers and cloud services
+- Imports from `@primer-guidy/cloud-services`, `@primer-guidy/components-web`, and `@tanstack/react-router`
+- Creates `cloudServices` instance and wraps `<AppProviders>`
+- This is the single level of injection — modules and components NEVER know where services come from
+
+**All other route files — Route Definitions only**
+- ONLY `createFileRoute` + import from `modules/`
 - NEVER contain UI logic or business logic
 
 ```tsx
@@ -108,7 +120,8 @@ export const Route = createFileRoute('/dashboard')({
 
 ## Import Rules
 
-- `routes/` → imports from `modules/` ONLY
+- `routes/__root.tsx` → imports from `@primer-guidy/cloud-services`, `@primer-guidy/components-web`, `@tanstack/react-router` (composition root)
+- `routes/*` (all other) → imports from `modules/` ONLY
 - `modules/` → imports from `@primer-guidy/components-web`, `@primer/react`, `services/`, and `utils/`
 - `@primer-guidy/components-web` → imports from `@primer/react` and internal components only (+ `useTranslation`)
 - `services/` → imports from `utils/` and shared `libs/`

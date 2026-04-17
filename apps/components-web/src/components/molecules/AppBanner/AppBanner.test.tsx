@@ -1,6 +1,14 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { language: 'en' },
+  }),
+}))
+
 import { ThemeProvider, BaseStyles } from '@primer/react'
 import { createBannerStore, BannerStoreProvider } from '../../../stores/banner.store'
 import type { StoreApi } from 'zustand'
@@ -81,7 +89,7 @@ describe('AppBanner', () => {
 
     renderWithProviders(store)
 
-    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'actions.dismiss' })).toBeInTheDocument()
   })
 
   it('dismisses the banner when the dismiss button is clicked', async () => {
@@ -89,7 +97,7 @@ describe('AppBanner', () => {
 
     renderWithProviders(store)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }))
+    await userEvent.click(screen.getByRole('button', { name: 'actions.dismiss' }))
 
     expect(store.getState().banner).toBeNull()
   })

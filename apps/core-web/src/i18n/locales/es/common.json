@@ -11,7 +11,8 @@
     "confirm": "Confirmar",
     "edit": "Editar",
     "create": "Crear",
-    "back": "Volver"
+    "back": "Volver",
+    "dismiss": "Cerrar"
   },
   "validation": {
     "required": "Este campo es obligatorio",

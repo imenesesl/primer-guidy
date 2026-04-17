@@ -1,3 +1,9 @@
+export { AuthDivider } from './components/atoms/AuthDivider'
+export type { AuthDividerProps } from './components/atoms/AuthDivider'
+
+export { GoogleIcon } from './components/atoms/Icons'
+export type { IconProps } from './components/atoms/Icons'
+
 export { RailItem } from './components/atoms/RailItem'
 export { UserAvatar } from './components/atoms/UserAvatar'
 export type { UserAvatarProps } from './components/atoms/UserAvatar'
@@ -27,6 +33,9 @@ export type { BannerStore, BannerConfig, BannerCta } from './stores/banner.store
 
 export { AppBanner } from './components/molecules/AppBanner'
 export type { AppBannerVariant } from './components/molecules/AppBanner'
+
+export { useSubscription, AsyncStatus } from './hooks'
+export type { SubscriptionResult, SubscriptionOptions, SubscribeFn } from './hooks'
 
 export { buildThemeVars } from './utils/theme.utils'
 export type { PrimerColors } from './utils/theme.utils'

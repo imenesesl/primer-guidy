@@ -1,6 +1,6 @@
 import { Spinner, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
-import styles from './CreateAccount.module.scss'
+import styles from '@/styles/auth.module.scss'
 
 export const CreatingView = () => {
   const { t: tCreateAccount } = useTranslation('createAccount')

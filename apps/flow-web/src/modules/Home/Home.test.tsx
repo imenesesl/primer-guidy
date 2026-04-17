@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { FlowAuthStatus } from './Home.types'
+import { FlowAuthStatus, FlowAuthError } from './Home.types'
 import type { FlowAuthState } from './Home.types'
 
 vi.mock('react-i18next', () => ({
@@ -142,7 +142,7 @@ describe('Home', () => {
   })
 
   it('calls showBanner with danger when authError is set', () => {
-    mockFlowAuth.authError = 'wrongPassword'
+    mockFlowAuth.authError = FlowAuthError.WrongPassword
 
     render(<Home />)
 

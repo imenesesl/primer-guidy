@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import clsx from 'clsx'
 import { Button } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useBannerStore } from '@primer-guidy/components-web'
@@ -65,7 +66,9 @@ export const Home = () => {
             variant="invisible"
             role="tab"
             aria-selected={activeTab === AuthTab.Login}
-            className={`${styles.tab} ${activeTab === AuthTab.Login ? styles.tabActive : ''}`}
+            className={clsx(styles.tab, {
+              [styles.tabActive as string]: activeTab === AuthTab.Login,
+            })}
             onClick={() => handleTabChange(AuthTab.Login)}
           >
             {tHome('tabs.login')}
@@ -74,7 +77,9 @@ export const Home = () => {
             variant="invisible"
             role="tab"
             aria-selected={activeTab === AuthTab.Register}
-            className={`${styles.tab} ${activeTab === AuthTab.Register ? styles.tabActive : ''}`}
+            className={clsx(styles.tab, {
+              [styles.tabActive as string]: activeTab === AuthTab.Register,
+            })}
             onClick={() => handleTabChange(AuthTab.Register)}
           >
             {tHome('tabs.register')}

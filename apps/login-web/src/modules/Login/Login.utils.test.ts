@@ -4,8 +4,8 @@ import {
   getStoredEmailForSignIn,
   clearStoredEmailForSignIn,
   getEmailLinkRedirectUrl,
-  getCoreAppUrl,
 } from './Login.utils'
+import { getCoreAppUrl } from '@/utils/url.utils'
 
 const EMAIL_STORAGE_KEY = 'emailForSignIn'
 

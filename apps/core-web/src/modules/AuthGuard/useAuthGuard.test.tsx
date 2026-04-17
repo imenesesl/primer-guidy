@@ -1,19 +1,42 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { ReactNode } from 'react'
-import type { AuthUser } from '@primer-guidy/cloud-services'
-import { CloudServicesProvider } from '@primer-guidy/cloud-services'
+import { AsyncStatus } from '@primer-guidy/components-web'
 import { useAuthGuard } from './useAuthGuard'
 import { AuthGuardStatus } from './AuthGuard.types'
 
-const createMockAuthUser = (overrides?: Partial<AuthUser>): AuthUser => ({
-  uid: 'user-123',
-  email: 'jane@example.com',
-  displayName: 'Jane Doe',
-  emailVerified: true,
-  photoURL: 'https://example.com/avatar.jpg',
-  ...overrides,
+const mockSignOut = vi.fn().mockResolvedValue(undefined)
+
+vi.mock('@primer-guidy/cloud-services', () => ({
+  useAuth: () => ({
+    onAuthStateChanged: vi.fn(() => vi.fn()),
+    signOut: mockSignOut,
+    isSignInWithEmailLink: vi.fn(),
+  }),
+}))
+
+const mockSubscriptionReturn = {
+  data: null as unknown,
+  status: AsyncStatus.Loading,
+  error: null,
+  isLoading: true,
+}
+
+vi.mock('@primer-guidy/components-web', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useSubscription: () => mockSubscriptionReturn,
+  }
 })
+
+const mockProfileReturn = {
+  data: null as unknown,
+  status: 'pending' as string,
+}
+
+vi.mock('@/services/user', () => ({
+  useUserProfile: () => mockProfileReturn,
+}))
 
 const mockUserDocument = {
   uid: 'user-123',
@@ -23,65 +46,14 @@ const mockUserDocument = {
   createdAt: '2025-01-01T00:00:00.000Z',
 }
 
-let authCallback: ((user: AuthUser | null) => void) | null = null
-
-const mockAuth = {
-  signInWithEmail: vi.fn(),
-  signUpWithEmail: vi.fn(),
-  sendSignInLink: vi.fn(),
-  signInWithEmailLink: vi.fn(),
-  isSignInWithEmailLink: vi.fn(),
-  signInWithGoogle: vi.fn(),
-  signInAnonymously: vi.fn(),
-  signOut: vi.fn().mockResolvedValue(undefined),
-  sendEmailVerification: vi.fn(),
-  onAuthStateChanged: vi.fn((cb: (user: AuthUser | null) => void) => {
-    authCallback = cb
-    return vi.fn()
-  }),
-  getCurrentUser: vi.fn(),
-}
-
-const mockFirestore = {
-  getDoc: vi.fn(),
-  getDocs: vi.fn(),
-  setDoc: vi.fn(),
-  addDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
-  onSnapshot: vi.fn(),
-}
-
-const mockRealtimeDatabase = {
-  get: vi.fn(),
-  set: vi.fn(),
-  update: vi.fn(),
-  remove: vi.fn(),
-  push: vi.fn(),
-  onValue: vi.fn(),
-  query: vi.fn(),
-}
-
-const mockHosting = {
-  getProjectUrl: vi.fn(),
-  getPreviewUrl: vi.fn(),
-}
-
-const mockServices = {
-  auth: mockAuth,
-  firestore: mockFirestore,
-  realtimeDatabase: mockRealtimeDatabase,
-  hosting: mockHosting,
-}
-
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <CloudServicesProvider value={mockServices}>{children}</CloudServicesProvider>
-)
-
 describe('useAuthGuard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    authCallback = null
+    mockSubscriptionReturn.data = null
+    mockSubscriptionReturn.status = AsyncStatus.Loading
+    mockSubscriptionReturn.isLoading = true
+    mockProfileReturn.data = null
+    mockProfileReturn.status = AsyncStatus.Pending
     Object.defineProperty(window, 'location', {
       writable: true,
       value: { href: '' },
@@ -89,28 +61,32 @@ describe('useAuthGuard', () => {
   })
 
   it('starts in initializing status', () => {
-    const { result } = renderHook(() => useAuthGuard(), { wrapper })
+    const { result } = renderHook(() => useAuthGuard())
 
     expect(result.current.status).toBe(AuthGuardStatus.Initializing)
     expect(result.current.user).toBeNull()
   })
 
-  it('redirects to login when user is not authenticated', async () => {
-    const { result } = renderHook(() => useAuthGuard(), { wrapper })
+  it('returns unauthenticated when auth resolves with no user', async () => {
+    mockSubscriptionReturn.data = null
+    mockSubscriptionReturn.status = AsyncStatus.Success
+    mockSubscriptionReturn.isLoading = false
 
-    authCallback?.(null)
+    const { result } = renderHook(() => useAuthGuard())
 
     await waitFor(() => {
       expect(result.current.status).toBe(AuthGuardStatus.Unauthenticated)
     })
   })
 
-  it('loads user profile when authenticated', async () => {
-    mockFirestore.getDoc.mockResolvedValue(mockUserDocument)
+  it('returns authenticated with user profile when both resolve', async () => {
+    mockSubscriptionReturn.data = { uid: 'user-123' }
+    mockSubscriptionReturn.status = AsyncStatus.Success
+    mockSubscriptionReturn.isLoading = false
+    mockProfileReturn.data = mockUserDocument
+    mockProfileReturn.status = AsyncStatus.Success
 
-    const { result } = renderHook(() => useAuthGuard(), { wrapper })
-
-    authCallback?.(createMockAuthUser())
+    const { result } = renderHook(() => useAuthGuard())
 
     await waitFor(() => {
       expect(result.current.status).toBe(AuthGuardStatus.Authenticated)
@@ -118,15 +94,17 @@ describe('useAuthGuard', () => {
     })
   })
 
-  it('signs out and redirects when user profile not found in Firestore', async () => {
-    mockFirestore.getDoc.mockResolvedValue(null)
+  it('signs out when user profile not found in Firestore', async () => {
+    mockSubscriptionReturn.data = { uid: 'user-123' }
+    mockSubscriptionReturn.status = AsyncStatus.Success
+    mockSubscriptionReturn.isLoading = false
+    mockProfileReturn.data = null
+    mockProfileReturn.status = AsyncStatus.Success
 
-    renderHook(() => useAuthGuard(), { wrapper })
-
-    authCallback?.(createMockAuthUser())
+    renderHook(() => useAuthGuard())
 
     await waitFor(() => {
-      expect(mockAuth.signOut).toHaveBeenCalled()
+      expect(mockSignOut).toHaveBeenCalled()
     })
   })
 })

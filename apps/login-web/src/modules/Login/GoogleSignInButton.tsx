@@ -1,8 +1,8 @@
 import { Button } from '@primer/react'
 import { useTranslation } from 'react-i18next'
-import { GoogleIcon } from './GoogleIcon'
+import { GoogleIcon } from '@primer-guidy/components-web'
 import type { GoogleSignInButtonProps } from './GoogleSignInButton.types'
-import styles from './Login.module.scss'
+import styles from '@/styles/auth.module.scss'
 
 export const GoogleSignInButton = ({ onClick, disabled }: GoogleSignInButtonProps) => {
   const { t: tLogin } = useTranslation('login')

@@ -12,6 +12,7 @@ vi.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: vi.fn(),
   createUserWithEmailAndPassword: vi.fn(),
   signInWithPopup: vi.fn(),
+  signInAnonymously: vi.fn(),
   GoogleAuthProvider: vi.fn(),
   signOut: vi.fn(),
   sendEmailVerification: vi.fn(),
@@ -29,6 +30,7 @@ const {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInAnonymously,
   signOut,
   sendEmailVerification,
   sendSignInLinkToEmail,
@@ -228,6 +230,28 @@ describe('FirebaseAuthAdapter', () => {
       await expect(adapter.signInWithGoogle()).rejects.toMatchObject({
         code: AuthErrorCode.POPUP_CLOSED,
       })
+    })
+  })
+
+  describe('signInAnonymously', () => {
+    it('returns mapped AuthUser on success', async () => {
+      vi.mocked(signInAnonymously).mockResolvedValue({
+        user: mockFirebaseUser,
+      } as never)
+
+      const result = await adapter.signInAnonymously()
+
+      expect(result).toEqual(expectedAuthUser)
+      expect(signInAnonymously).toHaveBeenCalledWith(mockAuth)
+    })
+
+    it('throws mapped AuthError on failure', async () => {
+      vi.mocked(signInAnonymously).mockRejectedValue({
+        code: 'auth/operation-not-allowed',
+        message: 'Anonymous sign-in disabled',
+      })
+
+      await expect(adapter.signInAnonymously()).rejects.toThrow(AuthError)
     })
   })
 

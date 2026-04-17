@@ -24,10 +24,13 @@
 }
 
 .sidebarUserNameSkeleton {
+  --shimmer-duration: 1.5s;
+  --shimmer-opacity-min: 0.4;
+
   @apply flex-1 h-4 rounded;
 
   background-color: var(--primer-neutral-muted);
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
 }
 
 @keyframes shimmer {
@@ -37,7 +40,7 @@
   }
 
   50% {
-    opacity: 0.4;
+    opacity: var(--shimmer-opacity-min);
   }
 }
 

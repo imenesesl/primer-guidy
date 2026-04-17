@@ -1,2 +1,2 @@
 export { Activity } from './Activity'
-export type { ActivityProps, TabConfig } from './Activity.types'
+export type { ActivityProps } from './Activity.types'

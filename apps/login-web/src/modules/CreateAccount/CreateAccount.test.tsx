@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { IAuthProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
+import type { IAuthProvider } from '@primer-guidy/cloud-services'
 
 const mockSignInWithGoogle = vi.fn()
 const mockSendSignInLink = vi.fn()
 const mockIsSignInWithEmailLink = vi.fn().mockReturnValue(false)
-const mockSetDoc = vi.fn()
+const mockCreateUserMutateAsync = vi.fn()
 
 const mockAuth: IAuthProvider = {
   signInWithEmail: vi.fn(),
@@ -22,20 +22,13 @@ const mockAuth: IAuthProvider = {
   getCurrentUser: vi.fn().mockReturnValue(null),
 }
 
-const mockFirestore: IFirestoreProvider = {
-  getDoc: vi.fn(),
-  getDocs: vi.fn(),
-  setDoc: mockSetDoc,
-  addDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
-  onSnapshot: vi.fn(),
-}
-
 vi.mock('@primer-guidy/cloud-services', () => ({
   useAuth: () => mockAuth,
-  useFirestore: () => mockFirestore,
   AuthErrorCode: { UNKNOWN: 'UNKNOWN' },
+}))
+
+vi.mock('@/services/user', () => ({
+  useCreateUser: () => ({ mutateAsync: mockCreateUserMutateAsync }),
 }))
 
 vi.mock('react-i18next', () => ({
@@ -53,10 +46,14 @@ vi.mock('@tanstack/react-router', () => ({
 
 const mockShowBanner = vi.fn()
 
-vi.mock('@primer-guidy/components-web', () => ({
-  useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
-    selector({ showBanner: mockShowBanner, banner: null }),
-}))
+vi.mock('@primer-guidy/components-web', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
+      selector({ showBanner: mockShowBanner, banner: null }),
+  }
+})
 
 import { CreateAccount } from './CreateAccount'
 
@@ -123,22 +120,20 @@ describe('CreateAccount', () => {
       photoURL: 'https://example.com/photo.jpg',
     }
     mockSignInWithGoogle.mockResolvedValue(mockUser)
-    mockSetDoc.mockResolvedValue(undefined)
+    mockCreateUserMutateAsync.mockResolvedValue(undefined)
 
     render(<CreateAccount />)
 
     await user.click(screen.getByRole('button', { name: /createWithGoogle/i }))
 
     expect(mockSignInWithGoogle).toHaveBeenCalledOnce()
-    expect(mockSetDoc).toHaveBeenCalledWith(
-      'users',
-      'google-uid-123',
-      expect.objectContaining({
-        uid: 'google-uid-123',
+    expect(mockCreateUserMutateAsync).toHaveBeenCalledWith({
+      uid: 'google-uid-123',
+      data: expect.objectContaining({
         name: 'Test User',
         email: 'test@test.com',
         avatarUrl: 'https://example.com/photo.jpg',
       }),
-    )
+    })
   })
 })

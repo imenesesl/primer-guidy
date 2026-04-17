@@ -76,7 +76,8 @@ For custom-styled buttons (e.g., Google sign-in), use `canvas.default` bg with `
 ## Icons
 
 - Use `@primer/octicons-react` for all standard icons
-- For third-party brand icons (Google, Apple), create SVG components in the module folder
+- For third-party brand icons (Google, Apple), create SVG components in `components-web/atoms/Icons/` — NEVER in app modules or utils
+- Import brand icons from `@primer-guidy/components-web`
 - Always pair icons with `leadingVisual` or `trailingVisual` prop on Button
 
 ## What is FORBIDDEN

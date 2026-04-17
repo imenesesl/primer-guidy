@@ -15,12 +15,13 @@ export enum FlowAuthStatus {
   Authenticating = 'authenticating',
 }
 
-export type FlowAuthError =
-  | 'studentNotFound'
-  | 'wrongPassword'
-  | 'identificationAlreadyExists'
-  | 'registrationFailed'
-  | 'unknown'
+export enum FlowAuthError {
+  StudentNotFound = 'studentNotFound',
+  WrongPassword = 'wrongPassword',
+  IdentificationAlreadyExists = 'identificationAlreadyExists',
+  RegistrationFailed = 'registrationFailed',
+  Unknown = 'unknown',
+}
 
 export interface FlowAuthState {
   readonly status: FlowAuthStatus

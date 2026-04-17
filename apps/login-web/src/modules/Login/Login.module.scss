@@ -1,75 +1,6 @@
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
-.root {
-  @apply flex flex-col items-center justify-center min-h-screen;
-
-  background-color: var(--primer-canvas-inset);
-}
-
-.card {
-  @apply flex flex-col gap-6 w-full max-w-sm p-8 rounded-xl;
-
-  background-color: var(--primer-canvas-default);
-  border: var(--spacing-px) solid var(--primer-border-default);
-}
-
-.heading.heading {
-  color: var(--primer-fg-default);
-}
-
-.form {
-  @apply flex flex-col gap-4;
-}
-
-.label.label {
-  color: var(--primer-fg-default);
-}
-
-.emailButton.emailButton {
-  @apply w-full justify-center gap-2 cursor-pointer;
-}
-
-.googleButton.googleButton {
-  @apply w-full justify-center gap-2 cursor-pointer;
-
-  background-color: var(--primer-canvas-subtle);
-  color: var(--primer-fg-default);
-  border: var(--spacing-px) solid var(--primer-border-default);
-}
-
-.googleButton.googleButton:hover:not(:disabled) {
-  background-color: var(--primer-neutral-muted);
-}
-
-.googleButton.googleButton:disabled {
-  @apply cursor-not-allowed opacity-50;
-}
-
-.googleIcon {
-  @apply inline-flex shrink-0 w-5 h-5;
-}
-
-.fullWidth.fullWidth {
-  @apply w-full justify-center cursor-pointer;
-}
-
-.verifying {
-  @apply flex flex-col items-center gap-4;
-
-  color: var(--primer-fg-default);
-}
-
-.linkSentCard {
-  @apply flex flex-col items-center gap-3 text-center;
-
-  color: var(--primer-fg-default);
-}
-
-.linkSentIcon {
-  color: var(--primer-accent-fg);
-}
-
 .createAccountText.createAccountText {
   @apply text-center;
 
@@ -77,7 +8,7 @@
 }
 
 .createAccountLink {
-  @apply cursor-pointer;
+  @apply cursor-pointer transition-colors duration-200 ease-in-out;
 
   color: var(--primer-accent-fg);
 

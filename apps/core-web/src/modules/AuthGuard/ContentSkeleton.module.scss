@@ -13,6 +13,7 @@
 
 .root {
   --shimmer-travel: 200%;
+  --shimmer-duration: 1.5s;
 
   @apply flex flex-col items-center justify-center flex-1 gap-5 p-8;
 }
@@ -27,7 +28,7 @@
     var(--primer-canvas-subtle) 75%
   );
   background-size: var(--shimmer-travel) 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: shimmer var(--shimmer-duration) infinite linear;
 }
 
 .line {
@@ -40,7 +41,7 @@
     var(--primer-canvas-subtle) 75%
   );
   background-size: var(--shimmer-travel) 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: shimmer var(--shimmer-duration) infinite linear;
 }
 
 .lineWide {

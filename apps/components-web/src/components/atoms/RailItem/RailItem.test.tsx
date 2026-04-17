@@ -1,33 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
-import {
-  createRouter,
-  createRootRoute,
-  createRoute,
-  RouterProvider,
-  createMemoryHistory,
-} from '@tanstack/react-router'
+import { renderWithRouter } from '../../../test/render-with-router'
 import { RailItem } from './RailItem'
 
 const MockIcon = vi.fn(() => <svg data-testid="default-icon" />)
 const MockActiveIcon = vi.fn(() => <svg data-testid="active-icon" />)
-
-const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
-  const rootRoute = createRootRoute({ component: () => ui })
-  const indexRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: () => null,
-  })
-  const routeTree = rootRoute.addChildren([indexRoute])
-  const router = createRouter({
-    routeTree,
-    history: createMemoryHistory({ initialEntries: [initialPath] }),
-  })
-
-  return render(<RouterProvider router={router} />)
-}
 
 describe('RailItem — navigation variant', () => {
   it('renders the icon and label', async () => {

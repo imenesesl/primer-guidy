@@ -1,2 +1,2 @@
 export { Directories } from './Directories'
-export type { DirectoriesProps, TabConfig } from './Directories.types'
+export type { DirectoriesProps } from './Directories.types'

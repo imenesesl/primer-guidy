@@ -8,9 +8,13 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-vi.mock('./GoogleIcon', () => ({
-  GoogleIcon: (props: Record<string, unknown>) => <svg data-testid="google-icon" {...props} />,
-}))
+vi.mock('@primer-guidy/components-web', async () => {
+  const actual = await vi.importActual('@primer-guidy/components-web')
+  return {
+    ...actual,
+    GoogleIcon: (props: Record<string, unknown>) => <svg data-testid="google-icon" {...props} />,
+  }
+})
 
 import { GoogleSignInButton } from './GoogleSignInButton'
 

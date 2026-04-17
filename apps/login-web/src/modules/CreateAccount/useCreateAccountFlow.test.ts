@@ -50,9 +50,10 @@ vi.mock('@primer-guidy/cloud-services', () => ({
   },
 }))
 
+const mockCreateUserMutateAsync = vi.fn()
+
 vi.mock('@/services/user', () => ({
-  createUser: (...args: unknown[]) =>
-    mockSetDoc(...(args as [IFirestoreProvider, string, unknown])),
+  useCreateUser: () => ({ mutateAsync: mockCreateUserMutateAsync }),
 }))
 
 import { useCreateAccountFlow } from './useCreateAccountFlow'
@@ -143,7 +144,7 @@ describe('useCreateAccountFlow', () => {
   describe('onGoogleSignIn', () => {
     it('signs in with Google and saves the user', async () => {
       mockSignInWithGoogle.mockResolvedValue(fakeUser)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
       const { result } = renderHook(() => useCreateAccountFlow())
 
       await act(async () => {
@@ -151,49 +152,46 @@ describe('useCreateAccountFlow', () => {
       })
 
       expect(mockSignInWithGoogle).toHaveBeenCalledOnce()
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        mockFirestore,
-        'uid-123',
-        expect.objectContaining({
+      expect(mockCreateUserMutateAsync).toHaveBeenCalledWith({
+        uid: 'uid-123',
+        data: expect.objectContaining({
           name: 'Test User',
           email: 'test@example.com',
           avatarUrl: 'https://example.com/photo.jpg',
         }),
-      )
+      })
     })
 
     it('uses email as name when displayName is null', async () => {
       const userWithoutName: AuthUser = { ...fakeUser, displayName: null }
       mockSignInWithGoogle.mockResolvedValue(userWithoutName)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
       const { result } = renderHook(() => useCreateAccountFlow())
 
       await act(async () => {
         await result.current.onGoogleSignIn()
       })
 
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        mockFirestore,
-        'uid-123',
-        expect.objectContaining({ name: 'test@example.com' }),
-      )
+      expect(mockCreateUserMutateAsync).toHaveBeenCalledWith({
+        uid: 'uid-123',
+        data: expect.objectContaining({ name: 'test@example.com' }),
+      })
     })
 
     it('uses empty string as name when both displayName and email are null', async () => {
       const userNoIdentifiers: AuthUser = { ...fakeUser, displayName: null, email: null }
       mockSignInWithGoogle.mockResolvedValue(userNoIdentifiers)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
       const { result } = renderHook(() => useCreateAccountFlow())
 
       await act(async () => {
         await result.current.onGoogleSignIn()
       })
 
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        mockFirestore,
-        'uid-123',
-        expect.objectContaining({ name: '' }),
-      )
+      expect(mockCreateUserMutateAsync).toHaveBeenCalledWith({
+        uid: 'uid-123',
+        data: expect.objectContaining({ name: '' }),
+      })
     })
 
     it('sets error and returns to idle when Google sign-in fails', async () => {
@@ -211,7 +209,7 @@ describe('useCreateAccountFlow', () => {
 
     it('sets UNKNOWN error when createUser fails after Google sign-in', async () => {
       mockSignInWithGoogle.mockResolvedValue(fakeUser)
-      mockSetDoc.mockRejectedValue(new Error('firestore failure'))
+      mockCreateUserMutateAsync.mockRejectedValue(new Error('firestore failure'))
       const { result } = renderHook(() => useCreateAccountFlow())
 
       await act(async () => {
@@ -284,7 +282,7 @@ describe('useCreateAccountFlow', () => {
       expect(result.current.isLoading).toBe(true)
       expect(result.current.status).toBe(CreateAccountStatus.SigningIn)
 
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
       await act(async () => {
         resolveGoogle?.(fakeUser)
       })
@@ -297,14 +295,14 @@ describe('useCreateAccountFlow', () => {
       localStorage.setItem('nameForSignUp', 'Alice')
       localStorage.setItem('emailForSignUp', 'alice@test.com')
       mockSignInWithEmailLink.mockResolvedValue(fakeUser)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
 
       renderHook(() => useCreateAccountFlow())
 
       await vi.waitFor(() => {
         expect(mockSignInWithEmailLink).toHaveBeenCalledWith('alice@test.com', expect.any(String))
       })
-      expect(mockSetDoc).toHaveBeenCalled()
+      expect(mockCreateUserMutateAsync).toHaveBeenCalled()
     })
 
     it('does not sign in when email link has no stored data', () => {
@@ -320,7 +318,7 @@ describe('useCreateAccountFlow', () => {
       localStorage.setItem('nameForSignUp', 'Alice')
       localStorage.setItem('emailForSignUp', 'alice@test.com')
       mockSignInWithEmailLink.mockResolvedValue(fakeUser)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateUserMutateAsync.mockResolvedValue(undefined)
 
       renderHook(() => useCreateAccountFlow())
 

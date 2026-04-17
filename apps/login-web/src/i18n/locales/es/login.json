@@ -1,6 +1,25 @@
 {
   "title": "Iniciar sesión",
   "subtitle": "Accede a tu cuenta",
+  "emailLabel": "Correo electrónico",
+  "emailPlaceholder": "correo@ejemplo.com",
+  "signInWithoutPassword": "Iniciar sesión sin contraseña",
+  "signInWithGoogle": "Iniciar sesión con Google",
+  "linkSent": {
+    "title": "Revisa tu correo",
+    "message": "Enviamos un enlace de inicio de sesión a tu correo electrónico. Haz clic en el enlace para iniciar sesión."
+  },
+  "verifying": "Verificando tu cuenta...",
+  "accountNotFound": {
+    "message": "Necesitas crear una cuenta antes de iniciar sesión.",
+    "cta": "Crear cuenta"
+  },
   "noAccount": "¿No tienes una cuenta?",
-  "createAccount": "Crea una"
+  "createAccount": "Crea una",
+  "errors": {
+    "INVALID_EMAIL": "Ingresa un correo válido",
+    "POPUP_CLOSED": "Se cerró la ventana de inicio de sesión. Inténtalo de nuevo.",
+    "TOO_MANY_REQUESTS": "Demasiados intentos. Intenta más tarde.",
+    "UNKNOWN": "Ocurrió un error inesperado. Inténtalo de nuevo."
+  }
 }

@@ -1,66 +1,24 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { FlowAuthStatus } from './Home.types'
+import { FlowAuthStatus, FlowAuthError } from './Home.types'
 
 const mockSignInAnonymously = vi.fn()
-const mockGet = vi.fn()
-const mockSet = vi.fn()
-const mockSetDoc = vi.fn()
+const mockGetCredentialMutateAsync = vi.fn()
+const mockCreateCredentialMutateAsync = vi.fn()
+const mockCreateProfileMutateAsync = vi.fn()
+const mockUpdateUidMutateAsync = vi.fn()
 
 vi.mock('@primer-guidy/cloud-services', () => ({
   useAuth: () => ({
     signInAnonymously: mockSignInAnonymously,
   }),
-  useRealtimeDatabase: () => ({
-    get: mockGet,
-    set: mockSet,
-    update: mockUpdate,
-    remove: vi.fn(),
-    push: vi.fn(),
-    onValue: vi.fn(),
-  }),
-  useFirestore: () => ({
-    getDoc: vi.fn(),
-    getDocs: vi.fn(),
-    setDoc: mockSetDoc,
-    addDoc: vi.fn(),
-    updateDoc: mockUpdateDoc,
-    deleteDoc: vi.fn(),
-    onSnapshot: vi.fn(),
-  }),
 }))
 
-const mockUpdate = vi.fn()
-const mockUpdateDoc = vi.fn()
-
 vi.mock('@/services/student', () => ({
-  getStudentCredential: (...args: unknown[]) => {
-    const realtimeDb = args[0] as { get: typeof mockGet }
-    const id = args[1] as string
-    return realtimeDb.get(`student-credentials/${id}`)
-  },
-  createStudentCredential: (...args: unknown[]) => {
-    const realtimeDb = args[0] as { set: typeof mockSet }
-    const id = args[1] as string
-    const pwd = args[2] as string
-    const uid = args[3] as string
-    return realtimeDb.set(`student-credentials/${id}`, { password: pwd, uid })
-  },
-  createStudentProfile: (...args: unknown[]) => {
-    const firestore = args[0] as { setDoc: typeof mockSetDoc }
-    const data = args[2] as Record<string, unknown>
-    return firestore.setDoc('students', data.identificationNumber, data)
-  },
-  updateStudentUid: (...args: unknown[]) => {
-    const realtimeDb = args[0] as { update: typeof mockUpdate }
-    const firestore = args[1] as { updateDoc: typeof mockUpdateDoc }
-    const id = args[2] as string
-    const uid = args[3] as string
-    return Promise.all([
-      realtimeDb.update(`student-credentials/${id}`, { uid }),
-      firestore.updateDoc('students', id, { uid }),
-    ])
-  },
+  useGetStudentCredential: () => ({ mutateAsync: mockGetCredentialMutateAsync }),
+  useCreateStudentCredential: () => ({ mutateAsync: mockCreateCredentialMutateAsync }),
+  useCreateStudentProfile: () => ({ mutateAsync: mockCreateProfileMutateAsync }),
+  useUpdateStudentUid: () => ({ mutateAsync: mockUpdateUidMutateAsync }),
   hashPassword: (password: string) => Promise.resolve(`hashed_${password}`),
 }))
 
@@ -88,7 +46,7 @@ describe('useFlowAuth', () => {
 
   describe('onLogin', () => {
     it('shows banner when student does not exist', async () => {
-      mockGet.mockResolvedValue(null)
+      mockGetCredentialMutateAsync.mockResolvedValue(null)
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -101,7 +59,7 @@ describe('useFlowAuth', () => {
     })
 
     it('sets wrongPassword error when password does not match', async () => {
-      mockGet.mockResolvedValue({ password: 'hashed_different', uid: 'uid-1' })
+      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'hashed_different', uid: 'uid-1' })
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -109,15 +67,14 @@ describe('useFlowAuth', () => {
         await result.current.onLogin({ identificationNumber: '12345678', password: 'test1234' })
       })
 
-      expect(result.current.authError).toBe('wrongPassword')
+      expect(result.current.authError).toBe(FlowAuthError.WrongPassword)
       expect(result.current.status).toBe(FlowAuthStatus.Idle)
     })
 
     it('redirects to learning and updates uid on successful login', async () => {
-      mockGet.mockResolvedValue({ password: 'hashed_test1234', uid: 'uid-1' })
+      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'hashed_test1234', uid: 'uid-1' })
       mockSignInAnonymously.mockResolvedValue({ uid: 'anon-uid' })
-      mockUpdate.mockResolvedValue(undefined)
-      mockUpdateDoc.mockResolvedValue(undefined)
+      mockUpdateUidMutateAsync.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -126,13 +83,15 @@ describe('useFlowAuth', () => {
       })
 
       expect(mockSignInAnonymously).toHaveBeenCalledOnce()
-      expect(mockUpdate).toHaveBeenCalledWith('student-credentials/12345678', { uid: 'anon-uid' })
-      expect(mockUpdateDoc).toHaveBeenCalledWith('students', '12345678', { uid: 'anon-uid' })
+      expect(mockUpdateUidMutateAsync).toHaveBeenCalledWith({
+        identificationNumber: '12345678',
+        uid: 'anon-uid',
+      })
       expect(window.location.href).toContain('learning')
     })
 
     it('sets unknown error on unexpected failure', async () => {
-      mockGet.mockRejectedValue(new Error('network error'))
+      mockGetCredentialMutateAsync.mockRejectedValue(new Error('network error'))
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -140,13 +99,13 @@ describe('useFlowAuth', () => {
         await result.current.onLogin({ identificationNumber: '12345678', password: 'test1234' })
       })
 
-      expect(result.current.authError).toBe('unknown')
+      expect(result.current.authError).toBe(FlowAuthError.Unknown)
     })
   })
 
   describe('onRegister', () => {
     it('sets identificationAlreadyExists error when student already exists', async () => {
-      mockGet.mockResolvedValue({ password: 'existing', uid: 'uid-1' })
+      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'existing', uid: 'uid-1' })
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -158,14 +117,14 @@ describe('useFlowAuth', () => {
         })
       })
 
-      expect(result.current.authError).toBe('identificationAlreadyExists')
+      expect(result.current.authError).toBe(FlowAuthError.IdentificationAlreadyExists)
     })
 
     it('creates student and redirects on successful registration', async () => {
-      mockGet.mockResolvedValue(null)
+      mockGetCredentialMutateAsync.mockResolvedValue(null)
       mockSignInAnonymously.mockResolvedValue({ uid: 'new-uid' })
-      mockSet.mockResolvedValue(undefined)
-      mockSetDoc.mockResolvedValue(undefined)
+      mockCreateCredentialMutateAsync.mockResolvedValue(undefined)
+      mockCreateProfileMutateAsync.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -178,19 +137,23 @@ describe('useFlowAuth', () => {
       })
 
       expect(mockSignInAnonymously).toHaveBeenCalledOnce()
-      expect(mockSet).toHaveBeenCalledWith('student-credentials/12345678', {
-        password: 'hashed_test1234',
+      expect(mockCreateCredentialMutateAsync).toHaveBeenCalledWith({
+        identificationNumber: '12345678',
+        hashedPassword: 'hashed_test1234',
         uid: 'new-uid',
       })
-      expect(mockSetDoc).toHaveBeenCalledWith('students', '12345678', {
-        identificationNumber: '12345678',
-        name: 'Jane Doe',
+      expect(mockCreateProfileMutateAsync).toHaveBeenCalledWith({
+        uid: 'new-uid',
+        data: {
+          identificationNumber: '12345678',
+          name: 'Jane Doe',
+        },
       })
       expect(window.location.href).toContain('learning')
     })
 
     it('sets registrationFailed error on unexpected failure', async () => {
-      mockGet.mockResolvedValue(null)
+      mockGetCredentialMutateAsync.mockResolvedValue(null)
       mockSignInAnonymously.mockRejectedValue(new Error('auth failure'))
 
       const { result } = renderHook(() => useFlowAuth())
@@ -203,13 +166,13 @@ describe('useFlowAuth', () => {
         })
       })
 
-      expect(result.current.authError).toBe('registrationFailed')
+      expect(result.current.authError).toBe(FlowAuthError.RegistrationFailed)
     })
   })
 
   describe('dismissBanner', () => {
     it('hides the banner', async () => {
-      mockGet.mockResolvedValue(null)
+      mockGetCredentialMutateAsync.mockResolvedValue(null)
 
       const { result } = renderHook(() => useFlowAuth())
 

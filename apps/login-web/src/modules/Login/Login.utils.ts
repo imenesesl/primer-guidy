@@ -14,9 +14,3 @@ export const getEmailLinkRedirectUrl = (): string => {
   const basePath = (import.meta.env.BASE_PATH as string) ?? '/'
   return `${window.location.origin}${basePath}`
 }
-
-export const getCoreAppUrl = (): string => {
-  const basePath = (import.meta.env.BASE_PATH as string) ?? '/'
-  if (basePath === '/') return '/core/'
-  return basePath.replace(/login\/$/, 'core/')
-}

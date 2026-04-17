@@ -1,14 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { IAuthProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
+import type { IAuthProvider } from '@primer-guidy/cloud-services'
 
 const mockSignInWithGoogle = vi.fn()
 const mockSignOut = vi.fn()
 const mockSendSignInLink = vi.fn()
 const mockSignInWithEmailLink = vi.fn()
 const mockIsSignInWithEmailLink = vi.fn().mockReturnValue(false)
-const mockGetDoc = vi.fn()
+const mockCheckUserExistsMutateAsync = vi.fn()
 
 const mockAuth: IAuthProvider = {
   signInWithEmail: vi.fn(),
@@ -24,19 +24,12 @@ const mockAuth: IAuthProvider = {
   getCurrentUser: vi.fn().mockReturnValue(null),
 }
 
-const mockFirestore: IFirestoreProvider = {
-  getDoc: mockGetDoc,
-  getDocs: vi.fn(),
-  setDoc: vi.fn(),
-  addDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
-  onSnapshot: vi.fn(),
-}
-
 vi.mock('@primer-guidy/cloud-services', () => ({
   useAuth: () => mockAuth,
-  useFirestore: () => mockFirestore,
+}))
+
+vi.mock('@/services/user', () => ({
+  useCheckUserExists: () => ({ mutateAsync: mockCheckUserExistsMutateAsync }),
 }))
 
 vi.mock('react-i18next', () => ({
@@ -58,10 +51,14 @@ vi.mock('@tanstack/react-router', () => ({
 const mockShowBanner = vi.fn()
 const mockDismissBanner = vi.fn()
 
-vi.mock('@primer-guidy/components-web', () => ({
-  useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
-    selector({ showBanner: mockShowBanner, dismissBanner: mockDismissBanner, banner: null }),
-}))
+vi.mock('@primer-guidy/components-web', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
+      selector({ showBanner: mockShowBanner, dismissBanner: mockDismissBanner, banner: null }),
+  }
+})
 
 import { Login } from './Login'
 
@@ -106,7 +103,7 @@ describe('Login', () => {
       photoURL: null,
     }
     mockSignInWithGoogle.mockResolvedValue(mockUser)
-    mockGetDoc.mockResolvedValue({ uid: 'google-uid-123' })
+    mockCheckUserExistsMutateAsync.mockResolvedValue(true)
 
     render(<Login />)
 
@@ -125,7 +122,7 @@ describe('Login', () => {
       photoURL: null,
     }
     mockSignInWithGoogle.mockResolvedValue(mockUser)
-    mockGetDoc.mockResolvedValue(null)
+    mockCheckUserExistsMutateAsync.mockResolvedValue(false)
     mockSignOut.mockResolvedValue(undefined)
 
     render(<Login />)

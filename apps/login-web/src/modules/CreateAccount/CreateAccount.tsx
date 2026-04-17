@@ -5,11 +5,12 @@ import { useBannerStore } from '@primer-guidy/components-web'
 import { useCreateAccountFlow } from './useCreateAccountFlow'
 import { CreateAccountStatus } from './CreateAccount.types'
 import { CreateAccountForm } from './CreateAccountForm'
-import { AuthDivider } from '@/components/atoms/AuthDivider'
+import { AuthDivider } from '@primer-guidy/components-web'
 import { GoogleSignUpButton } from './GoogleSignUpButton'
-import { LinkSentView } from './LinkSentView'
+import { LinkSentView } from '@/modules/LinkSentView'
 import { CreatingView } from './CreatingView'
 import { SignInLink } from './SignInLink'
+import authStyles from '@/styles/auth.module.scss'
 import styles from './CreateAccount.module.scss'
 
 export const CreateAccount = () => {
@@ -27,7 +28,7 @@ export const CreateAccount = () => {
   }, [flow.authError, showBanner, tCreateAccount])
 
   if (flow.status === CreateAccountStatus.LinkSent) {
-    return <LinkSentView onBack={flow.resetStatus} />
+    return <LinkSentView onBack={flow.resetStatus} namespace="createAccount" />
   }
 
   if (flow.status === CreateAccountStatus.CreatingUser) {
@@ -35,9 +36,9 @@ export const CreateAccount = () => {
   }
 
   return (
-    <div className={styles.root}>
-      <div className={styles.card}>
-        <Heading as="h2" className={styles.heading}>
+    <div className={authStyles.root}>
+      <div className={authStyles.card}>
+        <Heading as="h2" className={authStyles.heading}>
           {tCreateAccount('title')}
         </Heading>
         <Text as="p" className={styles.subtitle}>

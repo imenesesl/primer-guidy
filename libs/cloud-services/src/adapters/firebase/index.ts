@@ -1,6 +1,0 @@
-export { initializeFirebase } from './config'
-export type { FirebaseConfig } from './config'
-export { FirebaseAuthAdapter } from './auth.adapter'
-export { FirebaseRealtimeDatabaseAdapter } from './realtime-database.adapter'
-export { FirebaseFirestoreAdapter } from './firestore.adapter'
-export { FirebaseHostingAdapter } from './hosting.adapter'

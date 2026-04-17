@@ -5,8 +5,8 @@ import {
   getStoredSignUpEmail,
   clearStoredSignUpData,
   getCreateAccountRedirectUrl,
-  getCoreAppUrl,
 } from './CreateAccount.utils'
+import { getCoreAppUrl } from '@/utils/url.utils'
 
 describe('CreateAccount.utils', () => {
   beforeEach(() => {

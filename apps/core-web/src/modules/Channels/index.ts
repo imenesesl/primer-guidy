@@ -1,2 +1,2 @@
 export { Channels } from './Channels'
-export type { ChannelsProps, TabConfig } from './Channels.types'
+export type { ChannelsProps } from './Channels.types'

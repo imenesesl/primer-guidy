@@ -45,8 +45,10 @@ vi.mock('@primer-guidy/cloud-services', async (importOriginal) => {
   }
 })
 
+const mockCheckUserExistsMutateAsync = vi.fn()
+
 vi.mock('@/services/user', () => ({
-  checkUserExists: (...args: unknown[]) => mockGetDoc(args[1]),
+  useCheckUserExists: () => ({ mutateAsync: mockCheckUserExistsMutateAsync }),
 }))
 
 import { useLoginFlow } from './useLoginFlow'
@@ -210,7 +212,7 @@ describe('useLoginFlow', () => {
   describe('onGoogleSignIn', () => {
     it('redirects to core app when user exists in Firestore', async () => {
       mockSignInWithGoogle.mockResolvedValue(MOCK_USER)
-      mockGetDoc.mockResolvedValue({ uid: MOCK_USER.uid })
+      mockCheckUserExistsMutateAsync.mockResolvedValue(true)
       const { result } = renderHook(() => useLoginFlow())
 
       await act(async () => {
@@ -223,7 +225,7 @@ describe('useLoginFlow', () => {
 
     it('shows account banner and signs out when user does not exist', async () => {
       mockSignInWithGoogle.mockResolvedValue(MOCK_USER)
-      mockGetDoc.mockResolvedValue(null)
+      mockCheckUserExistsMutateAsync.mockResolvedValue(false)
       mockSignOut.mockResolvedValue(undefined)
       const { result } = renderHook(() => useLoginFlow())
 
@@ -274,7 +276,7 @@ describe('useLoginFlow', () => {
 
     it('sets UNKNOWN error when Firestore check fails after sign-in', async () => {
       mockSignInWithGoogle.mockResolvedValue(MOCK_USER)
-      mockGetDoc.mockRejectedValue(new Error('firestore error'))
+      mockCheckUserExistsMutateAsync.mockRejectedValue(new Error('firestore error'))
       const { result } = renderHook(() => useLoginFlow())
 
       await act(async () => {
@@ -289,7 +291,7 @@ describe('useLoginFlow', () => {
       mockSignInWithGoogle
         .mockRejectedValueOnce(new AuthError(AuthErrorCode.POPUP_CLOSED, 'closed'))
         .mockResolvedValueOnce(MOCK_USER)
-      mockGetDoc.mockResolvedValue({ uid: MOCK_USER.uid })
+      mockCheckUserExistsMutateAsync.mockResolvedValue(true)
       const { result } = renderHook(() => useLoginFlow())
 
       await act(async () => {
@@ -314,7 +316,7 @@ describe('useLoginFlow', () => {
       localStorage.setItem('emailForSignIn', 'link@example.com')
       mockIsSignInWithEmailLink.mockReturnValue(true)
       mockSignInWithEmailLink.mockResolvedValue(MOCK_USER)
-      mockGetDoc.mockResolvedValue({ uid: MOCK_USER.uid })
+      mockCheckUserExistsMutateAsync.mockResolvedValue(true)
 
       renderHook(() => useLoginFlow())
 
@@ -332,7 +334,7 @@ describe('useLoginFlow', () => {
       localStorage.setItem('emailForSignIn', 'link@example.com')
       mockIsSignInWithEmailLink.mockReturnValue(true)
       mockSignInWithEmailLink.mockResolvedValue(MOCK_USER)
-      mockGetDoc.mockResolvedValue({ uid: MOCK_USER.uid })
+      mockCheckUserExistsMutateAsync.mockResolvedValue(true)
 
       renderHook(() => useLoginFlow())
 

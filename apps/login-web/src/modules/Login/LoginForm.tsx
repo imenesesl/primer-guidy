@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import type { EmailFormData } from '@/services/auth'
 import { EmailSchema } from '@/services/auth'
 import type { LoginFormProps } from './LoginForm.types'
-import styles from './Login.module.scss'
+import styles from '@/styles/auth.module.scss'
 
 export const LoginForm = ({ onSubmit, disabled }: LoginFormProps) => {
   const { t: tLogin } = useTranslation('login')

@@ -1,31 +1,9 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import {
-  createRouter,
-  createRootRoute,
-  createRoute,
-  RouterProvider,
-  createMemoryHistory,
-} from '@tanstack/react-router'
+import { renderWithRouter } from '../../../test/render-with-router'
 import { SidebarItem } from './SidebarItem'
 
 const MockIcon = vi.fn(() => <svg data-testid="sidebar-icon" />)
-
-const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
-  const rootRoute = createRootRoute({ component: () => ui })
-  const indexRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: () => null,
-  })
-  const routeTree = rootRoute.addChildren([indexRoute])
-  const router = createRouter({
-    routeTree,
-    history: createMemoryHistory({ initialEntries: [initialPath] }),
-  })
-
-  return render(<RouterProvider router={router} />)
-}
 
 describe('SidebarItem', () => {
   it('renders the icon and label', async () => {

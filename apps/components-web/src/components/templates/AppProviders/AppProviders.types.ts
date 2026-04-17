@@ -7,3 +7,7 @@ export interface AppProvidersProps {
   readonly cloudServices: CloudServices
   readonly children: ReactNode
 }
+
+export interface ThemedContentProps {
+  readonly children: ReactNode
+}

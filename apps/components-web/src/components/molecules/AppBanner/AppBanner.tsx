@@ -1,9 +1,11 @@
 import { Button, Flash, IconButton, Text } from '@primer/react'
 import { XIcon } from '@primer/octicons-react'
+import { useTranslation } from 'react-i18next'
 import { useBannerStore } from '../../../stores/banner.store'
 import styles from './AppBanner.module.scss'
 
 export const AppBanner = () => {
+  const { t: tCommon } = useTranslation('common')
   const banner = useBannerStore((s) => s.banner)
   const dismissBanner = useBannerStore((s) => s.dismissBanner)
 
@@ -22,7 +24,7 @@ export const AppBanner = () => {
             </Button>
           )}
           <IconButton
-            aria-label="Dismiss"
+            aria-label={tCommon('actions.dismiss')}
             icon={XIcon}
             variant="invisible"
             size="small"

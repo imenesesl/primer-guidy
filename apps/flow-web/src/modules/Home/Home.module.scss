@@ -27,7 +27,10 @@
   color: var(--primer-fg-muted);
   background: none;
   border: none;
-  border-bottom: calc(var(--spacing-px) * 2) solid transparent;
+
+  --tab-border-width: calc(var(--spacing-px) * 2);
+
+  border-bottom: var(--tab-border-width) solid transparent;
   box-shadow: none;
 
   &:hover {

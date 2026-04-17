@@ -153,6 +153,28 @@ Native HTML elements are acceptable ONLY when Primer has no equivalent:
 | Data | `DataTable`, `Label`, `Token`, `TreeView` |
 | Typography | `Heading`, `Text` |
 
+## Icons Atom — Brand & Custom SVGs
+
+ALL custom SVG icons (third-party brand logos like Google, Apple, etc.) live in `components-web/atoms/Icons/`. NEVER create SVG icon components in app modules or utils.
+
+```
+atoms/Icons/
+  GoogleIcon.tsx         → One file per icon
+  Icons.types.ts         → Shared IconProps type (SVGProps<SVGSVGElement>)
+  Icons.test.tsx          → Tests for all icons
+  index.ts               → Named re-exports
+```
+
+```tsx
+import { GoogleIcon } from '@primer-guidy/components-web'
+
+<Button leadingVisual={() => <GoogleIcon className={styles.icon} />}>
+  {tLogin('signInWithGoogle')}
+</Button>
+```
+
+For standard UI icons, use `@primer/octicons-react` — NEVER create custom SVGs for icons that Octicons already provides.
+
 ## Atoms Wrapping Primer
 
 Atoms wrap Primer components following the full component file structure (see component-structure rule):

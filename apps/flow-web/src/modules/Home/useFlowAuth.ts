@@ -1,22 +1,29 @@
 import { useState } from 'react'
-import { useAuth, useRealtimeDatabase, useFirestore } from '@primer-guidy/cloud-services'
+import { useAuth } from '@primer-guidy/cloud-services'
 import {
-  getStudentCredential,
-  createStudentCredential,
-  createStudentProfile,
-  updateStudentUid,
+  useGetStudentCredential,
+  useCreateStudentCredential,
+  useCreateStudentProfile,
+  useUpdateStudentUid,
   hashPassword,
 } from '@/services/student'
 import type { LoginFormData } from '@/services/auth'
 import type { RegisterFormData } from '@/services/auth'
-import { FlowAuthStatus } from './Home.types'
-import type { FlowAuthState, FlowAuthError } from './Home.types'
+import { FlowAuthStatus, FlowAuthError } from './Home.types'
+import type { FlowAuthState } from './Home.types'
 import { getLearningUrl } from './Home.utils'
+
+const LEARNING_URL = getLearningUrl(
+  window.location.origin,
+  (import.meta.env.BASE_PATH as string) ?? '/',
+)
 
 export const useFlowAuth = (): FlowAuthState => {
   const auth = useAuth()
-  const realtimeDb = useRealtimeDatabase()
-  const firestore = useFirestore()
+  const getCredential = useGetStudentCredential()
+  const createCredential = useCreateStudentCredential()
+  const createProfile = useCreateStudentProfile()
+  const updateUid = useUpdateStudentUid()
 
   const [status, setStatus] = useState(FlowAuthStatus.Idle)
   const [showBanner, setShowBanner] = useState(false)
@@ -28,7 +35,7 @@ export const useFlowAuth = (): FlowAuthState => {
     setStatus(FlowAuthStatus.Authenticating)
 
     try {
-      const credential = await getStudentCredential(realtimeDb, data.identificationNumber)
+      const credential = await getCredential.mutateAsync(data.identificationNumber)
 
       if (!credential) {
         setShowBanner(true)
@@ -39,16 +46,19 @@ export const useFlowAuth = (): FlowAuthState => {
       const hashedInput = await hashPassword(data.password)
 
       if (hashedInput !== credential.password) {
-        setAuthError('wrongPassword')
+        setAuthError(FlowAuthError.WrongPassword)
         setStatus(FlowAuthStatus.Idle)
         return
       }
 
       const user = await auth.signInAnonymously()
-      await updateStudentUid(realtimeDb, firestore, data.identificationNumber, user.uid)
-      window.location.href = getLearningUrl()
+      await updateUid.mutateAsync({
+        identificationNumber: data.identificationNumber,
+        uid: user.uid,
+      })
+      window.location.href = LEARNING_URL
     } catch {
-      setAuthError('unknown')
+      setAuthError(FlowAuthError.Unknown)
       setStatus(FlowAuthStatus.Idle)
     }
   }
@@ -59,10 +69,10 @@ export const useFlowAuth = (): FlowAuthState => {
     setStatus(FlowAuthStatus.Authenticating)
 
     try {
-      const existing = await getStudentCredential(realtimeDb, data.identificationNumber)
+      const existing = await getCredential.mutateAsync(data.identificationNumber)
 
       if (existing) {
-        setAuthError('identificationAlreadyExists')
+        setAuthError(FlowAuthError.IdentificationAlreadyExists)
         setStatus(FlowAuthStatus.Idle)
         return
       }
@@ -70,15 +80,22 @@ export const useFlowAuth = (): FlowAuthState => {
       const user = await auth.signInAnonymously()
       const hashedPassword = await hashPassword(data.password)
 
-      await createStudentCredential(realtimeDb, data.identificationNumber, hashedPassword, user.uid)
-      await createStudentProfile(firestore, user.uid, {
+      await createCredential.mutateAsync({
         identificationNumber: data.identificationNumber,
-        name: data.name,
+        hashedPassword,
+        uid: user.uid,
+      })
+      await createProfile.mutateAsync({
+        uid: user.uid,
+        data: {
+          identificationNumber: data.identificationNumber,
+          name: data.name,
+        },
       })
 
-      window.location.href = getLearningUrl()
+      window.location.href = LEARNING_URL
     } catch {
-      setAuthError('registrationFailed')
+      setAuthError(FlowAuthError.RegistrationFailed)
       setStatus(FlowAuthStatus.Idle)
     }
   }

@@ -1,5 +1,5 @@
 import { CoreRoutes } from '@/routes/routes'
-import type { TabConfig } from './Activity.types'
+import type { TabConfig } from '@/modules/TabLayout'
 
 export const ACTIVITY_TABS: readonly TabConfig[] = [
   { labelKey: 'tabs.notifications', path: CoreRoutes.ActivityNotifications },

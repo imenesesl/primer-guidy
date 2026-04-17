@@ -3,7 +3,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "submit": "Submit",
-    "back": "Back"
+    "back": "Back",
+    "dismiss": "Dismiss"
   },
   "or": "or",
   "validation": {
