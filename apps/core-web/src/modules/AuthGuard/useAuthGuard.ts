@@ -12,9 +12,8 @@ const IS_E2E = import.meta.env.E2E_BYPASS === 'true'
 export const useAuthGuard = (): AuthGuardState => {
   const auth = useAuth()
 
-  const { data: authUser, status: authStatus } = useSubscription<AuthUser | null>(
-    (cb) => auth.onAuthStateChanged(cb),
-    { enabled: !IS_E2E },
+  const { data: authUser, status: authStatus } = useSubscription<AuthUser | null>((cb) =>
+    auth.onAuthStateChanged(cb),
   )
 
   const uid = authStatus === AsyncStatus.Success && authUser ? authUser.uid : null
