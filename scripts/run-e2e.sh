@@ -5,26 +5,41 @@ APP_DIR="$(pwd)"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MONOREPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOMEBREW_JAVA="/opt/homebrew/opt/openjdk/bin"
-MAX_WAIT=30
+MAX_WAIT=60
+EMULATOR_PID=""
+
+EMULATOR_PORTS=(9099 8080 4000)
 
 if [ -d "$HOMEBREW_JAVA" ]; then
   export PATH="$HOMEBREW_JAVA:$PATH"
 fi
 
-# Kill any stale emulator processes
-lsof -ti :9099 | xargs kill -9 2>/dev/null || true
-lsof -ti :8080 | xargs kill -9 2>/dev/null || true
-lsof -ti :4000 | xargs kill -9 2>/dev/null || true
-sleep 1
+kill_port() {
+  local port="$1"
+  local pids
+  pids=$(lsof -ti :"$port" 2>/dev/null || true)
+  if [ -n "$pids" ]; then
+    echo "$pids" | xargs kill -9 2>/dev/null || true
+  fi
+}
 
 cleanup() {
   echo "Shutting down emulators..."
-  kill "$EMULATOR_PID" 2>/dev/null || true
-  wait "$EMULATOR_PID" 2>/dev/null || true
-  lsof -ti :8080 | xargs kill -9 2>/dev/null || true
+  if [ -n "$EMULATOR_PID" ]; then
+    kill "$EMULATOR_PID" 2>/dev/null || true
+    wait "$EMULATOR_PID" 2>/dev/null || true
+  fi
+  for port in "${EMULATOR_PORTS[@]}"; do
+    kill_port "$port"
+  done
 }
 
 trap cleanup EXIT
+
+for port in "${EMULATOR_PORTS[@]}"; do
+  kill_port "$port"
+done
+sleep 2
 
 echo "Starting Firebase Emulators..."
 cd "$MONOREPO_ROOT"
@@ -38,7 +53,7 @@ for i in $(seq 1 $MAX_WAIT); do
     break
   fi
   if [ "$i" -eq "$MAX_WAIT" ]; then
-    echo "Emulators failed to start."
+    echo "Emulators failed to start within ${MAX_WAIT}s."
     exit 1
   fi
   sleep 1
