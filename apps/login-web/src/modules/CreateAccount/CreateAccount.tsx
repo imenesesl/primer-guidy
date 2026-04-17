@@ -1,5 +1,7 @@
-import { Flash, Heading, Text } from '@primer/react'
+import { useEffect } from 'react'
+import { Heading, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
+import { useBannerStore } from '@primer-guidy/components-web'
 import { useCreateAccountFlow } from './useCreateAccountFlow'
 import { CreateAccountStatus } from './CreateAccount.types'
 import { CreateAccountForm } from './CreateAccountForm'
@@ -13,6 +15,16 @@ import styles from './CreateAccount.module.scss'
 export const CreateAccount = () => {
   const { t: tCreateAccount } = useTranslation('createAccount')
   const flow = useCreateAccountFlow()
+  const showBanner = useBannerStore((s) => s.showBanner)
+
+  useEffect(() => {
+    if (flow.authError) {
+      showBanner({
+        variant: 'danger',
+        message: tCreateAccount(`errors.${flow.authError}`),
+      })
+    }
+  }, [flow.authError, showBanner, tCreateAccount])
 
   if (flow.status === CreateAccountStatus.LinkSent) {
     return <LinkSentView onBack={flow.resetStatus} />
@@ -35,12 +47,6 @@ export const CreateAccount = () => {
         <CreateAccountForm onSubmit={flow.onEmailSubmit} disabled={flow.isLoading} />
         <AuthDivider />
         <GoogleSignUpButton onClick={flow.onGoogleSignIn} disabled={flow.isLoading} />
-
-        {flow.authError && (
-          <Flash variant="danger">
-            <Text as="p">{tCreateAccount(`errors.${flow.authError}`)}</Text>
-          </Flash>
-        )}
 
         <SignInLink />
       </div>

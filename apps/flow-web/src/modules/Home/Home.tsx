@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Button, Flash, Text } from '@primer/react'
+import { useEffect, useState } from 'react'
+import { Button } from '@primer/react'
 import { useTranslation } from 'react-i18next'
+import { useBannerStore } from '@primer-guidy/components-web'
 import { AuthTab, AUTH_FORM_ID } from './Home.types'
 import type { AuthTabValue } from './Home.types'
 import { useFlowAuth } from './useFlowAuth'
@@ -12,6 +13,16 @@ export const Home = () => {
   const { t: tHome } = useTranslation('home')
   const [activeTab, setActiveTab] = useState<AuthTabValue>(AuthTab.Login)
   const flow = useFlowAuth()
+  const {
+    showBanner: flowShowBanner,
+    authError,
+    dismissBanner: flowDismissBanner,
+    isLoading,
+    onLogin,
+    onRegister,
+  } = flow
+  const showBanner = useBannerStore((s) => s.showBanner)
+  const dismissBanner = useBannerStore((s) => s.dismissBanner)
 
   const submitLabel =
     activeTab === AuthTab.Login ? tHome('actions.login') : tHome('actions.register')
@@ -20,28 +31,34 @@ export const Home = () => {
     setActiveTab(tab)
   }
 
+  useEffect(() => {
+    if (flowShowBanner) {
+      showBanner({
+        variant: 'warning',
+        message: tHome('banner.message'),
+        cta: {
+          label: tHome('banner.cta'),
+          onClick: () => {
+            dismissBanner()
+            flowDismissBanner()
+            handleTabChange(AuthTab.Register)
+          },
+        },
+      })
+    }
+  }, [flowShowBanner, showBanner, dismissBanner, flowDismissBanner, tHome])
+
+  useEffect(() => {
+    if (authError) {
+      showBanner({
+        variant: 'danger',
+        message: tHome(`errors.${authError}`),
+      })
+    }
+  }, [authError, showBanner, tHome])
+
   return (
     <div className={styles.root}>
-      {flow.showBanner && (
-        <div className={styles.banner}>
-          <Flash variant="warning">
-            <div className={styles.bannerContent}>
-              <Text as="span">{tHome('banner.message')}</Text>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => {
-                  flow.dismissBanner()
-                  handleTabChange(AuthTab.Register)
-                }}
-              >
-                {tHome('banner.cta')}
-              </Button>
-            </div>
-          </Flash>
-        </div>
-      )}
-
       <div className={styles.card}>
         <div className={styles.tabBar} role="tablist">
           <Button
@@ -65,25 +82,20 @@ export const Home = () => {
         </div>
         <div className={styles.formContainer}>
           <div className={activeTab === AuthTab.Login ? styles.formPanel : styles.formPanelHidden}>
-            <LoginForm onSubmit={flow.onLogin} disabled={flow.isLoading} />
+            <LoginForm onSubmit={onLogin} disabled={isLoading} />
           </div>
           <div
             className={activeTab === AuthTab.Register ? styles.formPanel : styles.formPanelHidden}
           >
-            <RegisterForm onSubmit={flow.onRegister} disabled={flow.isLoading} />
+            <RegisterForm onSubmit={onRegister} disabled={isLoading} />
           </div>
         </div>
         <div className={styles.submitContainer}>
-          {flow.authError && (
-            <Flash variant="danger" className={styles.errorFlash}>
-              <Text as="p">{tHome(`errors.${flow.authError}`)}</Text>
-            </Flash>
-          )}
           <Button
             type="submit"
             variant="primary"
             block
-            disabled={flow.isLoading}
+            disabled={isLoading}
             form={AUTH_FORM_ID[activeTab]}
           >
             {submitLabel}

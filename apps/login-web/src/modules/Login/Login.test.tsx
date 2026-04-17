@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { IAuthProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
@@ -46,10 +46,21 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
+const mockNavigate = vi.fn()
+
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
     <a href={to}>{children}</a>
   ),
+  useNavigate: () => mockNavigate,
+}))
+
+const mockShowBanner = vi.fn()
+const mockDismissBanner = vi.fn()
+
+vi.mock('@primer-guidy/components-web', () => ({
+  useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
+    selector({ showBanner: mockShowBanner, dismissBanner: mockDismissBanner, banner: null }),
 }))
 
 import { Login } from './Login'
@@ -104,7 +115,7 @@ describe('Login', () => {
     expect(mockSignInWithGoogle).toHaveBeenCalledOnce()
   })
 
-  it('shows banner when user does not exist in Firestore after Google sign-in', async () => {
+  it('calls showBanner with warning when user does not exist in Firestore after Google sign-in', async () => {
     const user = userEvent.setup()
     const mockUser = {
       uid: 'new-uid',
@@ -121,7 +132,14 @@ describe('Login', () => {
 
     await user.click(screen.getByRole('button', { name: /signInWithGoogle/i }))
 
-    expect(await screen.findByText('accountNotFound.message')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(mockShowBanner).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'warning',
+          message: 'accountNotFound.message',
+        }),
+      )
+    })
     expect(mockSignOut).toHaveBeenCalledOnce()
   })
 

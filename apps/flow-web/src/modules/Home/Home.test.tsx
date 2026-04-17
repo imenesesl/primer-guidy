@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { FlowAuthStatus } from './Home.types'
 import type { FlowAuthState } from './Home.types'
 
@@ -21,11 +21,16 @@ vi.mock('./Home.module.scss', () => ({
     formPanel: 'formPanel',
     formPanelHidden: 'formPanelHidden',
     submitContainer: 'submitContainer',
-    banner: 'banner',
-    bannerContent: 'bannerContent',
-    errorFlash: 'errorFlash',
     form: 'form',
   },
+}))
+
+const mockShowBanner = vi.fn()
+const mockDismissBanner = vi.fn()
+
+vi.mock('@primer-guidy/components-web', () => ({
+  useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
+    selector({ showBanner: mockShowBanner, dismissBanner: mockDismissBanner, banner: null }),
 }))
 
 const mockFlowAuth: {
@@ -47,6 +52,14 @@ vi.mock('./useFlowAuth', () => ({
 import { Home } from './Home'
 
 describe('Home', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockFlowAuth.showBanner = false
+    mockFlowAuth.authError = null
+    mockFlowAuth.isLoading = false
+    mockFlowAuth.status = FlowAuthStatus.Idle
+  })
+
   it('renders login and register tabs', () => {
     render(<Home />)
 
@@ -109,29 +122,35 @@ describe('Home', () => {
     expect(submitBtn).toHaveAttribute('form', 'register-form')
   })
 
-  it('does not show banner by default', () => {
+  it('does not call showBanner when no banner or error is active', () => {
     render(<Home />)
 
-    expect(screen.queryByText('banner.message')).not.toBeInTheDocument()
+    expect(mockShowBanner).not.toHaveBeenCalled()
   })
 
-  it('shows banner when showBanner is true', () => {
+  it('calls showBanner with warning when flow.showBanner is true', () => {
     mockFlowAuth.showBanner = true
 
     render(<Home />)
 
-    expect(screen.getByText('banner.message')).toBeInTheDocument()
-
-    mockFlowAuth.showBanner = false
+    expect(mockShowBanner).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: 'warning',
+        message: 'banner.message',
+      }),
+    )
   })
 
-  it('shows error flash when authError is set', () => {
+  it('calls showBanner with danger when authError is set', () => {
     mockFlowAuth.authError = 'wrongPassword'
 
     render(<Home />)
 
-    expect(screen.getByText('errors.wrongPassword')).toBeInTheDocument()
-
-    mockFlowAuth.authError = null
+    expect(mockShowBanner).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: 'danger',
+        message: 'errors.wrongPassword',
+      }),
+    )
   })
 })

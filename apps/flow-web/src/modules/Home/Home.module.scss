@@ -7,14 +7,6 @@
   background-color: var(--primer-canvas-inset);
 }
 
-.banner {
-  @apply fixed top-0 left-0 w-full z-50;
-}
-
-.bannerContent {
-  @apply flex items-center justify-between gap-4;
-}
-
 .card {
   @apply flex flex-col w-full max-w-sm rounded-xl;
 
@@ -69,10 +61,6 @@
 
 .submitContainer {
   @apply flex flex-col gap-4 px-8 pb-8;
-}
-
-.errorFlash {
-  @apply w-full;
 }
 
 .form {

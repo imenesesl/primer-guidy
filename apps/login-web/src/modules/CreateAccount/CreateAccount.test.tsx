@@ -51,6 +51,13 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }))
 
+const mockShowBanner = vi.fn()
+
+vi.mock('@primer-guidy/components-web', () => ({
+  useBannerStore: (selector: (state: Record<string, unknown>) => unknown) =>
+    selector({ showBanner: mockShowBanner, banner: null }),
+}))
+
 import { CreateAccount } from './CreateAccount'
 
 describe('CreateAccount', () => {

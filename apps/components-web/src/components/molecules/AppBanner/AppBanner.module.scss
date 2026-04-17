@@ -1,0 +1,22 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply fixed top-0 left-0 w-full z-50;
+}
+
+.content {
+  @apply flex items-center gap-4;
+}
+
+.message {
+  @apply flex-1 text-center;
+}
+
+.dismiss.dismiss {
+  @apply shrink-0 cursor-pointer;
+
+  svg {
+    @apply mr-0;
+  }
+}

@@ -14,6 +14,10 @@ vi.mock('@primer-guidy/cloud-services', () => ({
   CloudServicesProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
+vi.mock('../../molecules/AppBanner', () => ({
+  AppBanner: () => null,
+}))
+
 const mockCloudServices = {
   auth: {},
   realtimeDatabase: {},
