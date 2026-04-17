@@ -8,6 +8,7 @@ const MOCK_USER: UserDocument = {
   name: 'Jane Doe',
   email: 'jane@example.com',
   avatarUrl: 'https://example.com/avatar.png',
+  organization: null,
   createdAt: '2025-01-01T00:00:00Z',
 }
 
@@ -38,6 +39,7 @@ describe('useCurrentUser', () => {
       name: 'John Smith',
       email: 'john@example.com',
       avatarUrl: null,
+      organization: null,
       createdAt: '2026-04-16T12:00:00Z',
     }
 

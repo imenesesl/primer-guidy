@@ -24,6 +24,12 @@
       "default": null,
       "description": "Profile avatar URL from auth provider or null"
     },
+    "organization": {
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Organization ID the user belongs to"
+    },
     "createdAt": {
       "type": "timestamp",
       "required": true,

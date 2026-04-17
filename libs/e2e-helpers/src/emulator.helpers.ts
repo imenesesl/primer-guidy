@@ -68,6 +68,7 @@ export const seedFirestoreProfile = async (uid: string, user: E2EUserConfig): Pr
         name: { stringValue: user.displayName },
         email: { stringValue: user.email },
         avatarUrl: { nullValue: null },
+        organization: { nullValue: null },
         createdAt: { stringValue: new Date().toISOString() },
       },
     }),

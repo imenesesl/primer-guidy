@@ -3,6 +3,7 @@ export interface UserDocument {
   readonly name: string
   readonly email: string
   readonly avatarUrl: string | null
+  readonly organization: string | null
   readonly createdAt: string
 }
 

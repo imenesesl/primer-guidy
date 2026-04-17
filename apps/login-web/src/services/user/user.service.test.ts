@@ -59,6 +59,7 @@ describe('createUser', () => {
         name: 'John Doe',
         email: 'john@example.com',
         avatarUrl: 'https://example.com/avatar.jpg',
+        organization: null,
       }),
     )
   })

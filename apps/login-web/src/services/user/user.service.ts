@@ -21,6 +21,7 @@ export const createUser = async (
     name: data.name,
     email: data.email,
     avatarUrl: data.avatarUrl,
+    organization: null,
     createdAt: new Date().toISOString(),
   })
 }
