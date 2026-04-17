@@ -2,15 +2,71 @@
 @reference "tailwindcss/utilities";
 
 .root {
-  @apply flex flex-col items-center justify-center h-screen gap-4;
+  @apply flex flex-col items-center justify-center min-h-screen;
+
+  background-color: var(--primer-canvas-inset);
+}
+
+.card {
+  @apply flex flex-col w-full max-w-sm rounded-xl;
 
   background-color: var(--primer-canvas-default);
+  border: var(--spacing-px) solid var(--primer-border-default);
 }
 
-.title {
-  color: var(--primer-fg-default);
+.tabBar {
+  @apply flex gap-0 px-4;
+
+  border-bottom: var(--spacing-px) solid var(--primer-border-default);
 }
 
-.subtitle {
+.tab.tab.tab {
+  @apply flex-1 px-4 py-2 text-sm font-medium cursor-pointer no-underline text-center rounded-none;
+  @apply transition-colors duration-200 ease-in-out;
+
   color: var(--primer-fg-muted);
+  background: none;
+  border: none;
+  border-bottom: calc(var(--spacing-px) * 2) solid transparent;
+  box-shadow: none;
+
+  &:hover {
+    color: var(--primer-fg-default);
+    background: none;
+    box-shadow: none;
+  }
+}
+
+.tabActive.tabActive.tabActive {
+  color: var(--primer-fg-default);
+  border-bottom-color: var(--primer-accent-fg);
+}
+
+.formContainer {
+  @apply grid p-8;
+
+  grid-template-rows: 1fr;
+}
+
+.formPanel {
+  grid-area: 1 / 1;
+}
+
+.formPanelHidden {
+  @apply invisible;
+
+  grid-area: 1 / 1;
+  pointer-events: none;
+}
+
+.submitContainer {
+  @apply px-8 pb-8;
+}
+
+.form {
+  @apply flex flex-col gap-4;
+}
+
+.label.label {
+  color: var(--primer-fg-default);
 }

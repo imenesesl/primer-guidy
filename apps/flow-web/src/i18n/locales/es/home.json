@@ -1,4 +1,20 @@
 {
-  "title": "Flow",
-  "welcome": "Bienvenido a Flow"
+  "tabs": {
+    "login": "Iniciar Sesión",
+    "register": "Crear Cuenta"
+  },
+  "fields": {
+    "identificationNumber": "Número de Identificación",
+    "name": "Nombre Completo",
+    "password": "Contraseña"
+  },
+  "actions": {
+    "login": "Iniciar Sesión",
+    "register": "Crear Cuenta"
+  },
+  "validation": {
+    "identificationNumberRequired": "Ingrese al menos 8 dígitos",
+    "nameRequired": "El nombre es requerido",
+    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres"
+  }
 }
