@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, cleanup } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   createRouter,
   createRootRoute,
@@ -56,6 +56,10 @@ const renderWithRouter = async (initialPath = '/') => {
 }
 
 describe('ShellGuard', () => {
+  afterEach(() => {
+    cleanup()
+  })
+
   beforeEach(() => {
     mockAuthGuardState.current = { status: AuthGuardStatus.Initializing, user: null }
     i18n.addResourceBundle('en', 'shell', {
@@ -99,7 +103,8 @@ describe('ShellGuard', () => {
 
     await renderWithRouter()
 
-    expect(await screen.findByTestId('content-skeleton')).toBeInTheDocument()
+    await screen.findByLabelText('Navigation rail')
+    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
   })
 
   it('renders content skeleton when status is loading profile', async () => {
@@ -107,7 +112,8 @@ describe('ShellGuard', () => {
 
     await renderWithRouter()
 
-    expect(await screen.findByTestId('content-skeleton')).toBeInTheDocument()
+    await screen.findByLabelText('Navigation rail')
+    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
   })
 
   it('renders outlet content when authenticated', async () => {
