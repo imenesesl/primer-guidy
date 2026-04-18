@@ -1,0 +1,25 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col;
+}
+
+.children {
+  @apply flex flex-col gap-0.5 mt-1 ml-3 pl-0;
+}
+
+.childItem {
+  @apply flex items-center gap-1.5;
+}
+
+.dot {
+  @apply shrink-0 rounded-full opacity-0 w-1.5 h-1.5;
+  @apply transition-opacity duration-200 ease-in-out;
+
+  background-color: var(--primer-accent-emphasis);
+}
+
+.dotActive {
+  @apply opacity-100;
+}

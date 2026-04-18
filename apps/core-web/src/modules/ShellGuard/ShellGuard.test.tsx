@@ -37,6 +37,10 @@ vi.mock('@tanstack/react-router', () => ({
   Outlet: () => <div data-testid="outlet">Outlet Content</div>,
 }))
 
+vi.mock('@/services/channel', () => ({
+  useChannels: () => ({ data: [] }),
+}))
+
 const mockUser: UserDocument = {
   uid: 'user-123',
   name: 'Jane Doe',

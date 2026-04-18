@@ -8,13 +8,13 @@ import { buildBreadcrumb } from './ContentHeader.utils'
 import type { ContentHeaderProps } from './ContentHeader.types'
 import styles from './Shell.module.scss'
 
-export const ContentHeader = ({ headerAction }: ContentHeaderProps) => {
+export const ContentHeader = ({ headerAction, breadcrumbResolver }: ContentHeaderProps) => {
   const { t: tLayout } = useTranslation('layout')
   const { t: tShell } = useTranslation('shell')
   const sidebarVisible = useLayoutStore((s) => s.sidebarVisible)
   const toggleSidebar = useLayoutStore((s) => s.toggleSidebar)
   const location = useLocation()
-  const breadcrumb = buildBreadcrumb(location.pathname, tShell)
+  const breadcrumb = buildBreadcrumb(location.pathname, tShell, breadcrumbResolver)
 
   return (
     <div className={styles.contentHeader}>

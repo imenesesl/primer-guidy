@@ -1,11 +1,31 @@
+import type { BreadcrumbResolver } from './ContentHeader.types'
+
 const BREADCRUMB_SEPARATOR = ' · '
 
-export const buildBreadcrumb = (pathname: string, translate: (key: string) => string): string => {
+const resolveSegment = (
+  segment: string,
+  translate: (key: string) => string,
+  resolver?: BreadcrumbResolver,
+): string => {
+  if (resolver) {
+    const resolved = resolver(segment)
+    if (resolved) return resolved
+  }
+  return translate(`breadcrumb.${segment}`)
+}
+
+export const buildBreadcrumb = (
+  pathname: string,
+  translate: (key: string) => string,
+  resolver?: BreadcrumbResolver,
+): string => {
   const segments = pathname.split('/').filter((segment) => segment.length > 0)
 
   if (segments.length === 0) {
     return translate('breadcrumb.home')
   }
 
-  return segments.map((segment) => translate(`breadcrumb.${segment}`)).join(BREADCRUMB_SEPARATOR)
+  return segments
+    .map((segment) => resolveSegment(segment, translate, resolver))
+    .join(BREADCRUMB_SEPARATOR)
 }

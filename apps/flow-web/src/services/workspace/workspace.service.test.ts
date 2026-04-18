@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { IRealtimeDatabaseProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
-import { lookupInviteCode, joinWorkspace } from './workspace.service'
+import { lookupInviteCode, joinWorkspace, getStudentWorkspaces } from './workspace.service'
 import { EnrollmentStatus, WorkspaceErrorCode } from './workspace.types'
 
 const mockRtdb: IRealtimeDatabaseProvider = {
@@ -77,5 +77,20 @@ describe('joinWorkspace', () => {
     )
 
     expect(mockFirestore.setDoc).not.toHaveBeenCalled()
+  })
+})
+
+describe('getStudentWorkspaces', () => {
+  it('fetches workspaces from the student subcollection', async () => {
+    const workspaces = [
+      { name: 'Mr. Smith', uid: 'teacher-1', active: true },
+      { name: 'Ms. Jones', uid: 'teacher-2', active: false },
+    ]
+    vi.mocked(mockFirestore.getDocs).mockResolvedValue(workspaces)
+
+    const result = await getStudentWorkspaces(mockFirestore, '12345678')
+
+    expect(result).toEqual(workspaces)
+    expect(mockFirestore.getDocs).toHaveBeenCalledWith('students/12345678/workspaces')
   })
 })

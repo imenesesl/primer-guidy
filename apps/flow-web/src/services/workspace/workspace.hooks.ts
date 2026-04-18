@@ -1,7 +1,19 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRealtimeDatabase, useFirestore } from '@primer-guidy/cloud-services'
-import { lookupInviteCode, joinWorkspace } from './workspace.service'
+import { lookupInviteCode, joinWorkspace, getStudentWorkspaces } from './workspace.service'
 import { WorkspaceErrorCode } from './workspace.types'
+import type { WorkspaceEntry } from './workspace.types'
+
+const STUDENT_WORKSPACES_KEY = 'student-workspaces' as const
+
+export const useStudentWorkspaces = (identificationNumber: string | null) => {
+  const firestore = useFirestore()
+  return useQuery<WorkspaceEntry[]>({
+    queryKey: [STUDENT_WORKSPACES_KEY, identificationNumber],
+    queryFn: () => getStudentWorkspaces(firestore, identificationNumber as string),
+    enabled: identificationNumber !== null,
+  })
+}
 
 interface JoinWorkspaceArgs {
   readonly code: string

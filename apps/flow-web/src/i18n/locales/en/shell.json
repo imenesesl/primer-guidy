@@ -14,7 +14,7 @@
     }
   },
   "actions": {
-    "create": "Create new"
+    "create": "Join workspace"
   },
   "joinWorkspace": {
     "title": "Join Workspace",
@@ -24,10 +24,16 @@
     "invalidCode": "The code you entered is invalid. Please check and try again.",
     "alreadyEnrolled": "You are already enrolled in this workspace."
   },
+  "channelTabs": {
+    "content": "Content",
+    "ai": "AI"
+  },
   "breadcrumb": {
     "home": "Home",
     "tasks": "Tasks",
     "quizes": "Quizes",
-    "learning": "Learning"
+    "learning": "Learning",
+    "content": "Content",
+    "ai": "AI"
   }
 }

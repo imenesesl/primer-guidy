@@ -13,8 +13,7 @@
   "sidebar": {
     "items": {
       "directories": "Directories",
-      "general": "General",
-      "announcements": "Announcements",
+      "allChannels": "All Channels",
       "notifications": "Notifications",
       "history": "History"
     }
@@ -24,8 +23,6 @@
     "directories": "Directories",
     "users": "Users",
     "channels": "Channels",
-    "general": "General",
-    "announcements": "Announcements",
     "activity": "Activity",
     "notifications": "Notifications",
     "history": "History"

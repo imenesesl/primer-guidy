@@ -14,6 +14,7 @@ export const Shell = ({
   avatarName,
   userName,
   headerAction,
+  breadcrumbResolver,
   children,
 }: ShellProps) => {
   const { theme } = useTheme()
@@ -25,7 +26,7 @@ export const Shell = ({
         rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarName={avatarName} />}
         sidebar={<SidebarContent userName={userName} sidebarItemsMap={sidebarItemsMap} />}
       >
-        <ContentHeader headerAction={headerAction} />
+        <ContentHeader headerAction={headerAction} breadcrumbResolver={breadcrumbResolver} />
         {children}
       </WorkspaceLayout>
     </div>

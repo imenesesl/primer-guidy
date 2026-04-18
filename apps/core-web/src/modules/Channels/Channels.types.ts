@@ -1,3 +1,1 @@
-export interface ChannelsProps {
-  readonly variant?: 'default'
-}
+export type ChannelsProps = Record<string, never>

@@ -1,12 +1,7 @@
-import {
-  ChecklistIcon,
-  NoteIcon,
-  TasklistIcon,
-  StarIcon,
-  BookIcon,
-  BeakerIcon,
-} from '@primer/octicons-react'
+import { ChecklistIcon, NoteIcon, BookIcon, HashIcon } from '@primer/octicons-react'
 import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
+import type { WorkspaceEntry } from '@/services/workspace'
+import type { ChannelDocument } from '@/services/channel'
 import { FlowRoutes } from '@/routes/routes'
 
 export const RAIL_ITEMS: readonly RailItemConfig[] = [
@@ -23,13 +18,49 @@ export const RAIL_ITEMS: readonly RailItemConfig[] = [
   },
 ]
 
-export const SIDEBAR_ITEMS_MAP: Record<string, readonly SidebarItemConfig[]> = {
-  [FlowRoutes.Tasks]: [
-    { icon: TasklistIcon, labelKey: 'sidebar.items.myTasks', path: FlowRoutes.Tasks },
-    { icon: StarIcon, labelKey: 'sidebar.items.favorites', path: FlowRoutes.Tasks },
-  ],
-  [FlowRoutes.Quizes]: [
-    { icon: BookIcon, labelKey: 'sidebar.items.myQuizes', path: FlowRoutes.Quizes },
-    { icon: BeakerIcon, labelKey: 'sidebar.items.practice', path: FlowRoutes.Quizes },
-  ],
+export const extractWorkspaceId = (pathname: string, basePath: string): string | null => {
+  if (!pathname.startsWith(basePath)) return null
+  const segments = pathname.slice(basePath.length).split('/').filter(Boolean)
+  return segments[0] ?? null
 }
+
+const buildWorkspaceItems = (
+  workspaces: readonly WorkspaceEntry[],
+  basePath: string,
+  activeWorkspaceId: string | null,
+  channels: readonly ChannelDocument[],
+): SidebarItemConfig[] =>
+  workspaces.map((ws) => ({
+    icon: BookIcon,
+    label: ws.name,
+    path: `${basePath}/${ws.uid}`,
+    disabled: !ws.active,
+    children:
+      ws.uid === activeWorkspaceId
+        ? channels.map((ch) => ({
+            icon: HashIcon,
+            label: ch.name,
+            path: `${basePath}/${ws.uid}/${ch.id}`,
+            disabled: !ch.active,
+          }))
+        : undefined,
+  }))
+
+export const buildSidebarItemsMap = (
+  workspaces: readonly WorkspaceEntry[],
+  activeWorkspaceId: string | null,
+  channels: readonly ChannelDocument[],
+): Record<string, readonly SidebarItemConfig[]> => ({
+  [FlowRoutes.Tasks]: buildWorkspaceItems(
+    workspaces,
+    FlowRoutes.Tasks,
+    activeWorkspaceId,
+    channels,
+  ),
+  [FlowRoutes.Quizes]: buildWorkspaceItems(
+    workspaces,
+    FlowRoutes.Quizes,
+    activeWorkspaceId,
+    channels,
+  ),
+})

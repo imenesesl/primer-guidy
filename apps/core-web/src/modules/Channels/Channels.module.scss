@@ -1,0 +1,36 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col gap-4 p-6;
+}
+
+.toolbar {
+  @apply flex items-center gap-3;
+}
+
+.searchInput {
+  @apply flex-1;
+}
+
+.createButton.createButton {
+  @apply shrink-0 cursor-pointer;
+}
+
+.loadingContainer {
+  @apply flex justify-center py-8;
+}
+
+.emptyState {
+  @apply flex justify-center py-8;
+}
+
+.emptyText {
+  color: var(--primer-fg-muted);
+}
+
+.grid {
+  @apply grid gap-4;
+
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}

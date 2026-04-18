@@ -14,6 +14,18 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShellTasksRouteImport } from './routes/_shell/tasks'
 import { Route as ShellQuizesRouteImport } from './routes/_shell/quizes'
 import { Route as ShellLearningRouteImport } from './routes/_shell/learning'
+import { Route as ShellTasksIndexRouteImport } from './routes/_shell/tasks/index'
+import { Route as ShellQuizesIndexRouteImport } from './routes/_shell/quizes/index'
+import { Route as ShellTasksWorkspaceIdRouteImport } from './routes/_shell/tasks/$workspaceId'
+import { Route as ShellQuizesWorkspaceIdRouteImport } from './routes/_shell/quizes/$workspaceId'
+import { Route as ShellTasksWorkspaceIdChannelIdRouteImport } from './routes/_shell/tasks/$workspaceId/$channelId'
+import { Route as ShellQuizesWorkspaceIdChannelIdRouteImport } from './routes/_shell/quizes/$workspaceId/$channelId'
+import { Route as ShellTasksWorkspaceIdChannelIdIndexRouteImport } from './routes/_shell/tasks/$workspaceId/$channelId/index'
+import { Route as ShellQuizesWorkspaceIdChannelIdIndexRouteImport } from './routes/_shell/quizes/$workspaceId/$channelId/index'
+import { Route as ShellTasksWorkspaceIdChannelIdContentRouteImport } from './routes/_shell/tasks/$workspaceId/$channelId/content'
+import { Route as ShellTasksWorkspaceIdChannelIdAiRouteImport } from './routes/_shell/tasks/$workspaceId/$channelId/ai'
+import { Route as ShellQuizesWorkspaceIdChannelIdContentRouteImport } from './routes/_shell/quizes/$workspaceId/$channelId/content'
+import { Route as ShellQuizesWorkspaceIdChannelIdAiRouteImport } from './routes/_shell/quizes/$workspaceId/$channelId/ai'
 
 const ShellRoute = ShellRouteImport.update({
   id: '/_shell',
@@ -39,32 +51,160 @@ const ShellLearningRoute = ShellLearningRouteImport.update({
   path: '/learning',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellTasksIndexRoute = ShellTasksIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShellTasksRoute,
+} as any)
+const ShellQuizesIndexRoute = ShellQuizesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShellQuizesRoute,
+} as any)
+const ShellTasksWorkspaceIdRoute = ShellTasksWorkspaceIdRouteImport.update({
+  id: '/$workspaceId',
+  path: '/$workspaceId',
+  getParentRoute: () => ShellTasksRoute,
+} as any)
+const ShellQuizesWorkspaceIdRoute = ShellQuizesWorkspaceIdRouteImport.update({
+  id: '/$workspaceId',
+  path: '/$workspaceId',
+  getParentRoute: () => ShellQuizesRoute,
+} as any)
+const ShellTasksWorkspaceIdChannelIdRoute =
+  ShellTasksWorkspaceIdChannelIdRouteImport.update({
+    id: '/$channelId',
+    path: '/$channelId',
+    getParentRoute: () => ShellTasksWorkspaceIdRoute,
+  } as any)
+const ShellQuizesWorkspaceIdChannelIdRoute =
+  ShellQuizesWorkspaceIdChannelIdRouteImport.update({
+    id: '/$channelId',
+    path: '/$channelId',
+    getParentRoute: () => ShellQuizesWorkspaceIdRoute,
+  } as any)
+const ShellTasksWorkspaceIdChannelIdIndexRoute =
+  ShellTasksWorkspaceIdChannelIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ShellTasksWorkspaceIdChannelIdRoute,
+  } as any)
+const ShellQuizesWorkspaceIdChannelIdIndexRoute =
+  ShellQuizesWorkspaceIdChannelIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ShellQuizesWorkspaceIdChannelIdRoute,
+  } as any)
+const ShellTasksWorkspaceIdChannelIdContentRoute =
+  ShellTasksWorkspaceIdChannelIdContentRouteImport.update({
+    id: '/content',
+    path: '/content',
+    getParentRoute: () => ShellTasksWorkspaceIdChannelIdRoute,
+  } as any)
+const ShellTasksWorkspaceIdChannelIdAiRoute =
+  ShellTasksWorkspaceIdChannelIdAiRouteImport.update({
+    id: '/ai',
+    path: '/ai',
+    getParentRoute: () => ShellTasksWorkspaceIdChannelIdRoute,
+  } as any)
+const ShellQuizesWorkspaceIdChannelIdContentRoute =
+  ShellQuizesWorkspaceIdChannelIdContentRouteImport.update({
+    id: '/content',
+    path: '/content',
+    getParentRoute: () => ShellQuizesWorkspaceIdChannelIdRoute,
+  } as any)
+const ShellQuizesWorkspaceIdChannelIdAiRoute =
+  ShellQuizesWorkspaceIdChannelIdAiRouteImport.update({
+    id: '/ai',
+    path: '/ai',
+    getParentRoute: () => ShellQuizesWorkspaceIdChannelIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/learning': typeof ShellLearningRoute
-  '/quizes': typeof ShellQuizesRoute
-  '/tasks': typeof ShellTasksRoute
+  '/quizes': typeof ShellQuizesRouteWithChildren
+  '/tasks': typeof ShellTasksRouteWithChildren
+  '/quizes/$workspaceId': typeof ShellQuizesWorkspaceIdRouteWithChildren
+  '/tasks/$workspaceId': typeof ShellTasksWorkspaceIdRouteWithChildren
+  '/quizes/': typeof ShellQuizesIndexRoute
+  '/tasks/': typeof ShellTasksIndexRoute
+  '/quizes/$workspaceId/$channelId': typeof ShellQuizesWorkspaceIdChannelIdRouteWithChildren
+  '/tasks/$workspaceId/$channelId': typeof ShellTasksWorkspaceIdChannelIdRouteWithChildren
+  '/quizes/$workspaceId/$channelId/ai': typeof ShellQuizesWorkspaceIdChannelIdAiRoute
+  '/quizes/$workspaceId/$channelId/content': typeof ShellQuizesWorkspaceIdChannelIdContentRoute
+  '/tasks/$workspaceId/$channelId/ai': typeof ShellTasksWorkspaceIdChannelIdAiRoute
+  '/tasks/$workspaceId/$channelId/content': typeof ShellTasksWorkspaceIdChannelIdContentRoute
+  '/quizes/$workspaceId/$channelId/': typeof ShellQuizesWorkspaceIdChannelIdIndexRoute
+  '/tasks/$workspaceId/$channelId/': typeof ShellTasksWorkspaceIdChannelIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/learning': typeof ShellLearningRoute
-  '/quizes': typeof ShellQuizesRoute
-  '/tasks': typeof ShellTasksRoute
+  '/quizes/$workspaceId': typeof ShellQuizesWorkspaceIdRouteWithChildren
+  '/tasks/$workspaceId': typeof ShellTasksWorkspaceIdRouteWithChildren
+  '/quizes': typeof ShellQuizesIndexRoute
+  '/tasks': typeof ShellTasksIndexRoute
+  '/quizes/$workspaceId/$channelId/ai': typeof ShellQuizesWorkspaceIdChannelIdAiRoute
+  '/quizes/$workspaceId/$channelId/content': typeof ShellQuizesWorkspaceIdChannelIdContentRoute
+  '/tasks/$workspaceId/$channelId/ai': typeof ShellTasksWorkspaceIdChannelIdAiRoute
+  '/tasks/$workspaceId/$channelId/content': typeof ShellTasksWorkspaceIdChannelIdContentRoute
+  '/quizes/$workspaceId/$channelId': typeof ShellQuizesWorkspaceIdChannelIdIndexRoute
+  '/tasks/$workspaceId/$channelId': typeof ShellTasksWorkspaceIdChannelIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_shell': typeof ShellRouteWithChildren
   '/_shell/learning': typeof ShellLearningRoute
-  '/_shell/quizes': typeof ShellQuizesRoute
-  '/_shell/tasks': typeof ShellTasksRoute
+  '/_shell/quizes': typeof ShellQuizesRouteWithChildren
+  '/_shell/tasks': typeof ShellTasksRouteWithChildren
+  '/_shell/quizes/$workspaceId': typeof ShellQuizesWorkspaceIdRouteWithChildren
+  '/_shell/tasks/$workspaceId': typeof ShellTasksWorkspaceIdRouteWithChildren
+  '/_shell/quizes/': typeof ShellQuizesIndexRoute
+  '/_shell/tasks/': typeof ShellTasksIndexRoute
+  '/_shell/quizes/$workspaceId/$channelId': typeof ShellQuizesWorkspaceIdChannelIdRouteWithChildren
+  '/_shell/tasks/$workspaceId/$channelId': typeof ShellTasksWorkspaceIdChannelIdRouteWithChildren
+  '/_shell/quizes/$workspaceId/$channelId/ai': typeof ShellQuizesWorkspaceIdChannelIdAiRoute
+  '/_shell/quizes/$workspaceId/$channelId/content': typeof ShellQuizesWorkspaceIdChannelIdContentRoute
+  '/_shell/tasks/$workspaceId/$channelId/ai': typeof ShellTasksWorkspaceIdChannelIdAiRoute
+  '/_shell/tasks/$workspaceId/$channelId/content': typeof ShellTasksWorkspaceIdChannelIdContentRoute
+  '/_shell/quizes/$workspaceId/$channelId/': typeof ShellQuizesWorkspaceIdChannelIdIndexRoute
+  '/_shell/tasks/$workspaceId/$channelId/': typeof ShellTasksWorkspaceIdChannelIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/learning' | '/quizes' | '/tasks'
+  fullPaths:
+    | '/'
+    | '/learning'
+    | '/quizes'
+    | '/tasks'
+    | '/quizes/$workspaceId'
+    | '/tasks/$workspaceId'
+    | '/quizes/'
+    | '/tasks/'
+    | '/quizes/$workspaceId/$channelId'
+    | '/tasks/$workspaceId/$channelId'
+    | '/quizes/$workspaceId/$channelId/ai'
+    | '/quizes/$workspaceId/$channelId/content'
+    | '/tasks/$workspaceId/$channelId/ai'
+    | '/tasks/$workspaceId/$channelId/content'
+    | '/quizes/$workspaceId/$channelId/'
+    | '/tasks/$workspaceId/$channelId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/learning' | '/quizes' | '/tasks'
+  to:
+    | '/'
+    | '/learning'
+    | '/quizes/$workspaceId'
+    | '/tasks/$workspaceId'
+    | '/quizes'
+    | '/tasks'
+    | '/quizes/$workspaceId/$channelId/ai'
+    | '/quizes/$workspaceId/$channelId/content'
+    | '/tasks/$workspaceId/$channelId/ai'
+    | '/tasks/$workspaceId/$channelId/content'
+    | '/quizes/$workspaceId/$channelId'
+    | '/tasks/$workspaceId/$channelId'
   id:
     | '__root__'
     | '/'
@@ -72,6 +212,18 @@ export interface FileRouteTypes {
     | '/_shell/learning'
     | '/_shell/quizes'
     | '/_shell/tasks'
+    | '/_shell/quizes/$workspaceId'
+    | '/_shell/tasks/$workspaceId'
+    | '/_shell/quizes/'
+    | '/_shell/tasks/'
+    | '/_shell/quizes/$workspaceId/$channelId'
+    | '/_shell/tasks/$workspaceId/$channelId'
+    | '/_shell/quizes/$workspaceId/$channelId/ai'
+    | '/_shell/quizes/$workspaceId/$channelId/content'
+    | '/_shell/tasks/$workspaceId/$channelId/ai'
+    | '/_shell/tasks/$workspaceId/$channelId/content'
+    | '/_shell/quizes/$workspaceId/$channelId/'
+    | '/_shell/tasks/$workspaceId/$channelId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,19 +268,202 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellLearningRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/tasks/': {
+      id: '/_shell/tasks/'
+      path: '/'
+      fullPath: '/tasks/'
+      preLoaderRoute: typeof ShellTasksIndexRouteImport
+      parentRoute: typeof ShellTasksRoute
+    }
+    '/_shell/quizes/': {
+      id: '/_shell/quizes/'
+      path: '/'
+      fullPath: '/quizes/'
+      preLoaderRoute: typeof ShellQuizesIndexRouteImport
+      parentRoute: typeof ShellQuizesRoute
+    }
+    '/_shell/tasks/$workspaceId': {
+      id: '/_shell/tasks/$workspaceId'
+      path: '/$workspaceId'
+      fullPath: '/tasks/$workspaceId'
+      preLoaderRoute: typeof ShellTasksWorkspaceIdRouteImport
+      parentRoute: typeof ShellTasksRoute
+    }
+    '/_shell/quizes/$workspaceId': {
+      id: '/_shell/quizes/$workspaceId'
+      path: '/$workspaceId'
+      fullPath: '/quizes/$workspaceId'
+      preLoaderRoute: typeof ShellQuizesWorkspaceIdRouteImport
+      parentRoute: typeof ShellQuizesRoute
+    }
+    '/_shell/tasks/$workspaceId/$channelId': {
+      id: '/_shell/tasks/$workspaceId/$channelId'
+      path: '/$channelId'
+      fullPath: '/tasks/$workspaceId/$channelId'
+      preLoaderRoute: typeof ShellTasksWorkspaceIdChannelIdRouteImport
+      parentRoute: typeof ShellTasksWorkspaceIdRoute
+    }
+    '/_shell/quizes/$workspaceId/$channelId': {
+      id: '/_shell/quizes/$workspaceId/$channelId'
+      path: '/$channelId'
+      fullPath: '/quizes/$workspaceId/$channelId'
+      preLoaderRoute: typeof ShellQuizesWorkspaceIdChannelIdRouteImport
+      parentRoute: typeof ShellQuizesWorkspaceIdRoute
+    }
+    '/_shell/tasks/$workspaceId/$channelId/': {
+      id: '/_shell/tasks/$workspaceId/$channelId/'
+      path: '/'
+      fullPath: '/tasks/$workspaceId/$channelId/'
+      preLoaderRoute: typeof ShellTasksWorkspaceIdChannelIdIndexRouteImport
+      parentRoute: typeof ShellTasksWorkspaceIdChannelIdRoute
+    }
+    '/_shell/quizes/$workspaceId/$channelId/': {
+      id: '/_shell/quizes/$workspaceId/$channelId/'
+      path: '/'
+      fullPath: '/quizes/$workspaceId/$channelId/'
+      preLoaderRoute: typeof ShellQuizesWorkspaceIdChannelIdIndexRouteImport
+      parentRoute: typeof ShellQuizesWorkspaceIdChannelIdRoute
+    }
+    '/_shell/tasks/$workspaceId/$channelId/content': {
+      id: '/_shell/tasks/$workspaceId/$channelId/content'
+      path: '/content'
+      fullPath: '/tasks/$workspaceId/$channelId/content'
+      preLoaderRoute: typeof ShellTasksWorkspaceIdChannelIdContentRouteImport
+      parentRoute: typeof ShellTasksWorkspaceIdChannelIdRoute
+    }
+    '/_shell/tasks/$workspaceId/$channelId/ai': {
+      id: '/_shell/tasks/$workspaceId/$channelId/ai'
+      path: '/ai'
+      fullPath: '/tasks/$workspaceId/$channelId/ai'
+      preLoaderRoute: typeof ShellTasksWorkspaceIdChannelIdAiRouteImport
+      parentRoute: typeof ShellTasksWorkspaceIdChannelIdRoute
+    }
+    '/_shell/quizes/$workspaceId/$channelId/content': {
+      id: '/_shell/quizes/$workspaceId/$channelId/content'
+      path: '/content'
+      fullPath: '/quizes/$workspaceId/$channelId/content'
+      preLoaderRoute: typeof ShellQuizesWorkspaceIdChannelIdContentRouteImport
+      parentRoute: typeof ShellQuizesWorkspaceIdChannelIdRoute
+    }
+    '/_shell/quizes/$workspaceId/$channelId/ai': {
+      id: '/_shell/quizes/$workspaceId/$channelId/ai'
+      path: '/ai'
+      fullPath: '/quizes/$workspaceId/$channelId/ai'
+      preLoaderRoute: typeof ShellQuizesWorkspaceIdChannelIdAiRouteImport
+      parentRoute: typeof ShellQuizesWorkspaceIdChannelIdRoute
+    }
   }
 }
 
+interface ShellQuizesWorkspaceIdChannelIdRouteChildren {
+  ShellQuizesWorkspaceIdChannelIdAiRoute: typeof ShellQuizesWorkspaceIdChannelIdAiRoute
+  ShellQuizesWorkspaceIdChannelIdContentRoute: typeof ShellQuizesWorkspaceIdChannelIdContentRoute
+  ShellQuizesWorkspaceIdChannelIdIndexRoute: typeof ShellQuizesWorkspaceIdChannelIdIndexRoute
+}
+
+const ShellQuizesWorkspaceIdChannelIdRouteChildren: ShellQuizesWorkspaceIdChannelIdRouteChildren =
+  {
+    ShellQuizesWorkspaceIdChannelIdAiRoute:
+      ShellQuizesWorkspaceIdChannelIdAiRoute,
+    ShellQuizesWorkspaceIdChannelIdContentRoute:
+      ShellQuizesWorkspaceIdChannelIdContentRoute,
+    ShellQuizesWorkspaceIdChannelIdIndexRoute:
+      ShellQuizesWorkspaceIdChannelIdIndexRoute,
+  }
+
+const ShellQuizesWorkspaceIdChannelIdRouteWithChildren =
+  ShellQuizesWorkspaceIdChannelIdRoute._addFileChildren(
+    ShellQuizesWorkspaceIdChannelIdRouteChildren,
+  )
+
+interface ShellQuizesWorkspaceIdRouteChildren {
+  ShellQuizesWorkspaceIdChannelIdRoute: typeof ShellQuizesWorkspaceIdChannelIdRouteWithChildren
+}
+
+const ShellQuizesWorkspaceIdRouteChildren: ShellQuizesWorkspaceIdRouteChildren =
+  {
+    ShellQuizesWorkspaceIdChannelIdRoute:
+      ShellQuizesWorkspaceIdChannelIdRouteWithChildren,
+  }
+
+const ShellQuizesWorkspaceIdRouteWithChildren =
+  ShellQuizesWorkspaceIdRoute._addFileChildren(
+    ShellQuizesWorkspaceIdRouteChildren,
+  )
+
+interface ShellQuizesRouteChildren {
+  ShellQuizesWorkspaceIdRoute: typeof ShellQuizesWorkspaceIdRouteWithChildren
+  ShellQuizesIndexRoute: typeof ShellQuizesIndexRoute
+}
+
+const ShellQuizesRouteChildren: ShellQuizesRouteChildren = {
+  ShellQuizesWorkspaceIdRoute: ShellQuizesWorkspaceIdRouteWithChildren,
+  ShellQuizesIndexRoute: ShellQuizesIndexRoute,
+}
+
+const ShellQuizesRouteWithChildren = ShellQuizesRoute._addFileChildren(
+  ShellQuizesRouteChildren,
+)
+
+interface ShellTasksWorkspaceIdChannelIdRouteChildren {
+  ShellTasksWorkspaceIdChannelIdAiRoute: typeof ShellTasksWorkspaceIdChannelIdAiRoute
+  ShellTasksWorkspaceIdChannelIdContentRoute: typeof ShellTasksWorkspaceIdChannelIdContentRoute
+  ShellTasksWorkspaceIdChannelIdIndexRoute: typeof ShellTasksWorkspaceIdChannelIdIndexRoute
+}
+
+const ShellTasksWorkspaceIdChannelIdRouteChildren: ShellTasksWorkspaceIdChannelIdRouteChildren =
+  {
+    ShellTasksWorkspaceIdChannelIdAiRoute:
+      ShellTasksWorkspaceIdChannelIdAiRoute,
+    ShellTasksWorkspaceIdChannelIdContentRoute:
+      ShellTasksWorkspaceIdChannelIdContentRoute,
+    ShellTasksWorkspaceIdChannelIdIndexRoute:
+      ShellTasksWorkspaceIdChannelIdIndexRoute,
+  }
+
+const ShellTasksWorkspaceIdChannelIdRouteWithChildren =
+  ShellTasksWorkspaceIdChannelIdRoute._addFileChildren(
+    ShellTasksWorkspaceIdChannelIdRouteChildren,
+  )
+
+interface ShellTasksWorkspaceIdRouteChildren {
+  ShellTasksWorkspaceIdChannelIdRoute: typeof ShellTasksWorkspaceIdChannelIdRouteWithChildren
+}
+
+const ShellTasksWorkspaceIdRouteChildren: ShellTasksWorkspaceIdRouteChildren = {
+  ShellTasksWorkspaceIdChannelIdRoute:
+    ShellTasksWorkspaceIdChannelIdRouteWithChildren,
+}
+
+const ShellTasksWorkspaceIdRouteWithChildren =
+  ShellTasksWorkspaceIdRoute._addFileChildren(
+    ShellTasksWorkspaceIdRouteChildren,
+  )
+
+interface ShellTasksRouteChildren {
+  ShellTasksWorkspaceIdRoute: typeof ShellTasksWorkspaceIdRouteWithChildren
+  ShellTasksIndexRoute: typeof ShellTasksIndexRoute
+}
+
+const ShellTasksRouteChildren: ShellTasksRouteChildren = {
+  ShellTasksWorkspaceIdRoute: ShellTasksWorkspaceIdRouteWithChildren,
+  ShellTasksIndexRoute: ShellTasksIndexRoute,
+}
+
+const ShellTasksRouteWithChildren = ShellTasksRoute._addFileChildren(
+  ShellTasksRouteChildren,
+)
+
 interface ShellRouteChildren {
   ShellLearningRoute: typeof ShellLearningRoute
-  ShellQuizesRoute: typeof ShellQuizesRoute
-  ShellTasksRoute: typeof ShellTasksRoute
+  ShellQuizesRoute: typeof ShellQuizesRouteWithChildren
+  ShellTasksRoute: typeof ShellTasksRouteWithChildren
 }
 
 const ShellRouteChildren: ShellRouteChildren = {
   ShellLearningRoute: ShellLearningRoute,
-  ShellQuizesRoute: ShellQuizesRoute,
-  ShellTasksRoute: ShellTasksRoute,
+  ShellQuizesRoute: ShellQuizesRouteWithChildren,
+  ShellTasksRoute: ShellTasksRouteWithChildren,
 }
 
 const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)

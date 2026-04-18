@@ -4,12 +4,12 @@ import {
   CommentDiscussionIcon,
   ZapIcon,
   PeopleIcon,
-  MegaphoneIcon,
   HashIcon,
   BellIcon,
   ClockIcon,
 } from '@primer/octicons-react'
 import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
+import type { ChannelDocument } from '@/services/channel'
 import { CoreRoutes } from '@/routes/routes'
 
 export const RAIL_ITEMS: readonly RailItemConfig[] = [
@@ -24,24 +24,12 @@ export const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: ZapIcon, labelKey: 'rail.items.activity', path: CoreRoutes.Activity },
 ]
 
-export const SIDEBAR_ITEMS_MAP: Record<string, readonly SidebarItemConfig[]> = {
+const STATIC_SIDEBAR: Record<string, readonly SidebarItemConfig[]> = {
   [CoreRoutes.Home]: [
     {
       icon: PeopleIcon,
       labelKey: 'sidebar.items.directories',
       path: CoreRoutes.Directories,
-    },
-  ],
-  [CoreRoutes.Channels]: [
-    {
-      icon: HashIcon,
-      labelKey: 'sidebar.items.general',
-      path: CoreRoutes.ChannelsGeneral,
-    },
-    {
-      icon: MegaphoneIcon,
-      labelKey: 'sidebar.items.announcements',
-      path: CoreRoutes.ChannelsAnnouncements,
     },
   ],
   [CoreRoutes.Activity]: [
@@ -57,3 +45,22 @@ export const SIDEBAR_ITEMS_MAP: Record<string, readonly SidebarItemConfig[]> = {
     },
   ],
 }
+
+export const buildSidebarItemsMap = (
+  channels: readonly ChannelDocument[],
+): Record<string, readonly SidebarItemConfig[]> => ({
+  ...STATIC_SIDEBAR,
+  [CoreRoutes.Channels]: [
+    {
+      icon: HashIcon,
+      labelKey: 'sidebar.items.allChannels',
+      path: CoreRoutes.Channels,
+      children: channels.map((ch) => ({
+        icon: HashIcon,
+        label: ch.name,
+        path: `${CoreRoutes.Channels}/${ch.id}`,
+        disabled: !ch.active,
+      })),
+    },
+  ],
+})

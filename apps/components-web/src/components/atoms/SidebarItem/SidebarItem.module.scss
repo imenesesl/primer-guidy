@@ -42,6 +42,10 @@
   color: var(--primer-fg-default);
 }
 
+.disabled.disabled {
+  @apply cursor-not-allowed pointer-events-none opacity-50;
+}
+
 .iconWrapper {
   @apply flex items-center justify-center;
 }

@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useMatchRoute, useLocation } from '@tanstack/react-router'
 import { RailItem } from '../../atoms/RailItem'
 import { SidebarItem } from '../../atoms/SidebarItem'
+import type { SidebarItemConfig } from '../../atoms/SidebarItem'
+import { SidebarGroup } from '../../molecules/SidebarGroup'
 import { useLayoutStore } from '../../../stores/layout.store'
 import { resolveSidebarItems } from './SidebarContent.utils'
 import type { SidebarContentProps } from './SidebarContent.types'
@@ -17,6 +19,8 @@ export const SidebarContent = ({ userName, sidebarItemsMap }: SidebarContentProp
   const matchRoute = useMatchRoute()
   const location = useLocation()
   const sidebarItems = resolveSidebarItems(location.pathname, sidebarItemsMap)
+
+  const resolveLabel = (item: SidebarItemConfig) => item.label ?? tShell(item.labelKey ?? '')
 
   return (
     <nav className={styles.sidebar}>
@@ -36,15 +40,25 @@ export const SidebarContent = ({ userName, sidebarItemsMap }: SidebarContentProp
         )}
       </div>
       <div className={styles.sidebarNav}>
-        {sidebarItems.map((item) => (
-          <SidebarItem
-            key={item.path}
-            icon={item.icon}
-            label={tShell(item.labelKey)}
-            path={item.path}
-            active={!!matchRoute({ to: item.path, fuzzy: true })}
-          />
-        ))}
+        {sidebarItems.map((item) =>
+          item.children && item.children.length > 0 ? (
+            <SidebarGroup
+              key={item.labelKey ?? item.label}
+              item={item}
+              children={item.children}
+              resolveLabel={resolveLabel}
+            />
+          ) : (
+            <SidebarItem
+              key={item.labelKey ?? item.label}
+              icon={item.icon}
+              label={resolveLabel(item)}
+              path={item.path}
+              active={!!matchRoute({ to: item.path, fuzzy: true })}
+              disabled={item.disabled}
+            />
+          ),
+        )}
       </div>
     </nav>
   )

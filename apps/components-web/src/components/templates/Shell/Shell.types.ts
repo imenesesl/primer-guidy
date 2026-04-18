@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { RailItemConfig } from '../../organisms/Rail'
 import type { SidebarItemConfig } from '../../atoms/SidebarItem'
+import type { BreadcrumbResolver } from './ContentHeader.types'
 
 export interface ShellProps {
   readonly railItems: readonly RailItemConfig[]
@@ -9,5 +10,6 @@ export interface ShellProps {
   readonly avatarName?: string
   readonly userName?: string
   readonly headerAction?: ReactNode
+  readonly breadcrumbResolver?: BreadcrumbResolver
   readonly children: ReactNode
 }

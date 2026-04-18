@@ -1,15 +1,29 @@
 {
   "title": "Channels",
-  "tabs": {
-    "general": "General",
-    "announcements": "Announcements"
+  "toolbar": {
+    "search": "Search channels...",
+    "reload": "Reload",
+    "create": "Create Channel"
   },
-  "general": {
-    "title": "General",
-    "description": "General discussion channel"
+  "empty": "No channels yet. Create your first channel to get started.",
+  "createChannel": {
+    "title": "Create Channel",
+    "description": "Create a new channel for your workspace. You can add students to it later.",
+    "namePlaceholder": "e.g. math-101",
+    "invalidName": "Only letters, numbers, and dashes are allowed.",
+    "cancel": "Cancel",
+    "create": "Create"
   },
-  "announcements": {
-    "title": "Announcements",
-    "description": "Important announcements"
+  "manageStudents": {
+    "title": "Manage Students",
+    "cancel": "Cancel",
+    "save": "Save",
+    "noActiveStudents": "No active students available. Activate students in the Users tab first."
+  },
+  "channelCard": {
+    "students": "{{count}} students",
+    "manage": "Students",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
   }
 }

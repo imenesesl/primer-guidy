@@ -14,3 +14,9 @@ export interface StudentEnrollmentData {
   readonly status: EnrollmentStatus
   readonly joinedAt: string
 }
+
+export interface WorkspaceEntry {
+  readonly name: string
+  readonly uid: string
+  readonly active: boolean
+}

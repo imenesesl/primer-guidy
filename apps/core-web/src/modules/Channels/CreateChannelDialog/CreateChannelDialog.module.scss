@@ -1,0 +1,16 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.body {
+  @apply flex flex-col gap-4;
+}
+
+.description {
+  @apply text-sm;
+
+  color: var(--primer-fg-muted);
+}
+
+.input {
+  @apply w-full;
+}

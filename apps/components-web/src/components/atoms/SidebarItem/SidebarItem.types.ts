@@ -2,8 +2,11 @@ import type { Icon } from '@primer/octicons-react'
 
 export interface SidebarItemConfig {
   readonly icon: Icon
-  readonly labelKey: string
+  readonly labelKey?: string
+  readonly label?: string
   readonly path: string
+  readonly disabled?: boolean
+  readonly children?: readonly SidebarItemConfig[]
 }
 
 export interface SidebarItemProps {
@@ -11,4 +14,5 @@ export interface SidebarItemProps {
   readonly label: string
   readonly path: string
   readonly active: boolean
+  readonly disabled?: boolean
 }

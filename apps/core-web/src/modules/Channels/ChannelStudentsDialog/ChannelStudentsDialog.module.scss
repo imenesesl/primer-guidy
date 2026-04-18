@@ -1,0 +1,16 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.body {
+  @apply flex flex-col gap-3;
+}
+
+.empty {
+  @apply text-sm;
+
+  color: var(--primer-fg-muted);
+}
+
+.list {
+  @apply flex flex-col gap-2;
+}

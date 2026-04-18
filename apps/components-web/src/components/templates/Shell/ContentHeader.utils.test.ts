@@ -7,6 +7,8 @@ const translate = (key: string): string => {
     'breadcrumb.directories': 'Directories',
     'breadcrumb.users': 'Users',
     'breadcrumb.channels': 'Channels',
+    'breadcrumb.tasks': 'Tasks',
+    'breadcrumb.content': 'Content',
   }
   return translations[key] ?? key
 }
@@ -30,5 +32,23 @@ describe('buildBreadcrumb', () => {
 
   it('returns translation key for unknown segments', () => {
     expect(buildBreadcrumb('/unknown', translate)).toBe('breadcrumb.unknown')
+  })
+
+  it('uses resolver for dynamic segments', () => {
+    const resolver = (segment: string) => {
+      if (segment === 'abc123') return 'Mr. Smith'
+      if (segment === 'ch456') return 'Mathematics'
+      return null
+    }
+
+    expect(buildBreadcrumb('/tasks/abc123/ch456/content', translate, resolver)).toBe(
+      'Tasks · Mr. Smith · Mathematics · Content',
+    )
+  })
+
+  it('falls back to translate when resolver returns null', () => {
+    const resolver = () => null
+
+    expect(buildBreadcrumb('/channels', translate, resolver)).toBe('Channels')
   })
 })

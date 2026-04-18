@@ -1,10 +1,13 @@
 import type { IRealtimeDatabaseProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
 import { buildSubcollectionPath } from '@primer-guidy/cloud-services'
 import { EnrollmentStatus, WorkspaceErrorCode } from './workspace.types'
+import type { WorkspaceEntry } from './workspace.types'
 
 const CODES_PATH = 'codes'
 const USERS_COLLECTION = 'users'
+const STUDENTS_COLLECTION = 'students'
 const STUDENTS_SUBCOLLECTION = 'students'
+const WORKSPACES_SUBCOLLECTION = 'workspaces'
 
 interface InviteCodeEntry {
   readonly uid: string
@@ -43,4 +46,16 @@ export const joinWorkspace = async (
   }
 
   await firestore.setDoc(subcollectionPath, identificationNumber, data)
+}
+
+export const getStudentWorkspaces = async (
+  firestore: IFirestoreProvider,
+  identificationNumber: string,
+): Promise<WorkspaceEntry[]> => {
+  const path = buildSubcollectionPath(
+    STUDENTS_COLLECTION,
+    identificationNumber,
+    WORKSPACES_SUBCOLLECTION,
+  )
+  return firestore.getDocs<WorkspaceEntry>(path)
 }

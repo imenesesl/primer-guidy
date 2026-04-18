@@ -28,7 +28,17 @@ vi.mock('@primer-guidy/components-web', async (importOriginal) => {
 })
 
 vi.mock('@/services/student', () => ({
-  useStudentProfile: () => ({ data: { name: 'Jane Doe' } }),
+  useStudentProfile: () => ({
+    data: { name: 'Jane Doe', identificationNumber: '12345678' },
+  }),
+}))
+
+vi.mock('@/services/workspace', () => ({
+  useStudentWorkspaces: () => ({ data: [] }),
+}))
+
+vi.mock('@/services/channel', () => ({
+  useStudentChannels: () => ({ data: [] }),
 }))
 
 vi.mock('@/modules/JoinWorkspaceDialog', () => ({
@@ -37,6 +47,7 @@ vi.mock('@/modules/JoinWorkspaceDialog', () => ({
 
 vi.mock('@tanstack/react-router', () => ({
   Outlet: () => <div data-testid="outlet">Outlet Content</div>,
+  useLocation: () => ({ pathname: '/tasks' }),
 }))
 
 describe('ShellGuard', () => {

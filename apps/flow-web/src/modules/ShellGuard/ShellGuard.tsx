@@ -6,8 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { createLayoutStore, LayoutStoreProvider, Shell } from '@primer-guidy/components-web'
 import { useAuthGuard, AuthGuardStatus } from '@/modules/AuthGuard'
 import { useStudentProfile } from '@/services/student'
+import { useStudentWorkspaces } from '@/services/workspace'
+import { useStudentChannels } from '@/services/channel'
 import { JoinWorkspaceDialog } from '@/modules/JoinWorkspaceDialog'
-import { RAIL_ITEMS, SIDEBAR_ITEMS_MAP } from './ShellGuard.utils'
+import { RAIL_ITEMS, buildSidebarItemsMap } from './ShellGuard.utils'
+import { useActiveWorkspaceId } from './useActiveWorkspaceId'
+import { useBreadcrumbResolver } from './useBreadcrumbResolver'
 import styles from './ShellGuard.module.scss'
 
 export const ShellGuard = () => {
@@ -15,15 +19,30 @@ export const ShellGuard = () => {
   const { status, uid } = useAuthGuard()
   const layoutStore = useMemo(() => createLayoutStore(), [])
   const { data: student } = useStudentProfile(uid)
+  const { data: workspaces } = useStudentWorkspaces(student?.identificationNumber ?? null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const activeWorkspaceId = useActiveWorkspaceId()
+
+  const { data: channels } = useStudentChannels(
+    activeWorkspaceId,
+    student?.identificationNumber ?? null,
+  )
+
+  const sidebarItemsMap = useMemo(
+    () => buildSidebarItemsMap(workspaces ?? [], activeWorkspaceId, channels ?? []),
+    [workspaces, activeWorkspaceId, channels],
+  )
+
+  const breadcrumbResolver = useBreadcrumbResolver(workspaces, channels)
 
   return (
     <LayoutStoreProvider value={layoutStore}>
       <Shell
         railItems={RAIL_ITEMS}
-        sidebarItemsMap={SIDEBAR_ITEMS_MAP}
+        sidebarItemsMap={sidebarItemsMap}
         avatarName={student?.name}
         userName={student?.name}
+        breadcrumbResolver={breadcrumbResolver}
         headerAction={
           <IconButton
             icon={PlusIcon}

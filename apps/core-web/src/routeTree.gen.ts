@@ -18,8 +18,7 @@ import { Route as ShellDirectoriesIndexRouteImport } from './routes/_shell/direc
 import { Route as ShellChannelsIndexRouteImport } from './routes/_shell/channels/index'
 import { Route as ShellActivityIndexRouteImport } from './routes/_shell/activity/index'
 import { Route as ShellDirectoriesUsersRouteImport } from './routes/_shell/directories/users'
-import { Route as ShellChannelsGeneralRouteImport } from './routes/_shell/channels/general'
-import { Route as ShellChannelsAnnouncementsRouteImport } from './routes/_shell/channels/announcements'
+import { Route as ShellChannelsChannelIdRouteImport } from './routes/_shell/channels/$channelId'
 import { Route as ShellActivityNotificationsRouteImport } from './routes/_shell/activity/notifications'
 import { Route as ShellActivityHistoryRouteImport } from './routes/_shell/activity/history'
 
@@ -67,17 +66,11 @@ const ShellDirectoriesUsersRoute = ShellDirectoriesUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => ShellDirectoriesRoute,
 } as any)
-const ShellChannelsGeneralRoute = ShellChannelsGeneralRouteImport.update({
-  id: '/general',
-  path: '/general',
+const ShellChannelsChannelIdRoute = ShellChannelsChannelIdRouteImport.update({
+  id: '/$channelId',
+  path: '/$channelId',
   getParentRoute: () => ShellChannelsRoute,
 } as any)
-const ShellChannelsAnnouncementsRoute =
-  ShellChannelsAnnouncementsRouteImport.update({
-    id: '/announcements',
-    path: '/announcements',
-    getParentRoute: () => ShellChannelsRoute,
-  } as any)
 const ShellActivityNotificationsRoute =
   ShellActivityNotificationsRouteImport.update({
     id: '/notifications',
@@ -97,8 +90,7 @@ export interface FileRoutesByFullPath {
   '/directories': typeof ShellDirectoriesRouteWithChildren
   '/activity/history': typeof ShellActivityHistoryRoute
   '/activity/notifications': typeof ShellActivityNotificationsRoute
-  '/channels/announcements': typeof ShellChannelsAnnouncementsRoute
-  '/channels/general': typeof ShellChannelsGeneralRoute
+  '/channels/$channelId': typeof ShellChannelsChannelIdRoute
   '/directories/users': typeof ShellDirectoriesUsersRoute
   '/activity/': typeof ShellActivityIndexRoute
   '/channels/': typeof ShellChannelsIndexRoute
@@ -108,8 +100,7 @@ export interface FileRoutesByTo {
   '/': typeof ShellIndexRoute
   '/activity/history': typeof ShellActivityHistoryRoute
   '/activity/notifications': typeof ShellActivityNotificationsRoute
-  '/channels/announcements': typeof ShellChannelsAnnouncementsRoute
-  '/channels/general': typeof ShellChannelsGeneralRoute
+  '/channels/$channelId': typeof ShellChannelsChannelIdRoute
   '/directories/users': typeof ShellDirectoriesUsersRoute
   '/activity': typeof ShellActivityIndexRoute
   '/channels': typeof ShellChannelsIndexRoute
@@ -124,8 +115,7 @@ export interface FileRoutesById {
   '/_shell/': typeof ShellIndexRoute
   '/_shell/activity/history': typeof ShellActivityHistoryRoute
   '/_shell/activity/notifications': typeof ShellActivityNotificationsRoute
-  '/_shell/channels/announcements': typeof ShellChannelsAnnouncementsRoute
-  '/_shell/channels/general': typeof ShellChannelsGeneralRoute
+  '/_shell/channels/$channelId': typeof ShellChannelsChannelIdRoute
   '/_shell/directories/users': typeof ShellDirectoriesUsersRoute
   '/_shell/activity/': typeof ShellActivityIndexRoute
   '/_shell/channels/': typeof ShellChannelsIndexRoute
@@ -140,8 +130,7 @@ export interface FileRouteTypes {
     | '/directories'
     | '/activity/history'
     | '/activity/notifications'
-    | '/channels/announcements'
-    | '/channels/general'
+    | '/channels/$channelId'
     | '/directories/users'
     | '/activity/'
     | '/channels/'
@@ -151,8 +140,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activity/history'
     | '/activity/notifications'
-    | '/channels/announcements'
-    | '/channels/general'
+    | '/channels/$channelId'
     | '/directories/users'
     | '/activity'
     | '/channels'
@@ -166,8 +154,7 @@ export interface FileRouteTypes {
     | '/_shell/'
     | '/_shell/activity/history'
     | '/_shell/activity/notifications'
-    | '/_shell/channels/announcements'
-    | '/_shell/channels/general'
+    | '/_shell/channels/$channelId'
     | '/_shell/directories/users'
     | '/_shell/activity/'
     | '/_shell/channels/'
@@ -243,18 +230,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellDirectoriesUsersRouteImport
       parentRoute: typeof ShellDirectoriesRoute
     }
-    '/_shell/channels/general': {
-      id: '/_shell/channels/general'
-      path: '/general'
-      fullPath: '/channels/general'
-      preLoaderRoute: typeof ShellChannelsGeneralRouteImport
-      parentRoute: typeof ShellChannelsRoute
-    }
-    '/_shell/channels/announcements': {
-      id: '/_shell/channels/announcements'
-      path: '/announcements'
-      fullPath: '/channels/announcements'
-      preLoaderRoute: typeof ShellChannelsAnnouncementsRouteImport
+    '/_shell/channels/$channelId': {
+      id: '/_shell/channels/$channelId'
+      path: '/$channelId'
+      fullPath: '/channels/$channelId'
+      preLoaderRoute: typeof ShellChannelsChannelIdRouteImport
       parentRoute: typeof ShellChannelsRoute
     }
     '/_shell/activity/notifications': {
@@ -291,14 +271,12 @@ const ShellActivityRouteWithChildren = ShellActivityRoute._addFileChildren(
 )
 
 interface ShellChannelsRouteChildren {
-  ShellChannelsAnnouncementsRoute: typeof ShellChannelsAnnouncementsRoute
-  ShellChannelsGeneralRoute: typeof ShellChannelsGeneralRoute
+  ShellChannelsChannelIdRoute: typeof ShellChannelsChannelIdRoute
   ShellChannelsIndexRoute: typeof ShellChannelsIndexRoute
 }
 
 const ShellChannelsRouteChildren: ShellChannelsRouteChildren = {
-  ShellChannelsAnnouncementsRoute: ShellChannelsAnnouncementsRoute,
-  ShellChannelsGeneralRoute: ShellChannelsGeneralRoute,
+  ShellChannelsChannelIdRoute: ShellChannelsChannelIdRoute,
   ShellChannelsIndexRoute: ShellChannelsIndexRoute,
 }
 

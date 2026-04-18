@@ -1,0 +1,48 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col gap-3 rounded-xl p-5 ring-1 ring-inset;
+
+  background-color: var(--primer-canvas-subtle);
+
+  --tw-ring-color: var(--primer-border-muted);
+}
+
+.header {
+  @apply flex items-center gap-2;
+}
+
+.name {
+  @apply font-semibold truncate flex-1;
+
+  color: var(--primer-fg-default);
+}
+
+.statusDot {
+  @apply inline-block w-2.5 h-2.5 rounded-full shrink-0;
+}
+
+.active {
+  background-color: var(--primer-success-emphasis);
+}
+
+.inactive {
+  background-color: var(--primer-neutral-emphasis);
+}
+
+.meta {
+  @apply flex items-center gap-1.5;
+
+  color: var(--primer-fg-muted);
+}
+
+.count {
+  @apply text-xs;
+
+  color: var(--primer-fg-muted);
+}
+
+.actions {
+  @apply flex gap-2 pt-1;
+}

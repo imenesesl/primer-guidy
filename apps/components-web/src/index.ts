@@ -26,7 +26,7 @@ export { WorkspaceLayout } from './components/templates/WorkspaceLayout'
 export type { WorkspaceLayoutProps } from './components/templates/WorkspaceLayout'
 
 export { Shell } from './components/templates/Shell'
-export type { ShellProps } from './components/templates/Shell'
+export type { ShellProps, BreadcrumbResolver } from './components/templates/Shell'
 
 export { createLayoutStore, LayoutStoreProvider, useLayoutStore } from './stores/layout.store'
 export type { LayoutStore } from './stores/layout.store'
@@ -36,6 +36,9 @@ export type { BannerStore, BannerConfig, BannerCta } from './stores/banner.store
 
 export { AppBanner } from './components/molecules/AppBanner'
 export type { AppBannerVariant } from './components/molecules/AppBanner'
+
+export { SidebarGroup } from './components/molecules/SidebarGroup'
+export type { SidebarGroupProps } from './components/molecules/SidebarGroup'
 
 export { useSubscription, AsyncStatus } from './hooks'
 export type { SubscriptionResult, SubscriptionOptions, SubscribeFn } from './hooks'
