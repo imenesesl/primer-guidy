@@ -1,0 +1,18 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.body {
+  @apply flex flex-col gap-4 p-4;
+}
+
+.description {
+  color: var(--primer-fg-muted);
+}
+
+.codeInputRoot {
+  @apply flex justify-center gap-1.5;
+}
+
+.codeBox.codeBox {
+  @apply w-10 font-mono text-center;
+}

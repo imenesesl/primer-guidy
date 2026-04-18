@@ -31,6 +31,10 @@ vi.mock('@/services/student', () => ({
   useStudentProfile: () => ({ data: { name: 'Jane Doe' } }),
 }))
 
+vi.mock('@/modules/JoinWorkspaceDialog', () => ({
+  JoinWorkspaceDialog: () => null,
+}))
+
 vi.mock('@tanstack/react-router', () => ({
   Outlet: () => <div data-testid="outlet">Outlet Content</div>,
 }))

@@ -13,6 +13,15 @@
       "practice": "Practice"
     }
   },
+  "actions": {
+    "create": "Create new"
+  },
+  "joinWorkspace": {
+    "title": "Join Workspace",
+    "description": "Enter the 10-digit code shared by your teacher to join their workspace.",
+    "cancel": "Cancel",
+    "join": "Join"
+  },
   "breadcrumb": {
     "home": "Home",
     "tasks": "Tasks",
