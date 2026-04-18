@@ -1,0 +1,20 @@
+{
+  "level": "realtime-database",
+  "paths": {
+    "codes/{code}": {
+      "description": "Maps a 10-digit invite code to the user who owns it",
+      "schema": {
+        "uid": {
+          "type": "string",
+          "required": true,
+          "description": "Firebase Auth UID of the code owner"
+        }
+      }
+    },
+    "userCodes/{uid}": {
+      "description": "Maps a user UID to their invite code (null if not yet generated)",
+      "type": "string",
+      "default": null
+    }
+  }
+}

@@ -1,0 +1,25 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.body {
+  @apply flex flex-col gap-4 p-4;
+}
+
+.description {
+  color: var(--primer-fg-muted);
+}
+
+.codeContainer {
+  @apply flex items-center justify-center;
+}
+
+.codeDisplay {
+  @apply w-full text-center font-mono text-2xl tracking-widest py-3 rounded-md;
+
+  color: var(--primer-fg-default);
+  background-color: var(--primer-canvas-subtle);
+}
+
+.loading {
+  @apply flex justify-center py-3;
+}

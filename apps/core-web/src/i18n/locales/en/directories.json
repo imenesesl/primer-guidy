@@ -4,7 +4,13 @@
     "users": "Users"
   },
   "users": {
-    "title": "Users",
-    "description": "Manage user directory"
+    "searchPlaceholder": "Search users...",
+    "inviteStudents": "Invite Students"
+  },
+  "invite": {
+    "title": "Invite Students",
+    "description": "Share this code with your students so they can join your class.",
+    "close": "Close",
+    "copyCode": "Copy Code"
   }
 }

@@ -4,7 +4,13 @@
     "users": "Usuarios"
   },
   "users": {
-    "title": "Usuarios",
-    "description": "Administrar directorio de usuarios"
+    "searchPlaceholder": "Buscar usuarios...",
+    "inviteStudents": "Invitar Estudiantes"
+  },
+  "invite": {
+    "title": "Invitar Estudiantes",
+    "description": "Comparte este código con tus estudiantes para que se unan a tu clase.",
+    "close": "Cerrar",
+    "copyCode": "Copiar Código"
   }
 }
