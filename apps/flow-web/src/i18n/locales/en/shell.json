@@ -21,7 +21,8 @@
     "description": "Enter the 10-digit code shared by your teacher to join their workspace.",
     "cancel": "Cancel",
     "join": "Join",
-    "invalidCode": "The code you entered is invalid. Please check and try again."
+    "invalidCode": "The code you entered is invalid. Please check and try again.",
+    "alreadyEnrolled": "You are already enrolled in this workspace."
   },
   "breadcrumb": {
     "home": "Home",

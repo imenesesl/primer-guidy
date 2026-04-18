@@ -1,6 +1,6 @@
 import type { IRealtimeDatabaseProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
 import { buildSubcollectionPath } from '@primer-guidy/cloud-services'
-import { EnrollmentStatus } from './workspace.types'
+import { EnrollmentStatus, WorkspaceErrorCode } from './workspace.types'
 
 const CODES_PATH = 'codes'
 const USERS_COLLECTION = 'users'
@@ -29,6 +29,11 @@ export const joinWorkspace = async (
     teacherUid,
     STUDENTS_SUBCOLLECTION,
   )
+
+  const existing = await firestore.getDoc(subcollectionPath, identificationNumber)
+  if (existing) {
+    throw new Error(WorkspaceErrorCode.ALREADY_ENROLLED)
+  }
 
   const data = {
     name,

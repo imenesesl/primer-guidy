@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dialog, Text, Flash } from '@primer/react'
+import { Dialog, Flash, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useJoinWorkspace, WorkspaceErrorCode } from '@/services/workspace'
 import { CodeInput } from './CodeInput'
@@ -37,6 +37,7 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceD
   if (!isOpen) return null
 
   const isInvalidCode = error?.message === WorkspaceErrorCode.INVALID_CODE
+  const isAlreadyEnrolled = error?.message === WorkspaceErrorCode.ALREADY_ENROLLED
 
   return (
     <Dialog
@@ -63,6 +64,9 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceD
         </Text>
         <CodeInput value={code} onChange={setCode} />
         {isInvalidCode && <Flash variant="danger">{tShell('joinWorkspace.invalidCode')}</Flash>}
+        {isAlreadyEnrolled && (
+          <Flash variant="warning">{tShell('joinWorkspace.alreadyEnrolled')}</Flash>
+        )}
       </div>
     </Dialog>
   )

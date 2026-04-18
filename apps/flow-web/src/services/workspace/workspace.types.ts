@@ -5,6 +5,7 @@ export enum EnrollmentStatus {
 
 export enum WorkspaceErrorCode {
   INVALID_CODE = 'INVALID_CODE',
+  ALREADY_ENROLLED = 'ALREADY_ENROLLED',
 }
 
 export interface StudentEnrollmentData {
