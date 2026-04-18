@@ -5,6 +5,7 @@
   },
   "users": {
     "searchPlaceholder": "Search users...",
+    "reload": "Reload",
     "inviteStudents": "Invite Students"
   },
   "invite": {
@@ -12,5 +13,12 @@
     "description": "Share this code with your students so they can join your class.",
     "close": "Close",
     "copyCode": "Copy Code"
+  },
+  "students": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "empty": "No students yet"
   }
 }

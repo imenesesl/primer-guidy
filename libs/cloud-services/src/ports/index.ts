@@ -14,6 +14,7 @@ export type {
   SortDirection,
 } from './firestore.types'
 export { FirestoreError, FirestoreErrorCode } from './firestore.types'
+export { buildSubcollectionPath } from './firestore.utils'
 
 export type { IHostingProvider } from './hosting.port'
 export type { HostingConfig } from './hosting.types'

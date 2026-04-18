@@ -20,7 +20,8 @@
     "title": "Join Workspace",
     "description": "Enter the 10-digit code shared by your teacher to join their workspace.",
     "cancel": "Cancel",
-    "join": "Join"
+    "join": "Join",
+    "invalidCode": "The code you entered is invalid. Please check and try again."
   },
   "breadcrumb": {
     "home": "Home",

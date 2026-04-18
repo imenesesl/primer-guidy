@@ -16,3 +16,21 @@
 .inviteButton.inviteButton {
   @apply shrink-0 cursor-pointer;
 }
+
+.loadingContainer {
+  @apply flex justify-center py-8;
+}
+
+.emptyState {
+  @apply flex justify-center py-8;
+}
+
+.emptyText {
+  color: var(--primer-fg-muted);
+}
+
+.grid {
+  @apply grid gap-4;
+
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+}

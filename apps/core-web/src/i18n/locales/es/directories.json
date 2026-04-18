@@ -5,6 +5,7 @@
   },
   "users": {
     "searchPlaceholder": "Buscar usuarios...",
+    "reload": "Recargar",
     "inviteStudents": "Invitar Estudiantes"
   },
   "invite": {
@@ -12,5 +13,12 @@
     "description": "Comparte este código con tus estudiantes para que se unan a tu clase.",
     "close": "Cerrar",
     "copyCode": "Copiar Código"
+  },
+  "students": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "empty": "No hay estudiantes aún"
   }
 }

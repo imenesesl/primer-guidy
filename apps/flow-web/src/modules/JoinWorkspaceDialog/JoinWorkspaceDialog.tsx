@@ -1,24 +1,42 @@
 import { useState } from 'react'
-import { Dialog, Text } from '@primer/react'
+import { Dialog, Text, Flash } from '@primer/react'
 import { useTranslation } from 'react-i18next'
+import { useJoinWorkspace, WorkspaceErrorCode } from '@/services/workspace'
 import { CodeInput } from './CodeInput'
 import type { JoinWorkspaceDialogProps } from './JoinWorkspaceDialog.types'
 import styles from './JoinWorkspaceDialog.module.scss'
 
 const CODE_LENGTH = 10
 
-export const JoinWorkspaceDialog = ({ isOpen, onClose }: JoinWorkspaceDialogProps) => {
+export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceDialogProps) => {
   const { t: tShell } = useTranslation('shell')
   const [code, setCode] = useState('')
+  const { mutate: join, isPending, error, reset } = useJoinWorkspace()
 
   const isValid = code.replace(/\D/g, '').length === CODE_LENGTH
 
   const handleClose = () => {
     setCode('')
+    reset()
     onClose()
   }
 
+  const handleJoin = () => {
+    if (!student || !isValid) return
+
+    join(
+      {
+        code,
+        name: student.name,
+        identificationNumber: student.identificationNumber,
+      },
+      { onSuccess: handleClose },
+    )
+  }
+
   if (!isOpen) return null
+
+  const isInvalidCode = error?.message === WorkspaceErrorCode.INVALID_CODE
 
   return (
     <Dialog
@@ -34,8 +52,8 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose }: JoinWorkspaceDialogProp
         {
           buttonType: 'primary',
           content: tShell('joinWorkspace.join'),
-          onClick: handleClose,
-          disabled: !isValid,
+          onClick: handleJoin,
+          disabled: !isValid || isPending || !student,
         },
       ]}
     >
@@ -44,6 +62,7 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose }: JoinWorkspaceDialogProp
           {tShell('joinWorkspace.description')}
         </Text>
         <CodeInput value={code} onChange={setCode} />
+        {isInvalidCode && <Flash variant="danger">{tShell('joinWorkspace.invalidCode')}</Flash>}
       </div>
     </Dialog>
   )

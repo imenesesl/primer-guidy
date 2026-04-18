@@ -1,0 +1,62 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col items-center gap-3 rounded-xl p-5 ring-1 ring-inset;
+
+  background-color: var(--primer-canvas-subtle);
+
+  --tw-ring-color: var(--primer-border-muted);
+}
+
+.avatarSection {
+  @apply flex items-center justify-center;
+}
+
+.info {
+  @apply flex flex-col items-center gap-1;
+}
+
+.nameRow {
+  @apply flex items-center gap-1.5;
+}
+
+.name {
+  @apply font-semibold;
+
+  color: var(--primer-fg-default);
+}
+
+.statusDot {
+  @apply inline-block w-2.5 h-2.5 rounded-full;
+}
+
+.statusDot.active {
+  background-color: var(--primer-success-emphasis);
+}
+
+.statusDot.inactive {
+  background-color: var(--primer-neutral-emphasis);
+}
+
+.subtitle {
+  @apply text-xs;
+
+  color: var(--primer-fg-muted);
+}
+
+.statusText {
+  @apply text-xs;
+}
+
+.statusText.active {
+  color: var(--primer-success-fg);
+}
+
+.statusText.inactive {
+  color: var(--primer-fg-muted);
+}
+
+.actions {
+  @apply pt-1;
+}

@@ -1,2 +1,2 @@
 export { JoinWorkspaceDialog } from './JoinWorkspaceDialog'
-export type { JoinWorkspaceDialogProps } from './JoinWorkspaceDialog.types'
+export type { JoinWorkspaceDialogProps, StudentInfo } from './JoinWorkspaceDialog.types'

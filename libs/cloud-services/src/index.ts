@@ -23,6 +23,7 @@ export {
   FirestoreErrorCode,
   HostingError,
   HostingErrorCode,
+  buildSubcollectionPath,
 } from './ports'
 
 export { createCloudServices, createCloudServicesFromEnv } from './factory'

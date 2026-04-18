@@ -41,7 +41,11 @@ export const ShellGuard = () => {
           </div>
         )}
       </Shell>
-      <JoinWorkspaceDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+      <JoinWorkspaceDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        student={student ?? null}
+      />
     </LayoutStoreProvider>
   )
 }
