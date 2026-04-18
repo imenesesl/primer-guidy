@@ -1,12 +1,24 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRealtimeDatabase, useFirestore } from '@primer-guidy/cloud-services'
 import {
   getStudentCredential,
+  getStudentProfileByUid,
   createStudentCredential,
   createStudentProfile,
   updateStudentUid,
 } from './student.service'
-import type { CreateStudentData } from './student.types'
+import type { StudentProfile, CreateStudentData } from './student.types'
+
+const STUDENT_PROFILE_KEY = 'student-profile' as const
+
+export const useStudentProfile = (uid: string | null) => {
+  const firestore = useFirestore()
+  return useQuery<StudentProfile | null>({
+    queryKey: [STUDENT_PROFILE_KEY, uid],
+    queryFn: () => getStudentProfileByUid(firestore, uid as string),
+    enabled: uid !== null,
+  })
+}
 
 export const useGetStudentCredential = () => {
   const realtimeDb = useRealtimeDatabase()

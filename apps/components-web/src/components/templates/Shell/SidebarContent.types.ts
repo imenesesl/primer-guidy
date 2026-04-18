@@ -1,4 +1,4 @@
-import type { SidebarItemConfig } from '@primer-guidy/components-web'
+import type { SidebarItemConfig } from '../../atoms/SidebarItem'
 
 export interface SidebarContentProps {
   readonly userName?: string

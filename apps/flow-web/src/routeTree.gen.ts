@@ -9,12 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProtectedLearningRouteImport } from './routes/_protected/learning'
+import { Route as ShellTasksRouteImport } from './routes/_shell/tasks'
+import { Route as ShellQuizesRouteImport } from './routes/_shell/quizes'
+import { Route as ShellLearningRouteImport } from './routes/_shell/learning'
 
-const ProtectedRoute = ProtectedRouteImport.update({
-  id: '/_protected',
+const ShellRoute = ShellRouteImport.update({
+  id: '/_shell',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,46 +24,68 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedLearningRoute = ProtectedLearningRouteImport.update({
+const ShellTasksRoute = ShellTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellQuizesRoute = ShellQuizesRouteImport.update({
+  id: '/quizes',
+  path: '/quizes',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellLearningRoute = ShellLearningRouteImport.update({
   id: '/learning',
   path: '/learning',
-  getParentRoute: () => ProtectedRoute,
+  getParentRoute: () => ShellRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/learning': typeof ProtectedLearningRoute
+  '/learning': typeof ShellLearningRoute
+  '/quizes': typeof ShellQuizesRoute
+  '/tasks': typeof ShellTasksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/learning': typeof ProtectedLearningRoute
+  '/learning': typeof ShellLearningRoute
+  '/quizes': typeof ShellQuizesRoute
+  '/tasks': typeof ShellTasksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_protected': typeof ProtectedRouteWithChildren
-  '/_protected/learning': typeof ProtectedLearningRoute
+  '/_shell': typeof ShellRouteWithChildren
+  '/_shell/learning': typeof ShellLearningRoute
+  '/_shell/quizes': typeof ShellQuizesRoute
+  '/_shell/tasks': typeof ShellTasksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/learning'
+  fullPaths: '/' | '/learning' | '/quizes' | '/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/learning'
-  id: '__root__' | '/' | '/_protected' | '/_protected/learning'
+  to: '/' | '/learning' | '/quizes' | '/tasks'
+  id:
+    | '__root__'
+    | '/'
+    | '/_shell'
+    | '/_shell/learning'
+    | '/_shell/quizes'
+    | '/_shell/tasks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProtectedRoute: typeof ProtectedRouteWithChildren
+  ShellRoute: typeof ShellRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_protected': {
-      id: '/_protected'
+    '/_shell': {
+      id: '/_shell'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedRouteImport
+      preLoaderRoute: typeof ShellRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -71,31 +95,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/learning': {
-      id: '/_protected/learning'
+    '/_shell/tasks': {
+      id: '/_shell/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof ShellTasksRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/quizes': {
+      id: '/_shell/quizes'
+      path: '/quizes'
+      fullPath: '/quizes'
+      preLoaderRoute: typeof ShellQuizesRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/learning': {
+      id: '/_shell/learning'
       path: '/learning'
       fullPath: '/learning'
-      preLoaderRoute: typeof ProtectedLearningRouteImport
-      parentRoute: typeof ProtectedRoute
+      preLoaderRoute: typeof ShellLearningRouteImport
+      parentRoute: typeof ShellRoute
     }
   }
 }
 
-interface ProtectedRouteChildren {
-  ProtectedLearningRoute: typeof ProtectedLearningRoute
+interface ShellRouteChildren {
+  ShellLearningRoute: typeof ShellLearningRoute
+  ShellQuizesRoute: typeof ShellQuizesRoute
+  ShellTasksRoute: typeof ShellTasksRoute
 }
 
-const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedLearningRoute: ProtectedLearningRoute,
+const ShellRouteChildren: ShellRouteChildren = {
+  ShellLearningRoute: ShellLearningRoute,
+  ShellQuizesRoute: ShellQuizesRoute,
+  ShellTasksRoute: ShellTasksRoute,
 }
 
-const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
-  ProtectedRouteChildren,
-)
+const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProtectedRoute: ProtectedRouteWithChildren,
+  ShellRoute: ShellRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

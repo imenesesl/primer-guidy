@@ -1,9 +1,11 @@
 import { useTheme } from '@primer/react'
-import { WorkspaceLayout, Rail, buildThemeVars } from '@primer-guidy/components-web'
+import { WorkspaceLayout } from '../WorkspaceLayout'
+import { Rail } from '../../organisms/Rail'
+import { buildThemeVars } from '../../../utils/theme.utils'
 import type { ShellProps } from './Shell.types'
-import styles from './Shell.module.scss'
 import { SidebarContent } from './SidebarContent'
 import { ContentHeader } from './ContentHeader'
+import styles from './Shell.module.scss'
 
 export const Shell = ({
   railItems,
@@ -11,6 +13,7 @@ export const Shell = ({
   avatarSrc,
   avatarName,
   userName,
+  headerAction,
   children,
 }: ShellProps) => {
   const { theme } = useTheme()
@@ -22,7 +25,7 @@ export const Shell = ({
         rail={<Rail items={railItems} avatarSrc={avatarSrc} avatarName={avatarName} />}
         sidebar={<SidebarContent userName={userName} sidebarItemsMap={sidebarItemsMap} />}
       >
-        <ContentHeader />
+        <ContentHeader headerAction={headerAction} />
         {children}
       </WorkspaceLayout>
     </div>

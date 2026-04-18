@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
+import type { RailItemConfig } from '../../organisms/Rail'
+import type { SidebarItemConfig } from '../../atoms/SidebarItem'
 
 export interface ShellProps {
   readonly railItems: readonly RailItemConfig[]
@@ -7,5 +8,6 @@ export interface ShellProps {
   readonly avatarSrc?: string
   readonly avatarName?: string
   readonly userName?: string
+  readonly headerAction?: ReactNode
   readonly children: ReactNode
 }

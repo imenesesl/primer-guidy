@@ -24,9 +24,6 @@
 }
 
 .sidebarUserNameSkeleton {
-  --shimmer-duration: 1.5s;
-  --shimmer-opacity-min: 0.4;
-
   @apply flex-1 h-4 rounded;
 
   background-color: var(--primer-neutral-muted);
@@ -56,7 +53,7 @@
 }
 
 .breadcrumb {
-  @apply text-sm font-medium truncate;
+  @apply text-sm font-medium truncate flex-1;
 
   color: var(--primer-fg-muted);
 }

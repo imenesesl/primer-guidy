@@ -4,12 +4,16 @@ import { initReactI18next } from 'react-i18next'
 import commonEn from './locales/en/common.json'
 import homeEn from './locales/en/home.json'
 import learningEn from './locales/en/learning.json'
+import shellEn from './locales/en/shell.json'
+import layoutEn from './locales/en/layout.json'
 
 const resources = {
   en: {
     common: commonEn,
     home: homeEn,
     learning: learningEn,
+    shell: shellEn,
+    layout: layoutEn,
   },
 }
 

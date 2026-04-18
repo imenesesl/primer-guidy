@@ -25,6 +25,9 @@ export type { AppProvidersProps } from './components/templates/AppProviders'
 export { WorkspaceLayout } from './components/templates/WorkspaceLayout'
 export type { WorkspaceLayoutProps } from './components/templates/WorkspaceLayout'
 
+export { Shell } from './components/templates/Shell'
+export type { ShellProps } from './components/templates/Shell'
+
 export { createLayoutStore, LayoutStoreProvider, useLayoutStore } from './stores/layout.store'
 export type { LayoutStore } from './stores/layout.store'
 

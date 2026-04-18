@@ -1,0 +1,22 @@
+{
+  "rail": {
+    "items": {
+      "tasks": "Tasks",
+      "quizes": "Quizes"
+    }
+  },
+  "sidebar": {
+    "items": {
+      "myTasks": "My Tasks",
+      "favorites": "Favorites",
+      "myQuizes": "My Quizes",
+      "practice": "Practice"
+    }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "tasks": "Tasks",
+    "quizes": "Quizes",
+    "learning": "Learning"
+  }
+}

@@ -1,11 +1,13 @@
 export {
   checkStudentExists,
   getStudentCredential,
+  getStudentProfileByUid,
   createStudentCredential,
   createStudentProfile,
   updateStudentUid,
 } from './student.service'
 export {
+  useStudentProfile,
   useGetStudentCredential,
   useCreateStudentCredential,
   useCreateStudentProfile,

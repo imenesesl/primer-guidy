@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import { createLayoutStore, LayoutStoreProvider } from '@primer-guidy/components-web'
-import { Shell } from '@/modules/Shell'
+import { Shell } from '@primer-guidy/components-web'
 import { useAuthGuard, ContentSkeleton, AuthGuardStatus } from '@/modules/AuthGuard'
 import { UserProvider } from '@/context/user.context'
 import { RAIL_ITEMS, SIDEBAR_ITEMS_MAP } from './ShellGuard.utils'

@@ -1,0 +1,13 @@
+{
+  "rail": {
+    "label": "Navigation rail"
+  },
+  "sidebar": {
+    "label": "Sidebar"
+  },
+  "actions": {
+    "toggleRail": "Toggle navigation rail",
+    "toggleSidebar": "Toggle sidebar",
+    "closeSidebar": "Close sidebar"
+  }
+}

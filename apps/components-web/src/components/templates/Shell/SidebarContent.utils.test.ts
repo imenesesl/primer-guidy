@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { SidebarItemConfig } from '@primer-guidy/components-web'
+import type { SidebarItemConfig } from '../../atoms/SidebarItem'
 import { resolveSidebarItems } from './SidebarContent.utils'
 
 const mockItem = (labelKey: string, path: string): SidebarItemConfig =>

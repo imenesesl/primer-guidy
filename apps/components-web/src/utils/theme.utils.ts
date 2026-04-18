@@ -15,8 +15,18 @@ export interface PrimerColors {
   readonly attention?: { readonly emphasis?: string; readonly fg?: string; readonly muted?: string }
 }
 
+const LAYOUT_VARS = {
+  '--spacing-px': '1px',
+  '--layout-rail-width': '4.5rem',
+  '--layout-sidebar-width': '16.25rem',
+  '--shimmer-travel': '200%',
+  '--shimmer-duration': '1.5s',
+  '--shimmer-opacity-min': '0.4',
+} as const
+
 export const buildThemeVars = (colors?: PrimerColors): CSSProperties =>
   ({
+    ...LAYOUT_VARS,
     '--primer-fg-default': colors?.fg?.default,
     '--primer-fg-muted': colors?.fg?.muted,
     '--primer-fg-on-emphasis': colors?.fg?.onEmphasis,

@@ -7,6 +7,6 @@ function LearningRoute() {
   return <Learning studentName={MOCK_STUDENT_NAME} />
 }
 
-export const Route = createFileRoute('/_protected/learning')({
+export const Route = createFileRoute('/_shell/learning')({
   component: LearningRoute,
 })

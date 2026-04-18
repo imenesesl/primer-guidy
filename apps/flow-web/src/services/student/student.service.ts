@@ -1,5 +1,5 @@
 import type { IRealtimeDatabaseProvider, IFirestoreProvider } from '@primer-guidy/cloud-services'
-import type { StudentCredential, CreateStudentData } from './student.types'
+import type { StudentCredential, StudentProfile, CreateStudentData } from './student.types'
 
 const STUDENTS_RTDB_PATH = 'student-credentials'
 const STUDENTS_COLLECTION = 'students'
@@ -43,6 +43,17 @@ export const createStudentProfile = async (
     name: data.name,
     createdAt: new Date().toISOString(),
   })
+}
+
+export const getStudentProfileByUid = async (
+  firestore: IFirestoreProvider,
+  uid: string,
+): Promise<StudentProfile | null> => {
+  const results = await firestore.getDocs<StudentProfile>(STUDENTS_COLLECTION, {
+    filters: [{ field: 'uid', operator: '==', value: uid }],
+    limit: 1,
+  })
+  return results[0] ?? null
 }
 
 export const updateStudentUid = async (

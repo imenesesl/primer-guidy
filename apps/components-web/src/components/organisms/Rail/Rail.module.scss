@@ -12,9 +12,6 @@
 }
 
 .root {
-  --shimmer-travel: 200%;
-  --shimmer-duration: 1.5s;
-
   @apply flex flex-col items-center h-full py-4 px-2 gap-2;
 }
 
