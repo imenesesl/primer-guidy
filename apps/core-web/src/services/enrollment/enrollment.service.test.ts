@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { IFirestoreProvider } from '@primer-guidy/cloud-services'
-import { getEnrolledStudents, updateEnrollmentStatus } from './enrollment.service'
+import {
+  getEnrolledStudents,
+  updateEnrollmentStatus,
+  syncWorkspaceEntry,
+} from './enrollment.service'
 import { EnrollmentStatus } from './enrollment.types'
 
 const mockFirestore: IFirestoreProvider = {
@@ -12,6 +16,10 @@ const mockFirestore: IFirestoreProvider = {
   deleteDoc: vi.fn(),
   onSnapshot: vi.fn(),
 }
+
+beforeEach(() => {
+  vi.clearAllMocks()
+})
 
 describe('getEnrolledStudents', () => {
   it('fetches students from the teacher subcollection', async () => {
@@ -41,5 +49,39 @@ describe('updateEnrollmentStatus', () => {
     expect(mockFirestore.updateDoc).toHaveBeenCalledWith('users/teacher-1/students', '12345678', {
       status: EnrollmentStatus.Active,
     })
+  })
+})
+
+describe('syncWorkspaceEntry', () => {
+  it('creates workspace entry when it does not exist', async () => {
+    vi.mocked(mockFirestore.getDoc).mockResolvedValue(null)
+    vi.mocked(mockFirestore.setDoc).mockResolvedValue(undefined)
+
+    await syncWorkspaceEntry(mockFirestore, '12345678', 'teacher-1', 'Mr. Smith', true)
+
+    expect(mockFirestore.getDoc).toHaveBeenCalledWith('students/12345678/workspaces', 'teacher-1')
+    expect(mockFirestore.setDoc).toHaveBeenCalledWith('students/12345678/workspaces', 'teacher-1', {
+      name: 'Mr. Smith',
+      uid: 'teacher-1',
+      active: true,
+    })
+  })
+
+  it('updates active flag when workspace entry already exists', async () => {
+    vi.mocked(mockFirestore.getDoc).mockResolvedValue({
+      name: 'Mr. Smith',
+      uid: 'teacher-1',
+      active: true,
+    })
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await syncWorkspaceEntry(mockFirestore, '12345678', 'teacher-1', 'Mr. Smith', false)
+
+    expect(mockFirestore.setDoc).not.toHaveBeenCalled()
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith(
+      'students/12345678/workspaces',
+      'teacher-1',
+      { active: false },
+    )
   })
 })

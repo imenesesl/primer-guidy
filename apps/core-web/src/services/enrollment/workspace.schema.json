@@ -1,0 +1,22 @@
+{
+  "level": "subcollection",
+  "path": "students/{identificationNumber}/workspaces/{teacherUid}",
+  "description": "Workspaces a student belongs to. Document ID is the teacher's UID.",
+  "schema": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Teacher display name"
+    },
+    "uid": {
+      "type": "string",
+      "required": true,
+      "description": "Teacher Firebase Auth UID — matches document ID"
+    },
+    "active": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether the student is currently active in this workspace"
+    }
+  }
+}

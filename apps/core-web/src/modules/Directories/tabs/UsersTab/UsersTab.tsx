@@ -15,7 +15,7 @@ import styles from './UsersTab.module.scss'
 
 export const UsersTab = () => {
   const { t: tDirectories } = useTranslation('directories')
-  const { uid } = useCurrentUser()
+  const { uid, name: teacherName } = useCurrentUser()
   const [search, setSearch] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { data: students, isLoading, refetch, isFetching } = useEnrolledStudents(uid)
@@ -28,7 +28,7 @@ export const UsersTab = () => {
       currentStatus === EnrollmentStatus.Active
         ? EnrollmentStatus.Inactive
         : EnrollmentStatus.Active
-    toggleStatus({ teacherUid: uid, identificationNumber, status: newStatus })
+    toggleStatus({ teacherUid: uid, teacherName, identificationNumber, status: newStatus })
   }
 
   return (
