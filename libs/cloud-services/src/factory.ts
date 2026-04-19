@@ -9,10 +9,12 @@ import { FirebaseAuthAdapter } from './adapters/firebase/auth.adapter'
 import { FirebaseRealtimeDatabaseAdapter } from './adapters/firebase/realtime-database.adapter'
 import { FirebaseFirestoreAdapter } from './adapters/firebase/firestore.adapter'
 import { FirebaseHostingAdapter } from './adapters/firebase/hosting.adapter'
+import { FirebaseFunctionsAdapter } from './adapters/firebase/functions.adapter'
 
 const EMULATOR_HOST = '127.0.0.1'
 const AUTH_EMULATOR_PORT = 9099
 const FIRESTORE_EMULATOR_PORT = 8080
+const FUNCTIONS_EMULATOR_PORT = 5001
 
 export const createCloudServices = (config: CloudServicesConfig): CloudServices => {
   const app = initializeFirebase({
@@ -38,6 +40,11 @@ export const createCloudServices = (config: CloudServicesConfig): CloudServices 
       projectId: config.projectId,
       site: config.hostingSite,
     }),
+    functions: new FirebaseFunctionsAdapter(
+      app,
+      config.emulators?.functionsHost,
+      config.emulators?.functionsPort,
+    ),
   }
 }
 
@@ -47,6 +54,8 @@ const buildEmulatorConfig = (e2eBypass?: string): EmulatorConfig | undefined =>
         authUrl: `http://${EMULATOR_HOST}:${AUTH_EMULATOR_PORT}`,
         firestoreHost: EMULATOR_HOST,
         firestorePort: FIRESTORE_EMULATOR_PORT,
+        functionsHost: EMULATOR_HOST,
+        functionsPort: FUNCTIONS_EMULATOR_PORT,
       }
     : undefined
 

@@ -13,6 +13,7 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 |------|------|---------|---------|
 | React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/`, `apps/login-web/` |
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
+| Cloud Functions | `apps/functions/` | tsc + firebase-functions | `apps/functions/` |
 | NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
 | Cloud services abstraction | `libs/cloud-services/` | tsc + Vitest | `libs/cloud-services/` |
 | Shared E2E helpers | `libs/e2e-helpers/` | Playwright | `libs/e2e-helpers/` |
@@ -51,11 +52,40 @@ import { Button, Text, Heading } from '@primer/react'
 
 ## Cloud Services — `@primer-guidy/cloud-services`
 
-Provider-agnostic abstraction for cloud services (auth, database, firestore, hosting). See `cloud-services.mdc` rule for full architecture.
+Provider-agnostic abstraction for cloud services (auth, database, firestore, hosting, callable functions). See `cloud-services.mdc` rule for full architecture.
 
 - Web apps NEVER import from `firebase/*` directly
 - Import ONLY from `@primer-guidy/cloud-services`
 - Uses Port/Adapter pattern — Firebase is the hidden implementation
+
+## Cloud Functions — `apps/functions/`
+
+Server-side callable functions using Firebase Cloud Functions v2 + `firebase-admin`. Used for privileged operations that MUST NOT happen client-side (credential verification, password hashing, custom token creation).
+
+### File Structure
+
+```
+apps/functions/src/
+  index.ts                     → Entry point: initializeApp() + re-exports all functions
+  types.ts                     → All shared types (request/response interfaces, domain models)
+  constants.ts                 → Shared constants (RTDB paths, collection names)
+  errors.ts                    → Error codes and messages (enums/const objects)
+  <function-name>.ts           → Function implementation (one per file)
+  <function-name>.test.ts      → Unit tests for the function
+```
+
+### Rules
+
+- NEVER define types inline in function files — extract to `types.ts`
+- NEVER duplicate constants across function files — extract to `constants.ts`
+- NEVER use string literals for error codes/messages — use enums from `errors.ts`
+- Each callable function lives in its own file: `src/<function-name>.ts`
+- Function files import types with `import type` — enforced by `consistent-type-imports`
+- Use `onCall<TRequest, TResponse>()` generic parameters for type safety
+- Uses `firebase-admin` directly (not `@primer-guidy/cloud-services`)
+- Uses `commonjs` module format with `moduleResolution: "node"` (Firebase Functions requirement)
+- Password hashing with `argon2id` — NEVER SHA-256 or other non-KDF algorithms
+- Entry point `src/index.ts` calls `initializeApp()` and re-exports all functions
 
 ## Root Scripts Convention
 
@@ -93,6 +123,7 @@ Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `packag
 - Every package with TypeScript source MUST have its own `tsconfig.json` extending root config. Exceptions:
   - Pure JS config packages with no TS source (e.g., `eslint-config`) do not need a `tsconfig.json`
   - Packages that need to emit (`outDir`/`declaration`) use a standalone `tsconfig.json` since `tsconfig.base.json` has `noEmit: true`
+  - Cloud Functions (`apps/functions/`) use a standalone `tsconfig.json` with `commonjs` module and `moduleResolution: "node"` (required by Firebase)
 - Strict TypeScript: `strict: true` always enabled
 - NO `any` type — use `unknown` and narrow with type guards
 - Shared types/interfaces go in `libs/shared-types/`

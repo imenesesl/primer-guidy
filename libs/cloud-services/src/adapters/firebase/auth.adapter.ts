@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInAnonymously as firebaseSignInAnonymously,
+  signInWithCustomToken as firebaseSignInWithCustomToken,
   signOut as firebaseSignOut,
   sendEmailVerification as firebaseSendEmailVerification,
   sendSignInLinkToEmail,
@@ -120,6 +121,15 @@ export class FirebaseAuthAdapter implements IAuthProvider {
   async signInAnonymously(): Promise<AuthUser> {
     try {
       const result = await firebaseSignInAnonymously(this.auth)
+      return mapUser(result.user)
+    } catch (error) {
+      throw mapError(error)
+    }
+  }
+
+  async signInWithCustomToken(token: string): Promise<AuthUser> {
+    try {
+      const result = await firebaseSignInWithCustomToken(this.auth, token)
       return mapUser(result.user)
     } catch (error) {
       throw mapError(error)

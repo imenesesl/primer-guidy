@@ -2,7 +2,14 @@ import { renderHook } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import type { ReactNode } from 'react'
 import { CloudServicesProvider } from './provider'
-import { useCloudServices, useAuth, useRealtimeDatabase, useFirestore, useHosting } from './hooks'
+import {
+  useCloudServices,
+  useAuth,
+  useRealtimeDatabase,
+  useFirestore,
+  useHosting,
+  useFunctions,
+} from './hooks'
 import type { CloudServices } from '../factory.types'
 
 const mockServices: CloudServices = {
@@ -14,6 +21,7 @@ const mockServices: CloudServices = {
     isSignInWithEmailLink: vi.fn(),
     signInWithGoogle: vi.fn(),
     signInAnonymously: vi.fn(),
+    signInWithCustomToken: vi.fn(),
     signOut: vi.fn(),
     sendEmailVerification: vi.fn(),
     onAuthStateChanged: vi.fn(),
@@ -39,6 +47,9 @@ const mockServices: CloudServices = {
   hosting: {
     getProjectUrl: vi.fn(),
     getPreviewUrl: vi.fn(),
+  },
+  functions: {
+    call: vi.fn(),
   },
 }
 
@@ -89,5 +100,13 @@ describe('useHosting', () => {
     const { result } = renderHook(() => useHosting(), { wrapper })
 
     expect(result.current).toBe(mockServices.hosting)
+  })
+})
+
+describe('useFunctions', () => {
+  it('returns functions provider', () => {
+    const { result } = renderHook(() => useFunctions(), { wrapper })
+
+    expect(result.current).toBe(mockServices.functions)
   })
 })

@@ -13,6 +13,7 @@ vi.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: vi.fn(),
   signInWithPopup: vi.fn(),
   signInAnonymously: vi.fn(),
+  signInWithCustomToken: vi.fn(),
   GoogleAuthProvider: vi.fn(),
   signOut: vi.fn(),
   sendEmailVerification: vi.fn(),
@@ -31,6 +32,7 @@ const {
   createUserWithEmailAndPassword,
   signInWithPopup,
   signInAnonymously,
+  signInWithCustomToken,
   signOut,
   sendEmailVerification,
   sendSignInLinkToEmail,
@@ -252,6 +254,28 @@ describe('FirebaseAuthAdapter', () => {
       })
 
       await expect(adapter.signInAnonymously()).rejects.toThrow(AuthError)
+    })
+  })
+
+  describe('signInWithCustomToken', () => {
+    it('returns mapped AuthUser on success', async () => {
+      vi.mocked(signInWithCustomToken).mockResolvedValue({
+        user: mockFirebaseUser,
+      } as never)
+
+      const result = await adapter.signInWithCustomToken('custom-token-123')
+
+      expect(result).toEqual(expectedAuthUser)
+      expect(signInWithCustomToken).toHaveBeenCalledWith(mockAuth, 'custom-token-123')
+    })
+
+    it('throws mapped AuthError on failure', async () => {
+      vi.mocked(signInWithCustomToken).mockRejectedValue({
+        code: 'auth/invalid-custom-token',
+        message: 'Invalid custom token',
+      })
+
+      await expect(adapter.signInWithCustomToken('bad-token')).rejects.toThrow(AuthError)
     })
   })
 

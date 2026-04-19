@@ -19,3 +19,6 @@ export { buildSubcollectionPath } from './firestore.utils'
 export type { IHostingProvider } from './hosting.port'
 export type { HostingConfig } from './hosting.types'
 export { HostingError, HostingErrorCode } from './hosting.types'
+
+export type { IFunctionsProvider } from './functions.port'
+export { FunctionsError, FunctionsErrorCode } from './functions.types'

@@ -33,6 +33,19 @@ services/
 
 Schema-only services define validation schemas and their inferred types for forms. They do NOT have `.service.ts`, `.hooks.ts`, or `.service.test.ts` because there are no async operations to wrap. This is a valid variant — not every service has I/O.
 
+### Cloud Functions service (callable server-side logic)
+
+```
+services/
+  student-auth/
+    student-auth.service.ts  → Wraps functions.call() per operation
+    student-auth.hooks.ts    → useMutation hooks per operation
+    student-auth.types.ts    → Request/Response types
+    index.ts                 → Named re-exports
+```
+
+Cloud Functions services wrap `IFunctionsProvider.call()` instead of direct DB access. The `.service.ts` takes `functions: IFunctionsProvider` as its first argument (same pure-function pattern as other services).
+
 ## Types — The Contract
 
 Types define the contract for the entire app. NEVER duplicate or redefine them elsewhere.
@@ -161,7 +174,7 @@ export const useAuthState = () => {
 
 ## Cloud Services in Hooks
 
-Service hooks access cloud-services providers via React hooks (`useFirestore()`, `useAuth()`, `useRealtimeDatabase()`) — NEVER pass providers as arguments to hooks:
+Service hooks access cloud-services providers via React hooks (`useFirestore()`, `useAuth()`, `useRealtimeDatabase()`, `useFunctions()`) — NEVER pass providers as arguments to hooks:
 
 ```typescript
 // CORRECT — hook resolves its own provider

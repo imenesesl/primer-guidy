@@ -6,6 +6,7 @@ const mockAuthInstance = { signInWithEmail: vi.fn() }
 const mockFirestoreInstance = { getDoc: vi.fn() }
 const mockRealtimeDbInstance = { get: vi.fn() }
 const mockHostingInstance = { getProjectUrl: vi.fn() }
+const mockFunctionsInstance = { call: vi.fn() }
 
 vi.mock('./adapters/firebase/config', () => ({
   initializeFirebase: vi.fn(() => mockApp),
@@ -35,12 +36,19 @@ vi.mock('./adapters/firebase/hosting.adapter', () => ({
   }),
 }))
 
+vi.mock('./adapters/firebase/functions.adapter', () => ({
+  FirebaseFunctionsAdapter: vi.fn().mockImplementation(function () {
+    return mockFunctionsInstance
+  }),
+}))
+
 const { initializeFirebase } = await import('./adapters/firebase/config')
 const { FirebaseAuthAdapter } = await import('./adapters/firebase/auth.adapter')
 const { FirebaseFirestoreAdapter } = await import('./adapters/firebase/firestore.adapter')
 const { FirebaseRealtimeDatabaseAdapter } =
   await import('./adapters/firebase/realtime-database.adapter')
 const { FirebaseHostingAdapter } = await import('./adapters/firebase/hosting.adapter')
+const { FirebaseFunctionsAdapter } = await import('./adapters/firebase/functions.adapter')
 const { createCloudServices } = await import('./factory')
 
 const validConfig: CloudServicesConfig = {
@@ -102,13 +110,20 @@ describe('createCloudServices', () => {
     })
   })
 
-  it('returns an object with auth, firestore, realtimeDatabase, and hosting', () => {
+  it('creates FirebaseFunctionsAdapter with the app and no emulator', () => {
+    createCloudServices(validConfig)
+
+    expect(FirebaseFunctionsAdapter).toHaveBeenCalledWith(mockApp, undefined, undefined)
+  })
+
+  it('returns an object with auth, firestore, realtimeDatabase, hosting, and functions', () => {
     const services = createCloudServices(validConfig)
 
     expect(services.auth).toBe(mockAuthInstance)
     expect(services.firestore).toBe(mockFirestoreInstance)
     expect(services.realtimeDatabase).toBe(mockRealtimeDbInstance)
     expect(services.hosting).toBe(mockHostingInstance)
+    expect(services.functions).toBe(mockFunctionsInstance)
   })
 
   it('passes undefined hostingSite when not provided', () => {
@@ -143,5 +158,23 @@ describe('createCloudServices', () => {
 
     expect(FirebaseAuthAdapter).toHaveBeenCalledWith(mockApp, 'http://127.0.0.1:9099')
     expect(FirebaseFirestoreAdapter).toHaveBeenCalledWith(mockApp, '127.0.0.1', 8080)
+    expect(FirebaseFunctionsAdapter).toHaveBeenCalledWith(mockApp, undefined, undefined)
+  })
+
+  it('passes functions emulator config when provided', () => {
+    const configWithEmulators: CloudServicesConfig = {
+      ...validConfig,
+      emulators: {
+        authUrl: 'http://127.0.0.1:9099',
+        firestoreHost: '127.0.0.1',
+        firestorePort: 8080,
+        functionsHost: '127.0.0.1',
+        functionsPort: 5001,
+      },
+    }
+
+    createCloudServices(configWithEmulators)
+
+    expect(FirebaseFunctionsAdapter).toHaveBeenCalledWith(mockApp, '127.0.0.1', 5001)
   })
 })

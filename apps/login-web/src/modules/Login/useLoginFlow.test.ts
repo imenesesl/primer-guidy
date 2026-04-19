@@ -20,6 +20,7 @@ const mockAuth: IAuthProvider = {
   isSignInWithEmailLink: mockIsSignInWithEmailLink,
   signInWithGoogle: mockSignInWithGoogle,
   signInAnonymously: vi.fn(),
+  signInWithCustomToken: vi.fn(),
   signOut: mockSignOut,
   sendEmailVerification: vi.fn(),
   onAuthStateChanged: vi.fn(),

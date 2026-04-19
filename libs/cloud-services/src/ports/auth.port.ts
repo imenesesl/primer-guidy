@@ -8,6 +8,7 @@ export interface IAuthProvider {
   isSignInWithEmailLink(link: string): boolean
   signInWithGoogle(): Promise<AuthUser>
   signInAnonymously(): Promise<AuthUser>
+  signInWithCustomToken(token: string): Promise<AuthUser>
   signOut(): Promise<void>
   sendEmailVerification(): Promise<void>
   onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void

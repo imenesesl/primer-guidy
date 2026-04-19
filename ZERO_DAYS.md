@@ -1,6 +1,6 @@
 ## ZERO_DAYS
 
-> Last audited: 2026-04-17
+> Last audited: 2026-04-19
 > Scope: `apps/core-web`, `apps/flow-web`, `apps/login-web`, `libs/cloud-services`, Firebase config
 
 ### ¿Qué es este documento?
@@ -22,11 +22,11 @@ Severidades: **P0** (explotable hoy, impacto crítico) → **P3** (defensa en pr
 
 ### P0-1 — Firebase sin reglas de seguridad (Firestore + Realtime Database)
 
-| Campo                | Valor                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| Archivos esperados   | `firestore.rules`, `database.rules.json` (no existen)                                   |
-| Configuración actual | `firebase.json` solo declara `hosting` y `emulators`, no referencia ni despliega reglas |
-| Proyecto afectado    | `guidy-app-ai` (producción, según `.env`)                                               |
+| Campo                | Valor                                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| Archivos esperados   | `firestore.rules`, `database.rules.json` (no existen)                                                |
+| Configuración actual | `firebase.json` declara `hosting`, `functions` y `emulators`, pero no referencia ni despliega reglas |
+| Proyecto afectado    | `guidy-app-ai` (producción, según `.env`)                                                            |
 
 **Qué es.** Firebase Firestore y Realtime Database **deniegan o permiten** acceso según las reglas que el proyecto despliegue. Si no se despliegan reglas, Firebase aplica el modo con el que se creó la base (test mode = abierta 30 días, locked = cerrada). En cualquier caso, **no hay reglas versionadas en el repositorio**, lo que significa:
 
@@ -48,7 +48,7 @@ Si las reglas son `read: true`, **se filtra toda la base**: credenciales de estu
 
 **Por qué solucionarlo.**
 
-- Es el **fallo raíz** que magnifica todos los demás (P0-2, P0-3, P1-2, P2-1).
+- Es el **fallo raíz** que magnifica todos los demás (P0-2, P1-2, P2-1).
 - Filtración masiva de PII (números de identificación nacional + nombres).
 - Estudiantes/profesores pueden modificarse mutuamente sin auditoría.
 - Un competidor puede dumpear el dataset entero.
@@ -114,7 +114,7 @@ service cloud.firestore {
 }
 ```
 
-> Nota: las credenciales de estudiantes deben moverse fuera del cliente (ver P0-3). Mientras tanto, **bloquear lectura/escritura** desde el cliente.
+> Nota: las credenciales de estudiantes ya se verifican server-side vía Cloud Functions (`apps/functions/`). **Bloquear lectura/escritura** de `student-credentials` desde el cliente.
 
 3. Actualizar `firebase.json` para incluir las reglas en el deploy:
 
@@ -177,94 +177,7 @@ git commit -m "chore: stop tracking .env, move secrets to local-only"
 
 ---
 
-### P0-3 — Verificación de password en el cliente con dump remoto del hash
-
-| Campo    | Valor                                                                                 |
-| -------- | ------------------------------------------------------------------------------------- |
-| Archivos | `apps/flow-web/src/services/student/student.service.ts:17-21`, `useFlowAuth.ts:38-52` |
-| Vector   | RTDB → `student-credentials/{idNumber}` retorna `{ password: <hash>, uid }`           |
-
-**Qué es.** El flujo de login de `flow-web` (estudiantes) hace lo siguiente:
-
-```ts
-const credential = await getCredential.mutateAsync(data.identificationNumber)
-const hashedInput = await hashPassword(data.password)
-if (hashedInput !== credential.password) {
-  /* error */
-}
-```
-
-Es decir: **descarga el hash del password al navegador y lo compara localmente**. La autenticación "real" después es `signInAnonymously()`.
-
-**En qué consiste.** Un atacante que conoce o adivina un número de identificación puede:
-
-1. Llamar a la query del servicio (o directamente a la RTDB si las reglas lo permiten, ver P0-1) y **obtener el hash**.
-2. Crackearlo offline con GPU/rainbow tables (ver P1-1, hashing sin sal).
-3. O simplemente ignorar el `if`: como la verificación es client-side, basta con usar el devtools para forzar `hashedInput === credential.password`. Como `signInAnonymously()` siempre tiene éxito, el atacante queda "logueado" como ese estudiante sin saber la contraseña.
-
-**Por qué solucionarlo.**
-
-- **Bypass total de autenticación** del flujo de estudiantes.
-- Convierte cada número de identificación en un vector de impersonación.
-- El "uid anónimo" generado por el atacante puede luego escribir como ese estudiante en Firestore (correlacionado con P0-1).
-
-**Guía de remediación.**
-
-La autenticación **debe ocurrir en un servidor de confianza**. Opciones, en orden de preferencia:
-
-1. **Migrar a Firebase Auth con email/password "sintético"**: Cloud Function que recibe `{ identificationNumber, password }`, valida, y devuelve un **custom token** (`admin.auth().createCustomToken(uid)`). El cliente hace `signInWithCustomToken(token)`. La verificación nunca está en el cliente.
-
-   ```ts
-   // functions/src/student-login.ts
-   export const studentLogin = functions.https.onCall(async (data) => {
-     const { identificationNumber, password } = data
-     const cred = await admin.database().ref(`student-credentials/${identificationNumber}`).get()
-     if (!cred.exists()) throw new HttpsError('not-found', 'student-not-found')
-     const ok = await argon2.verify(cred.val().password, password)
-     if (!ok) throw new HttpsError('unauthenticated', 'wrong-password')
-     return { token: await admin.auth().createCustomToken(cred.val().uid) }
-   })
-   ```
-
-2. **Mientras tanto, mover credenciales fuera del cliente**: bloquear lectura de `student-credentials` en RTDB (ya cubierto por P0-1 rules).
-
-3. **Eliminar el flujo `signInAnonymously` para estudiantes**. Es incompatible con seguridad real.
-
-4. Borrar `apps/flow-web/src/services/student/student.utils.ts:hashPassword` del cliente (el hashing se hace solo en el servidor con `argon2id`).
-
----
-
 ## P1 — High (explotable con esfuerzo moderado)
-
-### P1-1 — Password hashing con SHA-256 sin sal
-
-| Archivo | `apps/flow-web/src/services/student/student.utils.ts` |
-| ------- | ----------------------------------------------------- |
-
-**Qué es.** `hashPassword` aplica `crypto.subtle.digest('SHA-256', data)` directamente sobre la contraseña. Sin sal, sin iteraciones, sin algoritmo resistente a GPU.
-
-**En qué consiste.** SHA-256 sin sal es vulnerable a:
-
-- **Rainbow tables** públicas (cualquier password de ≤8 caracteres está pre-computado).
-- **GPU brute force**: una RTX 4090 hace ~10 000 millones de SHA-256/s. Una contraseña de 8 caracteres alfanuméricos cae en minutos.
-- **Hashes idénticos para passwords idénticos** entre usuarios → si dos estudiantes usan `password123`, su hash es el mismo. Filtración trivial por comparación.
-
-**Por qué solucionarlo.** Cualquier atacante que obtenga el dump (P0-1, P0-3) recupera passwords en plano en minutos. Y muchos usuarios reutilizan contraseñas → ataque de credential stuffing en otros servicios.
-
-**Guía de remediación.**
-
-1. Mover el hashing al servidor (ver P0-3).
-2. Usar **argon2id** (RFC 9106) con `memoryCost: 19456 KiB, timeCost: 2, parallelism: 1` (parámetros OWASP 2024). Alternativas: `bcrypt cost 12+`, `scrypt`.
-3. Generar **sal única por usuario** (16 bytes random) y almacenarla junto con el hash.
-4. **Migración**: marcar credenciales viejas como `legacy: true`, forzar reset en próximo login.
-
-```ts
-import argon2 from 'argon2'
-const hash = await argon2.hash(password, { type: argon2.argon2id })
-const ok = await argon2.verify(stored, candidate)
-```
-
----
 
 ### P1-2 — Invite codes deterministas y predecibles
 
@@ -484,36 +397,32 @@ Iterar el CSP en modo `Content-Security-Policy-Report-Only` durante una semana, 
 
 ---
 
-### P2-4 — Anonymous Auth sin rate limiting ni App Check
+### P2-4 — Sin App Check ni rate limiting en Cloud Functions
 
-| Archivos | `auth.adapter.ts:signInAnonymously`, `useFlowAuth.ts:54,80` |
-| -------- | ----------------------------------------------------------- |
+| Archivos | `apps/functions/src/student-login.ts`, `apps/functions/src/student-register.ts` |
+| -------- | ------------------------------------------------------------------------------- |
 
-**Qué es.** Cualquiera puede llamar a `signInAnonymously()` sin restricciones. Cada llamada crea un usuario en Firebase Auth (consume cuota, ensucia métricas, puede facturar).
+> **Progreso:** `signInAnonymously` eliminado del flujo de estudiantes (migrado a `signInWithCustomToken` vía Cloud Functions). El Anonymous provider puede deshabilitarse en Firebase Console.
 
-**En qué consiste.** Un atacante puede automatizar:
+**Qué es.** Las Cloud Functions `studentLogin` y `studentRegister` no tienen rate limiting ni App Check. Son invocables sin restricción.
 
-```js
-for (let i = 0; i < 1_000_000; i++) await firebase.auth().signInAnonymously()
-```
+**En qué consiste.** Un atacante puede automatizar llamadas a las Cloud Functions para brute-force de contraseñas o creación masiva de cuentas, generando costo monetario.
 
-Resultado: agotamiento de cuota Firebase Auth (50k/day en plan Spark, ilimitado pero facturado en Blaze), millones de uids basura en Auth, costo monetario.
-
-**Por qué solucionarlo.** Posible **denial-of-wallet** en plan Blaze. Imposibilita auditoría real (uids reales se pierden entre los basura).
+**Por qué solucionarlo.** Posible **denial-of-wallet** en plan Blaze. Brute-force de contraseñas sin rate limiting.
 
 **Guía de remediación.**
 
-1. Habilitar **Firebase App Check** con reCAPTCHA v3 (web) → cualquier petición sin token de App Check es rechazada por Firebase.
-2. Implementar rate limiting a nivel Cloud Function si la auth es server-side (P0-3).
+1. Habilitar **Firebase App Check** con reCAPTCHA v3 (web) → cualquier petición sin token de App Check es rechazada.
+2. Implementar rate limiting en las Cloud Functions (por IP o por `identificationNumber`).
 3. Revisar la facturación esperada y poner alertas en GCP Budgets.
-4. Si el flujo no necesita usuario anónimo (que es el caso después de migrar P0-3 a custom token), **deshabilitar Anonymous provider** en Firebase Console.
+4. **Deshabilitar Anonymous provider** en Firebase Console (ya no se usa en el flujo de estudiantes).
 
 ---
 
 ### P2-5 — `try/catch` que swallow errores y enmascara fallos de seguridad
 
-| Archivos | `useFlowAuth.ts:60-63`, `useCreateAccountFlow.ts:38-40`, varios |
-| -------- | --------------------------------------------------------------- |
+| Archivos | `useFlowAuth.ts`, `useCreateAccountFlow.ts`, varios |
+| -------- | --------------------------------------------------- |
 
 **Qué es.** Patrón repetido:
 
@@ -554,20 +463,25 @@ Los `<script src>` generados no llevan `integrity="sha384-..."`. Defensa contra 
 
 ## Resumen ejecutivo
 
-| ID    | Severidad | Esfuerzo | Bloquea release |
-| ----- | --------- | -------- | --------------- |
-| P0-1  | Crítica   | 1-2 días | Sí              |
-| P0-2  | Crítica   | 1 hora   | Sí              |
-| P0-3  | Crítica   | 3-5 días | Sí              |
-| P1-1  | Alta      | 1 día    | Sí              |
-| P1-2  | Alta      | 1 día    | Sí              |
-| P1-3  | Alta      | 2 días   | Sí              |
-| P1-4  | Alta      | 4 horas  | Recomendado     |
-| P2-1  | Media     | 2-3 días | No              |
-| P2-2  | Media     | 4 horas  | Recomendado     |
-| P2-3  | Media     | 1 hora   | No              |
-| P2-4  | Media     | 4 horas  | Recomendado     |
-| P2-5  | Media     | 1 día    | No              |
-| P3-\* | Baja      | < 1 día  | No              |
+| ID       | Severidad   | Esfuerzo     | Bloquea release | Estado       |
+| -------- | ----------- | ------------ | --------------- | ------------ |
+| P0-1     | Crítica     | 1-2 días     | Sí              | Pendiente    |
+| P0-2     | Crítica     | 1 hora       | Sí              | Pendiente    |
+| ~~P0-3~~ | ~~Crítica~~ | ~~3-5 días~~ | ~~Sí~~          | **Resuelto** |
+| ~~P1-1~~ | ~~Alta~~    | ~~1 día~~    | ~~Sí~~          | **Resuelto** |
+| P1-2     | Alta        | 1 día        | Sí              | Pendiente    |
+| P1-3     | Alta        | 2 días       | Sí              | Pendiente    |
+| P1-4     | Alta        | 4 horas      | Recomendado     | Pendiente    |
+| P2-1     | Media       | 2-3 días     | No              | Pendiente    |
+| P2-2     | Media       | 4 horas      | Recomendado     | Pendiente    |
+| P2-3     | Media       | 1 hora       | No              | Pendiente    |
+| P2-4     | Media       | 4 horas      | Recomendado     | Parcial      |
+| P2-5     | Media       | 1 día        | No              | Pendiente    |
+| P3-\*    | Baja        | < 1 día      | No              | Pendiente    |
 
-**Acción inmediata sugerida (orden):** P0-2 (1 h) → P0-1 (1-2 d) → P1-4 (4 h) → P0-3 + P1-1 (juntos, ~1 sprint) → P1-3 → P1-2 → resto.
+**Resueltos:**
+
+- **P0-3** — Verificación de password movida a Cloud Functions (`apps/functions/src/student-login.ts`, `student-register.ts`). Client-side hash comparison eliminada. `signInAnonymously` reemplazado por `signInWithCustomToken`.
+- **P1-1** — SHA-256 sin sal reemplazado por argon2id en servidor. `hashPassword` eliminado del cliente (`student.utils.ts` borrado).
+
+**Acción inmediata sugerida (orden):** P0-2 (1 h) → P0-1 (1-2 d) → P1-4 (4 h) → P1-3 → P1-2 → resto.

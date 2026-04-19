@@ -5,6 +5,7 @@ import type { IAuthProvider } from '../ports/auth.port'
 import type { IRealtimeDatabaseProvider } from '../ports/realtime-database.port'
 import type { IFirestoreProvider } from '../ports/firestore.port'
 import type { IHostingProvider } from '../ports/hosting.port'
+import type { IFunctionsProvider } from '../ports/functions.port'
 
 export const useCloudServices = (): CloudServices => {
   const services = useContext(CloudServicesContext)
@@ -22,3 +23,5 @@ export const useRealtimeDatabase = (): IRealtimeDatabaseProvider =>
 export const useFirestore = (): IFirestoreProvider => useCloudServices().firestore
 
 export const useHosting = (): IHostingProvider => useCloudServices().hosting
+
+export const useFunctions = (): IFunctionsProvider => useCloudServices().functions

@@ -1,25 +1,26 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type * as CloudServicesModule from '@primer-guidy/cloud-services'
+import { FunctionsError, FunctionsErrorCode } from '@primer-guidy/cloud-services'
 import { FlowAuthStatus, FlowAuthError } from './Home.types'
 
-const mockSignInAnonymously = vi.fn()
-const mockGetCredentialMutateAsync = vi.fn()
-const mockCreateCredentialMutateAsync = vi.fn()
-const mockCreateProfileMutateAsync = vi.fn()
-const mockUpdateUidMutateAsync = vi.fn()
+const mockSignInWithCustomToken = vi.fn()
+const mockLoginMutateAsync = vi.fn()
+const mockRegisterMutateAsync = vi.fn()
 
-vi.mock('@primer-guidy/cloud-services', () => ({
-  useAuth: () => ({
-    signInAnonymously: mockSignInAnonymously,
-  }),
-}))
+vi.mock('@primer-guidy/cloud-services', async (importOriginal) => {
+  const original = await importOriginal<typeof CloudServicesModule>()
+  return {
+    ...original,
+    useAuth: () => ({
+      signInWithCustomToken: mockSignInWithCustomToken,
+    }),
+  }
+})
 
-vi.mock('@/services/student', () => ({
-  useGetStudentCredential: () => ({ mutateAsync: mockGetCredentialMutateAsync }),
-  useCreateStudentCredential: () => ({ mutateAsync: mockCreateCredentialMutateAsync }),
-  useCreateStudentProfile: () => ({ mutateAsync: mockCreateProfileMutateAsync }),
-  useUpdateStudentUid: () => ({ mutateAsync: mockUpdateUidMutateAsync }),
-  hashPassword: (password: string) => Promise.resolve(`hashed_${password}`),
+vi.mock('@/services/student-auth', () => ({
+  useStudentLogin: () => ({ mutateAsync: mockLoginMutateAsync }),
+  useStudentRegister: () => ({ mutateAsync: mockRegisterMutateAsync }),
 }))
 
 const originalLocation = window.location
@@ -45,8 +46,10 @@ describe('useFlowAuth', () => {
   })
 
   describe('onLogin', () => {
-    it('shows banner when student does not exist', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue(null)
+    it('shows banner when student is not found', async () => {
+      mockLoginMutateAsync.mockRejectedValue(
+        new FunctionsError(FunctionsErrorCode.NOT_FOUND, 'student-not-found'),
+      )
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -58,23 +61,24 @@ describe('useFlowAuth', () => {
       expect(result.current.status).toBe(FlowAuthStatus.Idle)
     })
 
-    it('sets wrongPassword error when password does not match', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'hashed_different', uid: 'uid-1' })
+    it('sets wrongPassword error when password is incorrect', async () => {
+      mockLoginMutateAsync.mockRejectedValue(
+        new FunctionsError(FunctionsErrorCode.UNAUTHENTICATED, 'wrong-password'),
+      )
 
       const { result } = renderHook(() => useFlowAuth())
 
       await act(async () => {
-        await result.current.onLogin({ identificationNumber: '12345678', password: 'test1234' })
+        await result.current.onLogin({ identificationNumber: '12345678', password: 'wrong1234' })
       })
 
       expect(result.current.authError).toBe(FlowAuthError.WrongPassword)
       expect(result.current.status).toBe(FlowAuthStatus.Idle)
     })
 
-    it('redirects to learning and updates uid on successful login', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'hashed_test1234', uid: 'uid-1' })
-      mockSignInAnonymously.mockResolvedValue({ uid: 'anon-uid' })
-      mockUpdateUidMutateAsync.mockResolvedValue(undefined)
+    it('signs in with custom token and redirects on success', async () => {
+      mockLoginMutateAsync.mockResolvedValue({ token: 'custom-token-123' })
+      mockSignInWithCustomToken.mockResolvedValue({ uid: 'uid-1' })
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -82,16 +86,16 @@ describe('useFlowAuth', () => {
         await result.current.onLogin({ identificationNumber: '12345678', password: 'test1234' })
       })
 
-      expect(mockSignInAnonymously).toHaveBeenCalledOnce()
-      expect(mockUpdateUidMutateAsync).toHaveBeenCalledWith({
+      expect(mockLoginMutateAsync).toHaveBeenCalledWith({
         identificationNumber: '12345678',
-        uid: 'anon-uid',
+        password: 'test1234',
       })
+      expect(mockSignInWithCustomToken).toHaveBeenCalledWith('custom-token-123')
       expect(window.location.href).toContain('learning')
     })
 
     it('sets unknown error on unexpected failure', async () => {
-      mockGetCredentialMutateAsync.mockRejectedValue(new Error('network error'))
+      mockLoginMutateAsync.mockRejectedValue(new Error('network error'))
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -105,7 +109,9 @@ describe('useFlowAuth', () => {
 
   describe('onRegister', () => {
     it('sets identificationAlreadyExists error when student already exists', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue({ password: 'existing', uid: 'uid-1' })
+      mockRegisterMutateAsync.mockRejectedValue(
+        new FunctionsError(FunctionsErrorCode.ALREADY_EXISTS, 'student-already-exists'),
+      )
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -120,11 +126,9 @@ describe('useFlowAuth', () => {
       expect(result.current.authError).toBe(FlowAuthError.IdentificationAlreadyExists)
     })
 
-    it('creates student and redirects on successful registration', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue(null)
-      mockSignInAnonymously.mockResolvedValue({ uid: 'new-uid' })
-      mockCreateCredentialMutateAsync.mockResolvedValue(undefined)
-      mockCreateProfileMutateAsync.mockResolvedValue(undefined)
+    it('registers and redirects on success', async () => {
+      mockRegisterMutateAsync.mockResolvedValue({ token: 'new-token-456' })
+      mockSignInWithCustomToken.mockResolvedValue({ uid: 'new-uid' })
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -136,25 +140,17 @@ describe('useFlowAuth', () => {
         })
       })
 
-      expect(mockSignInAnonymously).toHaveBeenCalledOnce()
-      expect(mockCreateCredentialMutateAsync).toHaveBeenCalledWith({
+      expect(mockRegisterMutateAsync).toHaveBeenCalledWith({
         identificationNumber: '12345678',
-        hashedPassword: 'hashed_test1234',
-        uid: 'new-uid',
+        password: 'test1234',
+        name: 'Jane Doe',
       })
-      expect(mockCreateProfileMutateAsync).toHaveBeenCalledWith({
-        uid: 'new-uid',
-        data: {
-          identificationNumber: '12345678',
-          name: 'Jane Doe',
-        },
-      })
+      expect(mockSignInWithCustomToken).toHaveBeenCalledWith('new-token-456')
       expect(window.location.href).toContain('learning')
     })
 
     it('sets registrationFailed error on unexpected failure', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue(null)
-      mockSignInAnonymously.mockRejectedValue(new Error('auth failure'))
+      mockRegisterMutateAsync.mockRejectedValue(new Error('network error'))
 
       const { result } = renderHook(() => useFlowAuth())
 
@@ -172,7 +168,9 @@ describe('useFlowAuth', () => {
 
   describe('dismissBanner', () => {
     it('hides the banner', async () => {
-      mockGetCredentialMutateAsync.mockResolvedValue(null)
+      mockLoginMutateAsync.mockRejectedValue(
+        new FunctionsError(FunctionsErrorCode.NOT_FOUND, 'student-not-found'),
+      )
 
       const { result } = renderHook(() => useFlowAuth())
 

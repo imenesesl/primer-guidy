@@ -1,12 +1,6 @@
 import { useState } from 'react'
-import { useAuth } from '@primer-guidy/cloud-services'
-import {
-  useGetStudentCredential,
-  useCreateStudentCredential,
-  useCreateStudentProfile,
-  useUpdateStudentUid,
-  hashPassword,
-} from '@/services/student'
+import { useAuth, FunctionsError, FunctionsErrorCode } from '@primer-guidy/cloud-services'
+import { useStudentLogin, useStudentRegister } from '@/services/student-auth'
 import type { LoginFormData } from '@/services/auth'
 import type { RegisterFormData } from '@/services/auth'
 import { FlowAuthStatus, FlowAuthError } from './Home.types'
@@ -18,12 +12,26 @@ const LEARNING_URL = getLearningUrl(
   (import.meta.env.BASE_PATH as string) ?? '/',
 )
 
+const mapLoginError = (error: unknown): FlowAuthError => {
+  if (error instanceof FunctionsError) {
+    if (error.code === FunctionsErrorCode.NOT_FOUND) return FlowAuthError.StudentNotFound
+    if (error.code === FunctionsErrorCode.UNAUTHENTICATED) return FlowAuthError.WrongPassword
+  }
+  return FlowAuthError.Unknown
+}
+
+const mapRegisterError = (error: unknown): FlowAuthError => {
+  if (error instanceof FunctionsError) {
+    if (error.code === FunctionsErrorCode.ALREADY_EXISTS)
+      return FlowAuthError.IdentificationAlreadyExists
+  }
+  return FlowAuthError.RegistrationFailed
+}
+
 export const useFlowAuth = (): FlowAuthState => {
   const auth = useAuth()
-  const getCredential = useGetStudentCredential()
-  const createCredential = useCreateStudentCredential()
-  const createProfile = useCreateStudentProfile()
-  const updateUid = useUpdateStudentUid()
+  const login = useStudentLogin()
+  const register = useStudentRegister()
 
   const [status, setStatus] = useState(FlowAuthStatus.Idle)
   const [showBanner, setShowBanner] = useState(false)
@@ -35,30 +43,19 @@ export const useFlowAuth = (): FlowAuthState => {
     setStatus(FlowAuthStatus.Authenticating)
 
     try {
-      const credential = await getCredential.mutateAsync(data.identificationNumber)
-
-      if (!credential) {
-        setShowBanner(true)
-        setStatus(FlowAuthStatus.Idle)
-        return
-      }
-
-      const hashedInput = await hashPassword(data.password)
-
-      if (hashedInput !== credential.password) {
-        setAuthError(FlowAuthError.WrongPassword)
-        setStatus(FlowAuthStatus.Idle)
-        return
-      }
-
-      const user = await auth.signInAnonymously()
-      await updateUid.mutateAsync({
+      const { token } = await login.mutateAsync({
         identificationNumber: data.identificationNumber,
-        uid: user.uid,
+        password: data.password,
       })
+      await auth.signInWithCustomToken(token)
       window.location.href = LEARNING_URL
-    } catch {
-      setAuthError(FlowAuthError.Unknown)
+    } catch (error) {
+      const mapped = mapLoginError(error)
+      if (mapped === FlowAuthError.StudentNotFound) {
+        setShowBanner(true)
+      } else {
+        setAuthError(mapped)
+      }
       setStatus(FlowAuthStatus.Idle)
     }
   }
@@ -69,33 +66,15 @@ export const useFlowAuth = (): FlowAuthState => {
     setStatus(FlowAuthStatus.Authenticating)
 
     try {
-      const existing = await getCredential.mutateAsync(data.identificationNumber)
-
-      if (existing) {
-        setAuthError(FlowAuthError.IdentificationAlreadyExists)
-        setStatus(FlowAuthStatus.Idle)
-        return
-      }
-
-      const user = await auth.signInAnonymously()
-      const hashedPassword = await hashPassword(data.password)
-
-      await createCredential.mutateAsync({
+      const { token } = await register.mutateAsync({
         identificationNumber: data.identificationNumber,
-        hashedPassword,
-        uid: user.uid,
+        password: data.password,
+        name: data.name,
       })
-      await createProfile.mutateAsync({
-        uid: user.uid,
-        data: {
-          identificationNumber: data.identificationNumber,
-          name: data.name,
-        },
-      })
-
+      await auth.signInWithCustomToken(token)
       window.location.href = LEARNING_URL
-    } catch {
-      setAuthError(FlowAuthError.RegistrationFailed)
+    } catch (error) {
+      setAuthError(mapRegisterError(error))
       setStatus(FlowAuthStatus.Idle)
     }
   }

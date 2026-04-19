@@ -1,17 +1,3 @@
-export {
-  checkStudentExists,
-  getStudentCredential,
-  getStudentProfileByUid,
-  createStudentCredential,
-  createStudentProfile,
-  updateStudentUid,
-} from './student.service'
-export {
-  useStudentProfile,
-  useGetStudentCredential,
-  useCreateStudentCredential,
-  useCreateStudentProfile,
-  useUpdateStudentUid,
-} from './student.hooks'
-export { hashPassword } from './student.utils'
-export type { StudentCredential, StudentProfile, CreateStudentData } from './student.types'
+export { getStudentProfileByUid } from './student.service'
+export { useStudentProfile } from './student.hooks'
+export type { StudentProfile } from './student.types'

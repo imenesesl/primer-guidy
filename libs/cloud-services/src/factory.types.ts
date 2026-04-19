@@ -2,11 +2,14 @@ import type { IAuthProvider } from './ports/auth.port'
 import type { IRealtimeDatabaseProvider } from './ports/realtime-database.port'
 import type { IFirestoreProvider } from './ports/firestore.port'
 import type { IHostingProvider } from './ports/hosting.port'
+import type { IFunctionsProvider } from './ports/functions.port'
 
 export interface EmulatorConfig {
   readonly authUrl: string
   readonly firestoreHost: string
   readonly firestorePort: number
+  readonly functionsHost?: string
+  readonly functionsPort?: number
 }
 
 export interface CloudServicesConfig {
@@ -31,4 +34,5 @@ export interface CloudServices {
   readonly realtimeDatabase: IRealtimeDatabaseProvider
   readonly firestore: IFirestoreProvider
   readonly hosting: IHostingProvider
+  readonly functions: IFunctionsProvider
 }

@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Cloud Services — Provider-Agnostic Abstraction
 
-All cloud service access (auth, database, storage, hosting) goes through `@primer-guidy/cloud-services`. The underlying provider (Firebase) is NEVER exposed to consumers.
+All cloud service access (auth, database, storage, hosting, callable functions) goes through `@primer-guidy/cloud-services`. The underlying provider (Firebase) is NEVER exposed to consumers.
 
 ## Architecture — Port/Adapter (Hexagonal)
 
@@ -54,6 +54,24 @@ await auth.signInWithEmail({ email, password })
 
 NEVER use `createCloudServices` directly in web apps — prefer `createCloudServicesFromEnv` which encapsulates emulator detection and E2E setup.
 
+## Callable Cloud Functions
+
+Server-side logic (auth verification, privileged writes) runs in `apps/functions/` as Firebase Cloud Functions v2. Web apps invoke them through the `IFunctionsProvider` port:
+
+```typescript
+import { useFunctions } from '@primer-guidy/cloud-services'
+
+const functions = useFunctions()
+const result = await functions.call<{ token: string }>('studentLogin', { identificationNumber, password })
+```
+
+### Security Rules
+
+- **Credential verification MUST happen server-side** — NEVER download password hashes to the client
+- **Password hashing uses argon2id** — NEVER use SHA-256 or other non-KDF algorithms for passwords
+- **Anonymous auth (`signInAnonymously`) MUST NOT be used for authenticated flows** — use `signInWithCustomToken` with tokens issued by Cloud Functions
+- Cloud Functions handle privileged writes (RTDB, Firestore) that clients should not access directly
+
 ## Adding a New Service
 
 1. Create port interface in `ports/<service>.port.ts` + types in `ports/<service>.types.ts`
@@ -63,6 +81,16 @@ NEVER use `createCloudServices` directly in web apps — prefer `createCloudServ
 5. Add hook in `react/hooks.ts`
 6. Re-export from `index.ts`
 
+## Available Ports
+
+| Port | Hook | Purpose |
+|------|------|---------|
+| `IAuthProvider` | `useAuth()` | Authentication (sign in, sign out, auth state) |
+| `IRealtimeDatabaseProvider` | `useRealtimeDatabase()` | Firebase RTDB reads/writes |
+| `IFirestoreProvider` | `useFirestore()` | Firestore reads/writes |
+| `IHostingProvider` | `useHosting()` | Hosting metadata |
+| `IFunctionsProvider` | `useFunctions()` | Callable Cloud Functions |
+
 ## Server Apps
 
-Server apps (NestJS) do NOT use this package. They implement custom endpoints with their own provider access via NestJS DI.
+Cloud Functions (`apps/functions/`) use `firebase-admin` directly — they do NOT use this package. NestJS server apps implement custom endpoints with their own provider access via NestJS DI.

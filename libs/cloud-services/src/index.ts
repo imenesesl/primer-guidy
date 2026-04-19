@@ -12,6 +12,7 @@ export type {
   SortDirection,
   IHostingProvider,
   HostingConfig,
+  IFunctionsProvider,
 } from './ports'
 
 export {
@@ -23,6 +24,8 @@ export {
   FirestoreErrorCode,
   HostingError,
   HostingErrorCode,
+  FunctionsError,
+  FunctionsErrorCode,
   buildSubcollectionPath,
 } from './ports'
 
@@ -41,4 +44,5 @@ export {
   useRealtimeDatabase,
   useFirestore,
   useHosting,
+  useFunctions,
 } from './react'
