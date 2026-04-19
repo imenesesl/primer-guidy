@@ -61,7 +61,7 @@ export const seedFirestoreProfile = async (uid: string, user: E2EUserConfig): Pr
 
   const response = await fetch(docUrl, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
     body: JSON.stringify({
       fields: {
         uid: { stringValue: uid },
