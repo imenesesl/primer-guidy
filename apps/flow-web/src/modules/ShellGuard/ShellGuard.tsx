@@ -27,6 +27,7 @@ export const ShellGuard = () => {
     student?.identificationNumber ?? null,
   )
 
+  const sidebarLoading = student === undefined || workspaces === undefined
   const railItems = useMemo(() => resolveRailItems(RAIL_ITEM_SEEDS, tShell), [tShell])
   const sidebarItemsMap = useMemo(
     () => buildSidebarItemsMap(workspaces ?? [], activeWorkspaceId, channels),
@@ -42,6 +43,7 @@ export const ShellGuard = () => {
       <Shell
         railItems={railItems}
         sidebarItemsMap={sidebarItemsMap}
+        sidebarLoading={sidebarLoading}
         avatarName={student?.name}
         userName={student?.name}
         breadcrumbResolver={breadcrumbResolver}

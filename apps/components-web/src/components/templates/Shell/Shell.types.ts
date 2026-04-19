@@ -6,6 +6,7 @@ import type { BreadcrumbResolver } from './ContentHeader.types'
 export interface ShellProps {
   readonly railItems: readonly RailItemConfig[]
   readonly sidebarItemsMap: Readonly<Record<string, readonly SidebarItemConfig[]>>
+  readonly sidebarLoading?: boolean
   readonly avatarSrc?: string
   readonly avatarName?: string
   readonly userName?: string

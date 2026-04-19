@@ -26,6 +26,7 @@ export const ShellGuard = () => {
       <Shell
         railItems={railItems}
         sidebarItemsMap={sidebarItemsMap}
+        sidebarLoading={channels === undefined}
         avatarSrc={user?.avatarUrl ?? undefined}
         avatarName={user?.name}
         userName={user?.name}

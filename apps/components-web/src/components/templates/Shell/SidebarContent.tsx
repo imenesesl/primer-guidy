@@ -11,6 +11,7 @@ import styles from './Shell.module.scss'
 export const SidebarContent = ({
   userName,
   sidebarItems,
+  sidebarLoading,
   railVisible,
   onToggleRail,
   onCloseSidebar,
@@ -67,9 +68,11 @@ export const SidebarContent = ({
                 />
               ),
             )
-          : Array.from({ length: 3 }, (_, i) => (
-              <div key={i} className={styles.sidebarItemSkeleton} />
-            ))}
+          : sidebarLoading
+            ? Array.from({ length: 3 }, (_, i) => (
+                <div key={i} className={styles.sidebarItemSkeleton} />
+              ))
+            : null}
       </div>
     </nav>
   )

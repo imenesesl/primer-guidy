@@ -18,6 +18,7 @@ import styles from './Shell.module.scss'
 export const Shell = ({
   railItems,
   sidebarItemsMap,
+  sidebarLoading,
   avatarSrc,
   avatarName,
   userName,
@@ -72,6 +73,7 @@ export const Shell = ({
           <SidebarContent
             userName={userName}
             sidebarItems={sidebarItems}
+            sidebarLoading={sidebarLoading}
             railVisible={railVisible}
             onToggleRail={toggleRail}
             onCloseSidebar={closeSidebar}

@@ -56,6 +56,16 @@ describe('SidebarContent', () => {
     expect(container.querySelector('[class*="sidebarUserNameSkeleton"]')).toBeInTheDocument()
   })
 
+  it('renders sidebar skeletons when sidebarLoading is true and items are empty', () => {
+    const { container } = render(<SidebarContent {...defaultProps} sidebarLoading />)
+    expect(container.querySelectorAll('[class*="sidebarItemSkeleton"]')).toHaveLength(3)
+  })
+
+  it('does not render sidebar skeletons when sidebarLoading is false and items are empty', () => {
+    const { container } = render(<SidebarContent {...defaultProps} sidebarLoading={false} />)
+    expect(container.querySelectorAll('[class*="sidebarItemSkeleton"]')).toHaveLength(0)
+  })
+
   it('renders sidebar items with resolved labels', () => {
     const items: SidebarItemConfig[] = [{ icon: HomeIcon, label: 'Dashboard', path: '/dashboard' }]
     render(<SidebarContent {...defaultProps} sidebarItems={items} />)
