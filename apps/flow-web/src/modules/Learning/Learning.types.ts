@@ -1,3 +1,1 @@
-export interface LearningProps {
-  readonly studentName: string
-}
+export type LearningProps = Record<string, never>

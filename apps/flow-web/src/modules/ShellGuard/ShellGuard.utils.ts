@@ -4,7 +4,9 @@ import type { WorkspaceEntry } from '@/services/workspace'
 import type { ChannelDocument } from '@/services/channel'
 import { FlowRoutes } from '@/routes/routes'
 
-export const RAIL_ITEMS: readonly RailItemConfig[] = [
+type RailItemSeed = Omit<RailItemConfig, 'label'>
+
+export const RAIL_ITEM_SEEDS: readonly RailItemSeed[] = [
   {
     icon: ChecklistIcon,
     labelKey: 'rail.items.tasks',
@@ -17,6 +19,11 @@ export const RAIL_ITEMS: readonly RailItemConfig[] = [
     path: FlowRoutes.Quizes,
   },
 ]
+
+export const resolveRailItems = (
+  seeds: readonly RailItemSeed[],
+  translate: (key: string) => string,
+): RailItemConfig[] => seeds.map((seed) => ({ ...seed, label: translate(seed.labelKey) }))
 
 export const extractWorkspaceId = (pathname: string, basePath: string): string | null => {
   if (!pathname.startsWith(basePath)) return null

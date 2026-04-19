@@ -9,5 +9,8 @@
     "toggleRail": "Toggle navigation rail",
     "toggleSidebar": "Toggle sidebar",
     "closeSidebar": "Close sidebar"
+  },
+  "breadcrumb": {
+    "separator": " · "
   }
 }

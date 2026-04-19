@@ -1,11 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useFirestore } from '@primer-guidy/cloud-services'
-import {
-  getEnrolledStudents,
-  updateEnrollmentStatus,
-  syncWorkspaceEntry,
-} from './enrollment.service'
-import { EnrollmentStatus } from './enrollment.types'
+import { getEnrolledStudents, toggleEnrollmentStatus } from './enrollment.service'
+import type { EnrollmentStatus } from './enrollment.types'
 import type { StudentEnrollment } from './enrollment.types'
 
 const ENROLLED_STUDENTS_KEY = 'enrolled-students' as const
@@ -35,11 +31,8 @@ export const useToggleEnrollmentStatus = () => {
       teacherName,
       identificationNumber,
       status,
-    }: ToggleStatusArgs) => {
-      const isActive = status === EnrollmentStatus.Active
-      await syncWorkspaceEntry(firestore, identificationNumber, teacherUid, teacherName, isActive)
-      await updateEnrollmentStatus(firestore, teacherUid, identificationNumber, status)
-    },
+    }: ToggleStatusArgs) =>
+      toggleEnrollmentStatus(firestore, teacherUid, teacherName, identificationNumber, status),
     onSuccess: (_, { teacherUid }) => {
       queryClient.invalidateQueries({ queryKey: [ENROLLED_STUDENTS_KEY, teacherUid] })
     },

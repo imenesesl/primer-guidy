@@ -35,7 +35,11 @@ export { createBannerStore, BannerStoreProvider, useBannerStore } from './stores
 export type { BannerStore, BannerConfig, BannerCta } from './stores/banner.store'
 
 export { AppBanner } from './components/molecules/AppBanner'
-export type { AppBannerVariant } from './components/molecules/AppBanner'
+export type {
+  AppBannerVariant,
+  AppBannerCta,
+  AppBannerProps,
+} from './components/molecules/AppBanner'
 
 export { SidebarGroup } from './components/molecules/SidebarGroup'
 export type { SidebarGroupProps } from './components/molecules/SidebarGroup'

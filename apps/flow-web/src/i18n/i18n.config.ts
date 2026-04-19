@@ -7,6 +7,10 @@ import learningEn from './locales/en/learning.json'
 import shellEn from './locales/en/shell.json'
 import layoutEn from './locales/en/layout.json'
 
+import commonEs from './locales/es/common.json'
+import homeEs from './locales/es/home.json'
+import learningEs from './locales/es/learning.json'
+
 const resources = {
   en: {
     common: commonEn,
@@ -14,6 +18,11 @@ const resources = {
     learning: learningEn,
     shell: shellEn,
     layout: layoutEn,
+  },
+  es: {
+    common: commonEs,
+    home: homeEs,
+    learning: learningEs,
   },
 }
 

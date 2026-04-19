@@ -1,35 +1,40 @@
 import clsx from 'clsx'
-import { useLocation, useMatchRoute } from '@tanstack/react-router'
+import { Text } from '@primer/react'
 import { SidebarItem } from '../../atoms/SidebarItem'
 import type { SidebarGroupProps } from './SidebarGroup.types'
 import styles from './SidebarGroup.module.scss'
 
-export const SidebarGroup = ({ item, children, resolveLabel }: SidebarGroupProps) => {
-  const location = useLocation()
-  const matchRoute = useMatchRoute()
-  const isExpanded = location.pathname.startsWith(item.path)
-
+export const SidebarGroup = ({
+  item,
+  children,
+  resolveLabel,
+  expanded,
+  isActive,
+}: SidebarGroupProps) => {
   return (
     <div className={styles.root}>
       <SidebarItem
         icon={item.icon}
         label={resolveLabel(item)}
         path={item.path}
-        active={!!matchRoute({ to: item.path, fuzzy: true })}
+        active={isActive(item.path)}
         disabled={item.disabled}
       />
-      {isExpanded && children.length > 0 && (
+      {expanded && children.length > 0 && (
         <div className={styles.children}>
           {children.map((child) => {
-            const isActive = !!matchRoute({ to: child.path, fuzzy: true })
+            const active = isActive(child.path)
             return (
               <div key={child.labelKey ?? child.label} className={styles.childItem}>
-                <span className={clsx(styles.dot, { [styles.dotActive as string]: isActive })} />
+                <Text
+                  as="span"
+                  className={clsx(styles.dot, { [styles.dotActive as string]: active })}
+                />
                 <SidebarItem
                   icon={child.icon}
                   label={resolveLabel(child)}
                   path={child.path}
-                  active={isActive}
+                  active={active}
                   disabled={child.disabled}
                 />
               </div>

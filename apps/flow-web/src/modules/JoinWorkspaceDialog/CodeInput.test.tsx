@@ -1,6 +1,16 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, opts?: Record<string, unknown>) => {
+      if (key === 'joinWorkspace.digitLabel') return `Digit ${opts?.number}`
+      return key
+    },
+  }),
+}))
+
 import { CodeInput } from './CodeInput'
 
 const getInputs = () =>

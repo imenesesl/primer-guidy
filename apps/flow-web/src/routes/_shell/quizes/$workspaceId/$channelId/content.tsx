@@ -1,11 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Heading } from '@primer/react'
-import { useTranslation } from 'react-i18next'
-
-function ContentTab() {
-  const { t: tShell } = useTranslation('shell')
-  return <Heading as="h3">{tShell('channelTabs.content')}</Heading>
-}
+import { ContentTab } from '@/modules/ContentTab'
 
 export const Route = createFileRoute('/_shell/quizes/$workspaceId/$channelId/content')({
   component: ContentTab,

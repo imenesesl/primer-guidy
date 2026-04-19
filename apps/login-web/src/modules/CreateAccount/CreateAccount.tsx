@@ -15,6 +15,7 @@ import styles from './CreateAccount.module.scss'
 
 export const CreateAccount = () => {
   const { t: tCreateAccount } = useTranslation('createAccount')
+  const { t: tCommon } = useTranslation('common')
   const flow = useCreateAccountFlow()
   const showBanner = useBannerStore((s) => s.showBanner)
 
@@ -46,7 +47,7 @@ export const CreateAccount = () => {
         </Text>
 
         <CreateAccountForm onSubmit={flow.onEmailSubmit} disabled={flow.isLoading} />
-        <AuthDivider />
+        <AuthDivider label={tCommon('or')} />
         <GoogleSignUpButton onClick={flow.onGoogleSignIn} disabled={flow.isLoading} />
 
         <SignInLink />

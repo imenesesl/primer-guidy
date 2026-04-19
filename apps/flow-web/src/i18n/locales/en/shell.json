@@ -22,7 +22,8 @@
     "cancel": "Cancel",
     "join": "Join",
     "invalidCode": "The code you entered is invalid. Please check and try again.",
-    "alreadyEnrolled": "You are already enrolled in this workspace."
+    "alreadyEnrolled": "You are already enrolled in this workspace.",
+    "digitLabel": "Digit {{number}}"
   },
   "channelTabs": {
     "content": "Content",

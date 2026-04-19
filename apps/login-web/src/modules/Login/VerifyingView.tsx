@@ -1,16 +1,8 @@
-import { Spinner, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
-import styles from '@/styles/auth.module.scss'
+import { AuthLoadingView } from '@/modules/AuthLoadingView'
 
 export const VerifyingView = () => {
   const { t: tLogin } = useTranslation('login')
 
-  return (
-    <div className={styles.root}>
-      <div className={styles.verifying}>
-        <Spinner size="large" />
-        <Text as="p">{tLogin('verifying')}</Text>
-      </div>
-    </div>
-  )
+  return <AuthLoadingView message={tLogin('verifying')} />
 }

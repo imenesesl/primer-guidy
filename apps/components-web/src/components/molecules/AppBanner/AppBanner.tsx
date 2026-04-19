@@ -1,34 +1,27 @@
 import { Button, Flash, IconButton, Text } from '@primer/react'
 import { XIcon } from '@primer/octicons-react'
-import { useTranslation } from 'react-i18next'
-import { useBannerStore } from '../../../stores/banner.store'
+import type { AppBannerProps } from './AppBanner.types'
 import styles from './AppBanner.module.scss'
 
-export const AppBanner = () => {
-  const { t: tCommon } = useTranslation('common')
-  const banner = useBannerStore((s) => s.banner)
-  const dismissBanner = useBannerStore((s) => s.dismissBanner)
-
-  if (!banner) return null
-
+export const AppBanner = ({ variant, message, dismissLabel, cta, onDismiss }: AppBannerProps) => {
   return (
     <div className={styles.root}>
-      <Flash variant={banner.variant}>
+      <Flash variant={variant}>
         <div className={styles.content}>
           <Text as="span" className={styles.message}>
-            {banner.message}
+            {message}
           </Text>
-          {banner.cta && (
-            <Button variant="primary" size="small" onClick={banner.cta.onClick}>
-              {banner.cta.label}
+          {cta && (
+            <Button variant="primary" size="small" onClick={cta.onClick}>
+              {cta.label}
             </Button>
           )}
           <IconButton
-            aria-label={tCommon('actions.dismiss')}
+            aria-label={dismissLabel}
             icon={XIcon}
             variant="invisible"
             size="small"
-            onClick={dismissBanner}
+            onClick={onDismiss}
             className={styles.dismiss}
           />
         </div>

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import type { RegisterFormData } from '@/services/auth'
 import { RegisterSchema } from '@/services/auth'
 import { AUTH_FORM_ID, AuthTab } from '../Home.types'
+import { AuthFormFields } from '../AuthFormFields'
 import type { RegisterFormProps } from './RegisterForm.types'
 import styles from '../Home.module.scss'
 
@@ -24,38 +25,24 @@ export const RegisterForm = ({ onSubmit, disabled }: RegisterFormProps) => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormControl disabled={disabled}>
-        <FormControl.Label className={styles.label}>
-          {tHome('fields.identificationNumber')}
-        </FormControl.Label>
-        <TextInput
-          block
-          inputMode="numeric"
-          pattern="[0-9]*"
-          disabled={disabled}
-          {...register('identificationNumber')}
-        />
-        {errors.identificationNumber && (
-          <FormControl.Validation variant="error">
-            {tHome('validation.identificationNumberRequired')}
-          </FormControl.Validation>
-        )}
-      </FormControl>
+      <AuthFormFields
+        identificationNumberField={register('identificationNumber')}
+        passwordField={register('password')}
+        errors={errors}
+        disabled={disabled}
+        labels={{
+          identificationNumber: tHome('fields.identificationNumber'),
+          password: tHome('fields.password'),
+          identificationNumberError: tHome('validation.identificationNumberRequired'),
+          passwordError: tHome('validation.passwordMinLength'),
+        }}
+      />
       <FormControl disabled={disabled}>
         <FormControl.Label className={styles.label}>{tHome('fields.name')}</FormControl.Label>
         <TextInput block disabled={disabled} {...register('name')} />
         {errors.name && (
           <FormControl.Validation variant="error">
             {tHome('validation.nameRequired')}
-          </FormControl.Validation>
-        )}
-      </FormControl>
-      <FormControl disabled={disabled}>
-        <FormControl.Label className={styles.label}>{tHome('fields.password')}</FormControl.Label>
-        <TextInput block type="password" disabled={disabled} {...register('password')} />
-        {errors.password && (
-          <FormControl.Validation variant="error">
-            {tHome('validation.passwordMinLength')}
           </FormControl.Validation>
         )}
       </FormControl>

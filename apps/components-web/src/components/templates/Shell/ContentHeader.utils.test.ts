@@ -51,4 +51,10 @@ describe('buildBreadcrumb', () => {
 
     expect(buildBreadcrumb('/channels', translate, resolver)).toBe('Channels')
   })
+
+  it('uses custom separator when provided', () => {
+    expect(buildBreadcrumb('/directories/users', translate, undefined, ' / ')).toBe(
+      'Directories / Users',
+    )
+  })
 })

@@ -21,14 +21,14 @@ export const ChannelLayout = () => {
         <Link
           to={contentPath}
           className={styles.tab}
-          activeProps={{ className: clsx(styles.tab, styles.tabActive) }}
+          activeProps={{ className: clsx(styles.tab, { [styles.tabActive as string]: true }) }}
         >
           {tShell('channelTabs.content')}
         </Link>
         <Link
           to={aiPath}
           className={styles.tab}
-          activeProps={{ className: clsx(styles.tab, styles.tabActive) }}
+          activeProps={{ className: clsx(styles.tab, { [styles.tabActive as string]: true }) }}
         >
           {tShell('channelTabs.ai')}
         </Link>

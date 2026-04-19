@@ -2,5 +2,11 @@ import type { SidebarItemConfig } from '../../atoms/SidebarItem'
 
 export interface SidebarContentProps {
   readonly userName?: string
-  readonly sidebarItemsMap: Readonly<Record<string, readonly SidebarItemConfig[]>>
+  readonly sidebarItems: readonly SidebarItemConfig[]
+  readonly railVisible: boolean
+  readonly onToggleRail: () => void
+  readonly toggleRailLabel: string
+  readonly currentPath: string
+  readonly isActive: (path: string) => boolean
+  readonly resolveLabel: (item: SidebarItemConfig) => string
 }

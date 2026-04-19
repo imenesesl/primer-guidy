@@ -1,0 +1,16 @@
+{
+  "level": "subcollection",
+  "path": "users/{teacherUid}/channels/{channelId}",
+  "description": "Channels created by a teacher. Each channel contains a list of assigned student identification numbers.",
+  "schema": {
+    "name": { "type": "string", "required": true },
+    "active": { "type": "boolean", "required": true, "default": true },
+    "students": {
+      "type": "array",
+      "items": "string",
+      "required": true,
+      "default": [],
+      "description": "Identification numbers of students assigned to this channel"
+    }
+  }
+}

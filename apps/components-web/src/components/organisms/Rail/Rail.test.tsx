@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import i18n from 'i18next'
+import { describe, it, expect, vi } from 'vitest'
 import {
   createRouter,
   createRootRoute,
@@ -15,14 +14,14 @@ const MockHomeIcon = vi.fn(() => <svg data-testid="home-icon" />)
 const MockChannelsIcon = vi.fn(() => <svg data-testid="channels-icon" />)
 
 const ITEMS: RailItemConfig[] = [
-  { icon: MockHomeIcon, labelKey: 'rail.items.home', path: '/' },
-  { icon: MockChannelsIcon, labelKey: 'rail.items.channels', path: '/channels' },
+  { icon: MockHomeIcon, labelKey: 'rail.items.home', label: 'Home', path: '/' },
+  { icon: MockChannelsIcon, labelKey: 'rail.items.channels', label: 'Channels', path: '/channels' },
 ]
 
 const AVATAR_SRC = 'https://example.com/avatar.png'
 const AVATAR_NAME = 'Jane Doe'
 
-const renderWithRoutes = (ui: React.ReactNode, initialPath = '/') => {
+const renderWithRouter = (ui: React.ReactNode, initialPath = '/') => {
   const rootRoute = createRootRoute({ component: () => ui })
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
@@ -44,26 +43,19 @@ const renderWithRoutes = (ui: React.ReactNode, initialPath = '/') => {
 }
 
 describe('Rail', () => {
-  beforeEach(() => {
-    i18n.addResourceBundle('en', 'shell', {
-      rail: {
-        items: {
-          home: 'Home',
-          channels: 'Channels',
-        },
-      },
-    })
-  })
-
   it('renders all navigation items', async () => {
-    renderWithRoutes(<Rail items={ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME} />)
+    renderWithRouter(
+      <Rail items={ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME} isActive={() => false} />,
+    )
 
     expect(await screen.findByText('Home')).toBeInTheDocument()
     expect(screen.getByText('Channels')).toBeInTheDocument()
   })
 
   it('renders the avatar image when src is provided', async () => {
-    renderWithRoutes(<Rail items={ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME} />)
+    renderWithRouter(
+      <Rail items={ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME} isActive={() => false} />,
+    )
 
     const avatar = await screen.findByRole('img', { name: AVATAR_NAME })
     expect(avatar).toBeInTheDocument()
@@ -71,14 +63,21 @@ describe('Rail', () => {
   })
 
   it('renders initials when avatarSrc is not provided', async () => {
-    renderWithRoutes(<Rail items={ITEMS} avatarName={AVATAR_NAME} />)
+    renderWithRouter(<Rail items={ITEMS} avatarName={AVATAR_NAME} isActive={() => false} />)
 
     const avatar = await screen.findByRole('img', { name: AVATAR_NAME })
     expect(avatar).toHaveTextContent('JD')
   })
 
-  it('marks the active item based on the current route', async () => {
-    renderWithRoutes(<Rail items={ITEMS} avatarSrc={AVATAR_SRC} avatarName={AVATAR_NAME} />)
+  it('marks the active item based on isActive callback', async () => {
+    renderWithRouter(
+      <Rail
+        items={ITEMS}
+        avatarSrc={AVATAR_SRC}
+        avatarName={AVATAR_NAME}
+        isActive={(path) => path === '/'}
+      />,
+    )
 
     const homeLink = await screen.findByRole('link', { name: /home/i })
     expect(homeLink).toHaveAttribute('aria-current', 'page')

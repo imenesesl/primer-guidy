@@ -16,6 +16,7 @@ import styles from './Login.module.scss'
 
 export const Login = () => {
   const { t: tLogin } = useTranslation('login')
+  const { t: tCommon } = useTranslation('common')
   const flow = useLoginFlow()
   const showBanner = useBannerStore((s) => s.showBanner)
   const dismissBanner = useBannerStore((s) => s.dismissBanner)
@@ -62,7 +63,7 @@ export const Login = () => {
         </Heading>
 
         <LoginForm onSubmit={flow.onEmailSubmit} disabled={flow.isLoading} />
-        <AuthDivider />
+        <AuthDivider label={tCommon('or')} />
         <GoogleSignInButton onClick={flow.onGoogleSignIn} disabled={flow.isLoading} />
 
         <Text as="p" className={styles.createAccountText}>

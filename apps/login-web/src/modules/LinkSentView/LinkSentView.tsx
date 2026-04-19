@@ -7,7 +7,7 @@ import styles from '@/styles/auth.module.scss'
 const MAIL_ICON_SIZE = 32
 
 export const LinkSentView = ({ onBack, namespace }: LinkSentViewProps) => {
-  const { t } = useTranslation(namespace)
+  const { t: tNs } = useTranslation(namespace)
   const { t: tCommon } = useTranslation('common')
 
   return (
@@ -18,9 +18,9 @@ export const LinkSentView = ({ onBack, namespace }: LinkSentViewProps) => {
             <MailIcon size={MAIL_ICON_SIZE} />
           </div>
           <Heading as="h2" className={styles.heading}>
-            {t('linkSent.title')}
+            {tNs('linkSent.title')}
           </Heading>
-          <Text as="p">{t('linkSent.message')}</Text>
+          <Text as="p">{tNs('linkSent.message')}</Text>
         </div>
         <Button onClick={onBack} className={styles.fullWidth}>
           {tCommon('actions.back')}

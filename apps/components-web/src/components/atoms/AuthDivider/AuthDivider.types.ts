@@ -1,1 +1,3 @@
-export type AuthDividerProps = Record<string, never>
+export interface AuthDividerProps {
+  readonly label: string
+}

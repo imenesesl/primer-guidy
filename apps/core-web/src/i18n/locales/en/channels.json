@@ -20,6 +20,9 @@
     "save": "Save",
     "noActiveStudents": "No active students available. Activate students in the Users tab first."
   },
+  "channelDetail": {
+    "title": "Channel: {{channelId}}"
+  },
   "channelCard": {
     "students": "{{count}} students",
     "manage": "Students",

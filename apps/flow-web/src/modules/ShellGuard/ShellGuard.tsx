@@ -9,7 +9,7 @@ import { useStudentProfile } from '@/services/student'
 import { useStudentWorkspaces } from '@/services/workspace'
 import { useStudentChannels } from '@/services/channel'
 import { JoinWorkspaceDialog } from '@/modules/JoinWorkspaceDialog'
-import { RAIL_ITEMS, buildSidebarItemsMap } from './ShellGuard.utils'
+import { RAIL_ITEM_SEEDS, resolveRailItems, buildSidebarItemsMap } from './ShellGuard.utils'
 import { useActiveWorkspaceId } from './useActiveWorkspaceId'
 import { useBreadcrumbResolver } from './useBreadcrumbResolver'
 import styles from './ShellGuard.module.scss'
@@ -28,6 +28,7 @@ export const ShellGuard = () => {
     student?.identificationNumber ?? null,
   )
 
+  const railItems = useMemo(() => resolveRailItems(RAIL_ITEM_SEEDS, tShell), [tShell])
   const sidebarItemsMap = useMemo(
     () => buildSidebarItemsMap(workspaces ?? [], activeWorkspaceId, channels ?? []),
     [workspaces, activeWorkspaceId, channels],
@@ -38,7 +39,7 @@ export const ShellGuard = () => {
   return (
     <LayoutStoreProvider value={layoutStore}>
       <Shell
-        railItems={RAIL_ITEMS}
+        railItems={railItems}
         sidebarItemsMap={sidebarItemsMap}
         avatarName={student?.name}
         userName={student?.name}

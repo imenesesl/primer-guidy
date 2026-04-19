@@ -12,7 +12,9 @@ import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components
 import type { ChannelDocument } from '@/services/channel'
 import { CoreRoutes } from '@/routes/routes'
 
-export const RAIL_ITEMS: readonly RailItemConfig[] = [
+type RailItemSeed = Omit<RailItemConfig, 'label'>
+
+export const RAIL_ITEM_SEEDS: readonly RailItemSeed[] = [
   {
     icon: HomeIcon,
     activeIcon: HomeFillIcon,
@@ -23,6 +25,11 @@ export const RAIL_ITEMS: readonly RailItemConfig[] = [
   { icon: CommentDiscussionIcon, labelKey: 'rail.items.channels', path: CoreRoutes.Channels },
   { icon: ZapIcon, labelKey: 'rail.items.activity', path: CoreRoutes.Activity },
 ]
+
+export const resolveRailItems = (
+  seeds: readonly RailItemSeed[],
+  translate: (key: string) => string,
+): RailItemConfig[] => seeds.map((seed) => ({ ...seed, label: translate(seed.labelKey) }))
 
 const STATIC_SIDEBAR: Record<string, readonly SidebarItemConfig[]> = {
   [CoreRoutes.Home]: [

@@ -1,10 +1,10 @@
-import { FormControl, TextInput } from '@primer/react'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useTranslation } from 'react-i18next'
 import type { LoginFormData } from '@/services/auth'
 import { LoginSchema } from '@/services/auth'
 import { AUTH_FORM_ID, AuthTab } from '../Home.types'
+import { AuthFormFields } from '../AuthFormFields'
 import type { LoginFormProps } from './LoginForm.types'
 import styles from '../Home.module.scss'
 
@@ -24,32 +24,18 @@ export const LoginForm = ({ onSubmit, disabled }: LoginFormProps) => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormControl disabled={disabled}>
-        <FormControl.Label className={styles.label}>
-          {tHome('fields.identificationNumber')}
-        </FormControl.Label>
-        <TextInput
-          block
-          inputMode="numeric"
-          pattern="[0-9]*"
-          disabled={disabled}
-          {...register('identificationNumber')}
-        />
-        {errors.identificationNumber && (
-          <FormControl.Validation variant="error">
-            {tHome('validation.identificationNumberRequired')}
-          </FormControl.Validation>
-        )}
-      </FormControl>
-      <FormControl disabled={disabled}>
-        <FormControl.Label className={styles.label}>{tHome('fields.password')}</FormControl.Label>
-        <TextInput block type="password" disabled={disabled} {...register('password')} />
-        {errors.password && (
-          <FormControl.Validation variant="error">
-            {tHome('validation.passwordMinLength')}
-          </FormControl.Validation>
-        )}
-      </FormControl>
+      <AuthFormFields
+        identificationNumberField={register('identificationNumber')}
+        passwordField={register('password')}
+        errors={errors}
+        disabled={disabled}
+        labels={{
+          identificationNumber: tHome('fields.identificationNumber'),
+          password: tHome('fields.password'),
+          identificationNumberError: tHome('validation.identificationNumberRequired'),
+          passwordError: tHome('validation.passwordMinLength'),
+        }}
+      />
     </form>
   )
 }

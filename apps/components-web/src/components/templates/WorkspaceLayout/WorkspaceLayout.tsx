@@ -1,35 +1,38 @@
 import clsx from 'clsx'
 import { Button } from '@primer/react'
-import { useTranslation } from 'react-i18next'
-import { useLayoutStore } from '../../../stores/layout.store'
 import type { WorkspaceLayoutProps } from './WorkspaceLayout.types'
 import styles from './WorkspaceLayout.module.scss'
 
-export const WorkspaceLayout = ({ rail, sidebar, children }: WorkspaceLayoutProps) => {
-  const { t: tLayout } = useTranslation('layout')
-  const railVisible = useLayoutStore((s) => s.railVisible)
-  const sidebarVisible = useLayoutStore((s) => s.sidebarVisible)
-  const closeSidebar = useLayoutStore((s) => s.closeSidebar)
-
+export const WorkspaceLayout = ({
+  rail,
+  sidebar,
+  children,
+  railVisible,
+  sidebarVisible,
+  onCloseSidebar,
+  railLabel,
+  sidebarLabel,
+  closeSidebarLabel,
+}: WorkspaceLayoutProps) => {
   return (
     <div className={styles.root}>
       <aside
         className={clsx(styles.rail, { [styles.railHidden as string]: !railVisible })}
-        aria-label={tLayout('rail.label')}
+        aria-label={railLabel}
       >
         {rail}
       </aside>
       <aside
         className={clsx(styles.sidebar, { [styles.sidebarHidden as string]: !sidebarVisible })}
-        aria-label={tLayout('sidebar.label')}
+        aria-label={sidebarLabel}
       >
         {sidebar}
       </aside>
       <Button
         variant="invisible"
         className={clsx(styles.backdrop, { [styles.backdropHidden as string]: !sidebarVisible })}
-        aria-label={tLayout('actions.closeSidebar')}
-        onClick={closeSidebar}
+        aria-label={closeSidebarLabel}
+        onClick={onCloseSidebar}
         tabIndex={-1}
       />
       <main className={styles.content}>{children}</main>

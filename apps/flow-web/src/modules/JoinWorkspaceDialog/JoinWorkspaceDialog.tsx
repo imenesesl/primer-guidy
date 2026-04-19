@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useJoinWorkspace, WorkspaceErrorCode } from '@/services/workspace'
 import { CodeInput } from './CodeInput'
 import type { JoinWorkspaceDialogProps } from './JoinWorkspaceDialog.types'
+import { CODE_LENGTH } from './JoinWorkspaceDialog.constants'
 import styles from './JoinWorkspaceDialog.module.scss'
-
-const CODE_LENGTH = 10
 
 export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceDialogProps) => {
   const { t: tShell } = useTranslation('shell')

@@ -40,7 +40,7 @@ describe('JoinWorkspaceDialog', () => {
 
   it('renders 10 digit inputs', () => {
     render(<JoinWorkspaceDialog isOpen={true} onClose={vi.fn()} student={mockStudent} />)
-    const inputs = Array.from({ length: 10 }, (_, i) => screen.getByLabelText(`Digit ${i + 1}`))
+    const inputs = screen.getAllByLabelText('joinWorkspace.digitLabel')
     expect(inputs).toHaveLength(10)
   })
 

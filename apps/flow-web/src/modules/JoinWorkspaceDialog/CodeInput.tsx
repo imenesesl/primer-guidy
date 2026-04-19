@@ -1,12 +1,13 @@
 import { useRef, useCallback } from 'react'
 import type { KeyboardEvent, ClipboardEvent } from 'react'
 import { TextInput } from '@primer/react'
+import { useTranslation } from 'react-i18next'
 import type { CodeInputProps } from './CodeInput.types'
+import { CODE_LENGTH } from './JoinWorkspaceDialog.constants'
 import styles from './JoinWorkspaceDialog.module.scss'
 
-const CODE_LENGTH = 10
-
 export const CodeInput = ({ value, onChange }: CodeInputProps) => {
+  const { t: tShell } = useTranslation('shell')
   const inputsRef = useRef<(HTMLInputElement | null)[]>([])
   const digits = Array.from({ length: CODE_LENGTH }, (_, i) => value[i] ?? '')
 
@@ -79,7 +80,7 @@ export const CodeInput = ({ value, onChange }: CodeInputProps) => {
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
           onFocus={(e) => e.target.select()}
-          aria-label={`Digit ${index + 1}`}
+          aria-label={tShell('joinWorkspace.digitLabel', { number: index + 1 })}
         />
       ))}
     </div>

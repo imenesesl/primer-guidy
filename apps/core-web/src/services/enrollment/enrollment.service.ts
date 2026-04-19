@@ -1,6 +1,7 @@
 import type { IFirestoreProvider } from '@primer-guidy/cloud-services'
 import { buildSubcollectionPath } from '@primer-guidy/cloud-services'
-import type { StudentEnrollment, EnrollmentStatus, WorkspaceEntry } from './enrollment.types'
+import { EnrollmentStatus } from './enrollment.types'
+import type { StudentEnrollment, WorkspaceEntry } from './enrollment.types'
 
 const USERS_COLLECTION = 'users'
 const STUDENTS_COLLECTION = 'students'
@@ -45,4 +46,16 @@ export const syncWorkspaceEntry = async (
     uid: teacherUid,
     active,
   } satisfies WorkspaceEntry)
+}
+
+export const toggleEnrollmentStatus = async (
+  firestore: IFirestoreProvider,
+  teacherUid: string,
+  teacherName: string,
+  identificationNumber: string,
+  status: EnrollmentStatus,
+): Promise<void> => {
+  const isActive = status === EnrollmentStatus.Active
+  await syncWorkspaceEntry(firestore, identificationNumber, teacherUid, teacherName, isActive)
+  await updateEnrollmentStatus(firestore, teacherUid, identificationNumber, status)
 }

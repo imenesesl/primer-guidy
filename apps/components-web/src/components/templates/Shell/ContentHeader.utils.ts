@@ -1,7 +1,5 @@
 import type { BreadcrumbResolver } from './ContentHeader.types'
 
-const BREADCRUMB_SEPARATOR = ' · '
-
 const resolveSegment = (
   segment: string,
   translate: (key: string) => string,
@@ -18,6 +16,7 @@ export const buildBreadcrumb = (
   pathname: string,
   translate: (key: string) => string,
   resolver?: BreadcrumbResolver,
+  separator = ' · ',
 ): string => {
   const segments = pathname.split('/').filter((segment) => segment.length > 0)
 
@@ -25,7 +24,5 @@ export const buildBreadcrumb = (
     return translate('breadcrumb.home')
   }
 
-  return segments
-    .map((segment) => resolveSegment(segment, translate, resolver))
-    .join(BREADCRUMB_SEPARATOR)
+  return segments.map((segment) => resolveSegment(segment, translate, resolver)).join(separator)
 }

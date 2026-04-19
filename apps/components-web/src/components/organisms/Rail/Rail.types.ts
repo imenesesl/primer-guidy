@@ -4,6 +4,7 @@ export interface RailItemConfig {
   readonly icon: Icon
   readonly activeIcon?: Icon
   readonly labelKey: string
+  readonly label: string
   readonly path: string
   readonly fallbackActive?: boolean
 }
@@ -12,4 +13,5 @@ export interface RailProps {
   readonly items: readonly RailItemConfig[]
   readonly avatarSrc?: string
   readonly avatarName?: string
+  readonly isActive: (path: string) => boolean
 }

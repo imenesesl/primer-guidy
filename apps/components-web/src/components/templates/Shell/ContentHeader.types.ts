@@ -4,5 +4,8 @@ export type BreadcrumbResolver = (segment: string) => string | null
 
 export interface ContentHeaderProps {
   readonly headerAction?: ReactNode
-  readonly breadcrumbResolver?: BreadcrumbResolver
+  readonly sidebarVisible: boolean
+  readonly onToggleSidebar: () => void
+  readonly toggleSidebarLabel: string
+  readonly breadcrumb: string
 }

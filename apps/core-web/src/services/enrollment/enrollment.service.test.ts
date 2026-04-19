@@ -4,6 +4,7 @@ import {
   getEnrolledStudents,
   updateEnrollmentStatus,
   syncWorkspaceEntry,
+  toggleEnrollmentStatus,
 } from './enrollment.service'
 import { EnrollmentStatus } from './enrollment.types'
 
@@ -83,5 +84,57 @@ describe('syncWorkspaceEntry', () => {
       'teacher-1',
       { active: false },
     )
+  })
+})
+
+describe('toggleEnrollmentStatus', () => {
+  it('syncs workspace entry then updates enrollment status', async () => {
+    vi.mocked(mockFirestore.getDoc).mockResolvedValue(null)
+    vi.mocked(mockFirestore.setDoc).mockResolvedValue(undefined)
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await toggleEnrollmentStatus(
+      mockFirestore,
+      'teacher-1',
+      'Mr. Smith',
+      '12345678',
+      EnrollmentStatus.Active,
+    )
+
+    expect(mockFirestore.getDoc).toHaveBeenCalledWith('students/12345678/workspaces', 'teacher-1')
+    expect(mockFirestore.setDoc).toHaveBeenCalledWith('students/12345678/workspaces', 'teacher-1', {
+      name: 'Mr. Smith',
+      uid: 'teacher-1',
+      active: true,
+    })
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith('users/teacher-1/students', '12345678', {
+      status: EnrollmentStatus.Active,
+    })
+  })
+
+  it('sets active to false when status is Inactive', async () => {
+    vi.mocked(mockFirestore.getDoc).mockResolvedValue({
+      name: 'Mr. Smith',
+      uid: 'teacher-1',
+      active: true,
+    })
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await toggleEnrollmentStatus(
+      mockFirestore,
+      'teacher-1',
+      'Mr. Smith',
+      '12345678',
+      EnrollmentStatus.Inactive,
+    )
+
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith(
+      'students/12345678/workspaces',
+      'teacher-1',
+      { active: false },
+    )
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith('users/teacher-1/students', '12345678', {
+      status: EnrollmentStatus.Inactive,
+    })
   })
 })

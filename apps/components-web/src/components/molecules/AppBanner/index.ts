@@ -1,2 +1,2 @@
 export { AppBanner } from './AppBanner'
-export type { AppBannerVariant } from './AppBanner.types'
+export type { AppBannerVariant, AppBannerCta, AppBannerProps } from './AppBanner.types'
