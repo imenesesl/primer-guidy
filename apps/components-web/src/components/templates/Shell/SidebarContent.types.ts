@@ -5,8 +5,9 @@ export interface SidebarContentProps {
   readonly sidebarItems: readonly SidebarItemConfig[]
   readonly railVisible: boolean
   readonly onToggleRail: () => void
+  readonly onCloseSidebar: () => void
   readonly toggleRailLabel: string
-  readonly currentPath: string
+  readonly closeSidebarLabel: string
   readonly isActive: (path: string) => boolean
   readonly resolveLabel: (item: SidebarItemConfig) => string
 }

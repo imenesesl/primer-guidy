@@ -7,5 +7,5 @@ export interface ContentHeaderProps {
   readonly sidebarVisible: boolean
   readonly onToggleSidebar: () => void
   readonly toggleSidebarLabel: string
-  readonly breadcrumb: string
+  readonly breadcrumb: string | null
 }

@@ -30,8 +30,8 @@ describe('buildBreadcrumb', () => {
     expect(buildBreadcrumb('', translate)).toBe('Home')
   })
 
-  it('returns translation key for unknown segments', () => {
-    expect(buildBreadcrumb('/unknown', translate)).toBe('breadcrumb.unknown')
+  it('returns null when a segment cannot be resolved', () => {
+    expect(buildBreadcrumb('/unknown', translate)).toBeNull()
   })
 
   it('uses resolver for dynamic segments', () => {

@@ -44,8 +44,10 @@ export type {
 export { SidebarGroup } from './components/molecules/SidebarGroup'
 export type { SidebarGroupProps } from './components/molecules/SidebarGroup'
 
-export { useSubscription, AsyncStatus } from './hooks'
+export { useCloseSidebarOnMobileNav, useSubscription, AsyncStatus } from './hooks'
 export type { SubscriptionResult, SubscriptionOptions, SubscribeFn } from './hooks'
 
 export { buildThemeVars } from './utils/theme.utils'
 export type { PrimerColors } from './utils/theme.utils'
+
+export { isDesktop, MD_BREAKPOINT } from './utils/viewport.utils'

@@ -2,6 +2,17 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { HomeIcon } from '@primer/octicons-react'
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: query === '(min-width: 48rem)',
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+})
+
 vi.mock('@tanstack/react-router', () => ({
   Link: ({
     children,
@@ -28,8 +39,9 @@ describe('SidebarContent', () => {
     sidebarItems: [] as SidebarItemConfig[],
     railVisible: true,
     onToggleRail: vi.fn(),
+    onCloseSidebar: vi.fn(),
     toggleRailLabel: 'Toggle rail',
-    currentPath: '/',
+    closeSidebarLabel: 'Close sidebar',
     isActive: () => false,
     resolveLabel,
   }

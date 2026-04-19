@@ -41,4 +41,10 @@ describe('ContentHeader', () => {
     render(<ContentHeader {...defaultProps} />)
     expect(screen.getByLabelText('Toggle sidebar')).toBeInTheDocument()
   })
+
+  it('renders skeleton when breadcrumb is null', () => {
+    const { container } = render(<ContentHeader {...defaultProps} breadcrumb={null} />)
+    expect(container.querySelector('[class*="breadcrumbSkeleton"]')).toBeInTheDocument()
+    expect(screen.queryByText('Home · Channels')).not.toBeInTheDocument()
+  })
 })

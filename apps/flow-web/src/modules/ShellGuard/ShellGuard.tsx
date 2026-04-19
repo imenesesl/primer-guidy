@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Outlet } from '@tanstack/react-router'
-import { IconButton, Spinner } from '@primer/react'
+import { IconButton } from '@primer/react'
 import { PlusIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
 import { createLayoutStore, LayoutStoreProvider, Shell } from '@primer-guidy/components-web'
@@ -12,7 +12,6 @@ import { JoinWorkspaceDialog } from '@/modules/JoinWorkspaceDialog'
 import { RAIL_ITEM_SEEDS, resolveRailItems, buildSidebarItemsMap } from './ShellGuard.utils'
 import { useActiveWorkspaceId } from './useActiveWorkspaceId'
 import { useBreadcrumbResolver } from './useBreadcrumbResolver'
-import styles from './ShellGuard.module.scss'
 
 export const ShellGuard = () => {
   const { t: tShell } = useTranslation('shell')
@@ -21,7 +20,7 @@ export const ShellGuard = () => {
   const { data: student } = useStudentProfile(uid)
   const { data: workspaces } = useStudentWorkspaces(student?.identificationNumber ?? null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const activeWorkspaceId = useActiveWorkspaceId()
+  const activeWorkspaceId = useActiveWorkspaceId(workspaces)
 
   const { data: channels } = useStudentChannels(
     activeWorkspaceId,
@@ -30,11 +29,13 @@ export const ShellGuard = () => {
 
   const railItems = useMemo(() => resolveRailItems(RAIL_ITEM_SEEDS, tShell), [tShell])
   const sidebarItemsMap = useMemo(
-    () => buildSidebarItemsMap(workspaces ?? [], activeWorkspaceId, channels ?? []),
+    () => buildSidebarItemsMap(workspaces ?? [], activeWorkspaceId, channels),
     [workspaces, activeWorkspaceId, channels],
   )
 
   const breadcrumbResolver = useBreadcrumbResolver(workspaces, channels)
+
+  if (status !== AuthGuardStatus.Authenticated) return null
 
   return (
     <LayoutStoreProvider value={layoutStore}>
@@ -53,13 +54,7 @@ export const ShellGuard = () => {
           />
         }
       >
-        {status === AuthGuardStatus.Authenticated ? (
-          <Outlet />
-        ) : (
-          <div className={styles.loading}>
-            <Spinner size="large" />
-          </div>
-        )}
+        <Outlet />
       </Shell>
       <JoinWorkspaceDialog
         isOpen={isDialogOpen}

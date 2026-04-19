@@ -1,24 +1,131 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
 .root {
-  @apply flex flex-col gap-4 p-6;
+  @apply flex flex-col gap-3 p-4;
+}
+
+@include md {
+  .root {
+    @apply gap-4 p-6;
+  }
 }
 
 .toolbar {
-  @apply flex items-center gap-3;
+  @apply flex flex-col gap-2;
+}
+
+@include md {
+  .toolbar {
+    @apply flex-row items-center gap-3;
+  }
 }
 
 .searchInput {
   @apply flex-1;
 }
 
-.inviteButton.inviteButton {
-  @apply shrink-0 cursor-pointer;
+.actions {
+  @apply flex items-center gap-2;
 }
 
-.loadingContainer {
-  @apply flex justify-center py-8;
+.inviteButton.inviteButton {
+  @apply flex-1 cursor-pointer;
+}
+
+@include md {
+  .inviteButton.inviteButton {
+    @apply flex-none;
+  }
+}
+
+.cardSkeleton {
+  @apply flex flex-col items-center gap-3 rounded-xl p-4 ring-1 ring-inset;
+
+  background-color: var(--primer-canvas-subtle);
+
+  --tw-ring-color: var(--primer-border-muted);
+}
+
+.skeletonAvatar {
+  @apply w-16 h-16 rounded-full;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+.skeletonInfo {
+  @apply flex flex-col items-center gap-1;
+}
+
+.skeletonNameRow {
+  @apply flex items-center gap-1.5;
+}
+
+.skeletonName {
+  @apply w-24 rounded font-semibold;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+
+  &::after {
+    content: '\00a0';
+    visibility: hidden;
+  }
+}
+
+.skeletonDot {
+  @apply w-2.5 h-2.5 rounded-full shrink-0;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+.skeletonSubtitle {
+  @apply w-20 rounded text-xs;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+
+  &::after {
+    content: '\00a0';
+    visibility: hidden;
+  }
+}
+
+.skeletonStatus {
+  @apply w-14 rounded text-xs;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+
+  &::after {
+    content: '\00a0';
+    visibility: hidden;
+  }
+}
+
+.skeletonActions {
+  @apply pt-1;
+}
+
+.skeletonButton {
+  @apply h-7 w-20 rounded-md;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: var(--shimmer-opacity-min);
+  }
 }
 
 .emptyState {
@@ -30,7 +137,15 @@
 }
 
 .grid {
-  @apply grid gap-4;
+  @apply grid gap-3;
 
-  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  grid-template-columns: 1fr;
+}
+
+@include sm {
+  .grid {
+    @apply gap-4;
+
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  }
 }

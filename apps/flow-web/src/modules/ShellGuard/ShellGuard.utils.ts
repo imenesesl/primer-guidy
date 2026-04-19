@@ -35,28 +35,31 @@ const buildWorkspaceItems = (
   workspaces: readonly WorkspaceEntry[],
   basePath: string,
   activeWorkspaceId: string | null,
-  channels: readonly ChannelDocument[],
+  channels: readonly ChannelDocument[] | undefined,
 ): SidebarItemConfig[] =>
-  workspaces.map((ws) => ({
-    icon: BookIcon,
-    label: ws.name,
-    path: `${basePath}/${ws.uid}`,
-    disabled: !ws.active,
-    children:
-      ws.uid === activeWorkspaceId
-        ? channels.map((ch) => ({
+  workspaces.map((ws) => {
+    const isActive = ws.uid === activeWorkspaceId
+    return {
+      icon: BookIcon,
+      label: ws.name,
+      path: `${basePath}/${ws.uid}`,
+      disabled: !ws.active,
+      loading: isActive && channels === undefined,
+      children: isActive
+        ? channels?.map((ch) => ({
             icon: HashIcon,
             label: ch.name,
             path: `${basePath}/${ws.uid}/${ch.id}`,
             disabled: !ch.active,
           }))
         : undefined,
-  }))
+    }
+  })
 
 export const buildSidebarItemsMap = (
   workspaces: readonly WorkspaceEntry[],
   activeWorkspaceId: string | null,
-  channels: readonly ChannelDocument[],
+  channels: readonly ChannelDocument[] | undefined,
 ): Record<string, readonly SidebarItemConfig[]> => ({
   [FlowRoutes.Tasks]: buildWorkspaceItems(
     workspaces,

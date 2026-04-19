@@ -47,5 +47,37 @@
 }
 
 .iconWrapper {
-  @apply flex items-center justify-center;
+  @apply flex items-center justify-center rounded p-1;
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.iconActive {
+  background-color: var(--primer-accent-emphasis);
+  color: var(--primer-fg-on-emphasis);
+}
+
+.default {
+  /* default variant — no overrides needed */
+}
+
+.header.header {
+  @apply py-1 px-2;
+
+  background: none;
+}
+
+.header.header:hover {
+  background: none;
+  color: var(--primer-fg-default);
+}
+
+.header.header.active.active {
+  background: none;
+  color: var(--primer-fg-default);
+}
+
+.header.header.active.active:hover {
+  @apply opacity-100;
+
+  background: none;
 }

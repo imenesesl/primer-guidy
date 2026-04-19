@@ -41,7 +41,6 @@ describe('SidebarGroup', () => {
         item={parentItem}
         children={childItems}
         resolveLabel={resolveLabel}
-        expanded={false}
         isActive={neverActive}
       />,
     )
@@ -49,28 +48,12 @@ describe('SidebarGroup', () => {
     expect(screen.getByText('Workspace A')).toBeInTheDocument()
   })
 
-  it('does not render children when expanded is false', () => {
+  it('always renders children when present', () => {
     render(
       <SidebarGroup
         item={parentItem}
         children={childItems}
         resolveLabel={resolveLabel}
-        expanded={false}
-        isActive={neverActive}
-      />,
-    )
-
-    expect(screen.queryByText('Math')).not.toBeInTheDocument()
-    expect(screen.queryByText('Science')).not.toBeInTheDocument()
-  })
-
-  it('renders children when expanded is true', () => {
-    render(
-      <SidebarGroup
-        item={parentItem}
-        children={childItems}
-        resolveLabel={resolveLabel}
-        expanded={true}
         isActive={alwaysActive}
       />,
     )
@@ -79,13 +62,12 @@ describe('SidebarGroup', () => {
     expect(screen.getByText('Science')).toBeInTheDocument()
   })
 
-  it('does not render children when children array is empty', () => {
+  it('does not render children section when children array is empty', () => {
     render(
       <SidebarGroup
         item={parentItem}
         children={[]}
         resolveLabel={resolveLabel}
-        expanded={true}
         isActive={neverActive}
       />,
     )

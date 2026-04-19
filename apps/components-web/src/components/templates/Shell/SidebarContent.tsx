@@ -1,8 +1,10 @@
+import { useCallback } from 'react'
 import { Text } from '@primer/react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react'
 import { RailItem } from '../../atoms/RailItem'
 import { SidebarItem } from '../../atoms/SidebarItem'
 import { SidebarGroup } from '../../molecules/SidebarGroup'
+import { isDesktop } from '../../../utils/viewport.utils'
 import type { SidebarContentProps } from './SidebarContent.types'
 import styles from './Shell.module.scss'
 
@@ -11,19 +13,28 @@ export const SidebarContent = ({
   sidebarItems,
   railVisible,
   onToggleRail,
+  onCloseSidebar,
   toggleRailLabel,
-  currentPath,
+  closeSidebarLabel,
   isActive,
   resolveLabel,
 }: SidebarContentProps) => {
+  const handleHeaderAction = useCallback(() => {
+    if (isDesktop()) {
+      onToggleRail()
+    } else {
+      onCloseSidebar()
+    }
+  }, [onToggleRail, onCloseSidebar])
+
   return (
     <nav className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
         <RailItem
           variant="action"
           icon={railVisible ? ChevronLeftIcon : ChevronRightIcon}
-          aria-label={toggleRailLabel}
-          onClick={onToggleRail}
+          aria-label={isDesktop() ? toggleRailLabel : closeSidebarLabel}
+          onClick={handleHeaderAction}
         />
         {userName ? (
           <Text as="span" className={styles.sidebarUserName}>
@@ -34,27 +45,31 @@ export const SidebarContent = ({
         )}
       </div>
       <div className={styles.sidebarNav}>
-        {sidebarItems.map((item) =>
-          item.children && item.children.length > 0 ? (
-            <SidebarGroup
-              key={item.labelKey ?? item.label}
-              item={item}
-              children={item.children}
-              resolveLabel={resolveLabel}
-              expanded={currentPath.startsWith(item.path)}
-              isActive={isActive}
-            />
-          ) : (
-            <SidebarItem
-              key={item.labelKey ?? item.label}
-              icon={item.icon}
-              label={resolveLabel(item)}
-              path={item.path}
-              active={isActive(item.path)}
-              disabled={item.disabled}
-            />
-          ),
-        )}
+        {sidebarItems.length > 0
+          ? sidebarItems.map((item) =>
+              item.children || item.loading ? (
+                <SidebarGroup
+                  key={item.labelKey ?? item.label}
+                  item={item}
+                  children={item.children ?? []}
+                  loading={item.loading}
+                  resolveLabel={resolveLabel}
+                  isActive={isActive}
+                />
+              ) : (
+                <SidebarItem
+                  key={item.labelKey ?? item.label}
+                  icon={item.icon}
+                  label={resolveLabel(item)}
+                  path={item.path}
+                  active={isActive(item.path)}
+                  disabled={item.disabled}
+                />
+              ),
+            )
+          : Array.from({ length: 3 }, (_, i) => (
+              <div key={i} className={styles.sidebarItemSkeleton} />
+            ))}
       </div>
     </nav>
   )

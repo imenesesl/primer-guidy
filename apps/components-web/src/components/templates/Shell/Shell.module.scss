@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
@@ -45,15 +46,45 @@
   @apply flex flex-col gap-1 p-3;
 }
 
+.sidebarItemSkeleton {
+  @apply h-7 rounded-md;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
 .contentHeader {
-  @apply flex items-center gap-2 p-2 sticky top-0 z-10;
+  @apply flex items-center gap-1 p-2 sticky top-0 z-10;
 
   background-color: var(--primer-canvas-subtle);
   border-bottom: var(--spacing-px) solid var(--primer-border-default);
 }
 
+@include md {
+  .contentHeader {
+    @apply gap-2;
+  }
+}
+
 .breadcrumb {
-  @apply text-sm font-medium truncate flex-1;
+  @apply text-xs font-medium truncate flex-1;
 
   color: var(--primer-fg-muted);
+}
+
+.breadcrumbSkeleton {
+  @apply flex-1 h-3.5 rounded;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+@include md {
+  .breadcrumb {
+    @apply text-sm;
+  }
+
+  .breadcrumbSkeleton {
+    @apply h-4;
+  }
 }

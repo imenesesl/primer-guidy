@@ -3,6 +3,7 @@ import { useTheme } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useMatchRoute, useLocation } from '@tanstack/react-router'
 import { useLayoutStore } from '../../../stores/layout.store'
+import { useCloseSidebarOnMobileNav } from '../../../hooks'
 import { buildThemeVars } from '../../../utils/theme.utils'
 import { buildBreadcrumb } from './ContentHeader.utils'
 import { resolveSidebarItems } from './SidebarContent.utils'
@@ -35,6 +36,8 @@ export const Shell = ({
   const closeSidebar = useLayoutStore((s) => s.closeSidebar)
   const matchRoute = useMatchRoute()
   const location = useLocation()
+
+  useCloseSidebarOnMobileNav(location.pathname, closeSidebar)
 
   const breadcrumb = buildBreadcrumb(
     location.pathname,
@@ -71,8 +74,9 @@ export const Shell = ({
             sidebarItems={sidebarItems}
             railVisible={railVisible}
             onToggleRail={toggleRail}
+            onCloseSidebar={closeSidebar}
             toggleRailLabel={tLayout('actions.toggleRail')}
-            currentPath={location.pathname}
+            closeSidebarLabel={tLayout('actions.closeSidebar')}
             isActive={isActive}
             resolveLabel={resolveLabel}
           />

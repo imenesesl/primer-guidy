@@ -6,7 +6,7 @@
 }
 
 .children {
-  @apply flex flex-col gap-0.5 pt-1 pl-3;
+  @apply flex flex-col gap-1 pt-1 pl-3;
 }
 
 .childItem {
@@ -22,4 +22,22 @@
 
 .dotActive {
   @apply opacity-100;
+}
+
+.childSkeleton {
+  @apply h-6 rounded-md;
+
+  background-color: var(--primer-neutral-muted);
+  animation: shimmer var(--shimmer-duration) ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: var(--shimmer-opacity-min);
+  }
 }

@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
@@ -12,26 +13,50 @@
 }
 
 .root {
-  @apply flex flex-col items-center h-full py-4 px-2 gap-2;
+  @apply flex flex-row items-center justify-around px-4 gap-0 w-full h-full;
+}
+
+@include md {
+  .root {
+    @apply flex-col items-center justify-start py-4 px-2 gap-2 h-full;
+  }
 }
 
 .spacer {
-  @apply flex-1;
+  @apply hidden;
+}
+
+@include md {
+  .spacer {
+    @apply block flex-1;
+  }
 }
 
 .avatar {
-  @apply p-2 rounded-full;
+  @apply hidden;
+}
+
+@include md {
+  .avatar {
+    @apply block p-2 rounded-full;
+  }
 }
 
 .avatarSkeleton {
-  @apply rounded-full w-8 h-8;
+  @apply hidden;
+}
 
-  background: linear-gradient(
-    90deg,
-    var(--primer-canvas-subtle) 25%,
-    var(--primer-border-default) 50%,
-    var(--primer-canvas-subtle) 75%
-  );
-  background-size: var(--shimmer-travel) 100%;
-  animation: shimmer var(--shimmer-duration) infinite linear;
+@include md {
+  .avatarSkeleton {
+    @apply block rounded-full w-8 h-8;
+
+    background: linear-gradient(
+      90deg,
+      var(--primer-canvas-subtle) 25%,
+      var(--primer-border-default) 50%,
+      var(--primer-canvas-subtle) 75%
+    );
+    background-size: var(--shimmer-travel) 100%;
+    animation: shimmer var(--shimmer-duration) infinite linear;
+  }
 }

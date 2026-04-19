@@ -1,5 +1,17 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+})
+
 import { AuthGuardStatus } from '@/modules/AuthGuard'
 import type { AuthGuardState } from '@/modules/AuthGuard'
 import type { UserDocument } from '@/services/user'
@@ -13,7 +25,6 @@ vi.mock('@/modules/AuthGuard', async (importOriginal) => {
   return {
     ...actual,
     useAuthGuard: () => mockAuthGuardState.current,
-    ContentSkeleton: () => <div data-testid="content-skeleton" />,
   }
 })
 
@@ -55,22 +66,24 @@ describe('ShellGuard', () => {
     mockAuthGuardState.current = { status: AuthGuardStatus.Initializing, user: null }
   })
 
-  it('renders content skeleton when status is initializing', async () => {
+  it('renders shell without outlet when status is initializing', async () => {
     mockAuthGuardState.current = { status: AuthGuardStatus.Initializing, user: null }
 
     const { ShellGuard } = await import('./ShellGuard')
     render(<ShellGuard />)
 
-    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
+    expect(screen.getByTestId('shell')).toBeInTheDocument()
+    expect(screen.queryByTestId('outlet')).not.toBeInTheDocument()
   })
 
-  it('renders content skeleton when status is loading profile', async () => {
+  it('renders shell without outlet when status is loading profile', async () => {
     mockAuthGuardState.current = { status: AuthGuardStatus.LoadingProfile, user: null }
 
     const { ShellGuard } = await import('./ShellGuard')
     render(<ShellGuard />)
 
-    expect(screen.getByTestId('content-skeleton')).toBeInTheDocument()
+    expect(screen.getByTestId('shell')).toBeInTheDocument()
+    expect(screen.queryByTestId('outlet')).not.toBeInTheDocument()
   })
 
   it('renders outlet when authenticated', async () => {

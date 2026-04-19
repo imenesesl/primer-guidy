@@ -54,7 +54,7 @@ const STATIC_SIDEBAR: Record<string, readonly SidebarItemConfig[]> = {
 }
 
 export const buildSidebarItemsMap = (
-  channels: readonly ChannelDocument[],
+  channels: readonly ChannelDocument[] | undefined,
 ): Record<string, readonly SidebarItemConfig[]> => ({
   ...STATIC_SIDEBAR,
   [CoreRoutes.Channels]: [
@@ -62,7 +62,8 @@ export const buildSidebarItemsMap = (
       icon: HashIcon,
       labelKey: 'sidebar.items.allChannels',
       path: CoreRoutes.Channels,
-      children: channels.map((ch) => ({
+      loading: channels === undefined,
+      children: channels?.map((ch) => ({
         icon: HashIcon,
         label: ch.name,
         path: `${CoreRoutes.Channels}/${ch.id}`,

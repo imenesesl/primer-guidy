@@ -70,14 +70,15 @@ describe('Channels', () => {
     expect(screen.getByText('toolbar.create')).toBeInTheDocument()
   })
 
-  it('shows loading spinner while loading', () => {
+  it('shows skeleton cards while loading', () => {
     mockIsLoading = true
     const { container } = render(<Channels />)
-    expect(container.querySelector('[class*="loadingContainer"]')).toBeInTheDocument()
+    expect(container.querySelector('[class*="cardSkeleton"]')).toBeInTheDocument()
     mockIsLoading = false
   })
 
   it('shows empty state when no channels', () => {
+    mockIsLoading = false
     render(<Channels />)
     expect(screen.getByText('empty')).toBeInTheDocument()
   })

@@ -19,9 +19,13 @@ export const ContentHeader = ({
         aria-label={toggleSidebarLabel}
         onClick={onToggleSidebar}
       />
-      <Text as="span" className={styles.breadcrumb}>
-        {breadcrumb}
-      </Text>
+      {breadcrumb !== null ? (
+        <Text as="span" className={styles.breadcrumb}>
+          {breadcrumb}
+        </Text>
+      ) : (
+        <div className={styles.breadcrumbSkeleton} />
+      )}
       {headerAction}
     </div>
   )

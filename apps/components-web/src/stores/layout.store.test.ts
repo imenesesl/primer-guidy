@@ -1,12 +1,41 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createLayoutStore } from './layout.store'
 
+const mockMatchMedia = (matches: boolean) => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    })),
+  })
+}
+
 describe('createLayoutStore', () => {
-  it('initializes with rail and sidebar visible', () => {
+  beforeEach(() => {
+    mockMatchMedia(true)
+  })
+
+  it('initializes with sidebar visible on desktop viewport', () => {
+    mockMatchMedia(true)
     const store = createLayoutStore()
 
     expect(store.getState().railVisible).toBe(true)
     expect(store.getState().sidebarVisible).toBe(true)
+  })
+
+  it('initializes with sidebar hidden on mobile viewport', () => {
+    mockMatchMedia(false)
+    const store = createLayoutStore()
+
+    expect(store.getState().railVisible).toBe(true)
+    expect(store.getState().sidebarVisible).toBe(false)
   })
 
   it('toggleRail flips railVisible', () => {

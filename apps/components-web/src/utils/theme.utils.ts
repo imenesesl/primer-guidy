@@ -19,6 +19,7 @@ const LAYOUT_VARS = {
   '--spacing-px': '1px',
   '--layout-rail-width': '4.5rem',
   '--layout-sidebar-width': '16.25rem',
+  '--layout-bottom-nav-height': '4.5rem',
   '--shimmer-travel': '200%',
   '--shimmer-duration': '1.5s',
   '--shimmer-opacity-min': '0.4',

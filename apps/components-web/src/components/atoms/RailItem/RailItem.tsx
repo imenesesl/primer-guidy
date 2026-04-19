@@ -40,7 +40,7 @@ export const RailItem = (props: RailItemProps) => {
       >
         <ResolvedIcon size={ICON_SIZE} />
       </Text>
-      <Text as="span" size="small" weight="medium">
+      <Text as="span" className={styles.label} weight="medium">
         {label}
       </Text>
     </Link>

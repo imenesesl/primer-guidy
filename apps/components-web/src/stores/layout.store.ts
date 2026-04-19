@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 import { createStore, useStore } from 'zustand'
 import type { StoreApi } from 'zustand'
+import { isDesktop } from '../utils/viewport.utils'
 
 export interface LayoutStore {
   railVisible: boolean
@@ -13,7 +14,7 @@ export interface LayoutStore {
 export const createLayoutStore = (): StoreApi<LayoutStore> =>
   createStore<LayoutStore>((set) => ({
     railVisible: true,
-    sidebarVisible: true,
+    sidebarVisible: isDesktop(),
     toggleRail: () => set((s) => ({ railVisible: !s.railVisible })),
     toggleSidebar: () => set((s) => ({ sidebarVisible: !s.sidebarVisible })),
     closeSidebar: () => set({ sidebarVisible: false }),

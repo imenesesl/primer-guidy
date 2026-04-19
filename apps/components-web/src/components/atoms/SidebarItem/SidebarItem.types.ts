@@ -6,8 +6,11 @@ export interface SidebarItemConfig {
   readonly label?: string
   readonly path: string
   readonly disabled?: boolean
+  readonly loading?: boolean
   readonly children?: readonly SidebarItemConfig[]
 }
+
+export type SidebarItemVariant = 'default' | 'header'
 
 export interface SidebarItemProps {
   readonly icon: Icon
@@ -15,4 +18,5 @@ export interface SidebarItemProps {
   readonly path: string
   readonly active: boolean
   readonly disabled?: boolean
+  readonly variant?: SidebarItemVariant
 }

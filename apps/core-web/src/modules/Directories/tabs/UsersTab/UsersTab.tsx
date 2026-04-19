@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, IconButton, Spinner, Text, TextInput } from '@primer/react'
+import { Button, IconButton, Text, TextInput } from '@primer/react'
 import { SearchIcon, PlusIcon, SyncIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from '@/context/user.context'
@@ -41,25 +41,42 @@ export const UsersTab = () => {
           onChange={(e) => setSearch(e.target.value)}
           className={styles.searchInput}
         />
-        <IconButton
-          icon={SyncIcon}
-          aria-label={tDirectories('users.reload')}
-          onClick={() => refetch()}
-          disabled={isFetching}
-        />
-        <Button
-          variant="primary"
-          leadingVisual={PlusIcon}
-          className={styles.inviteButton}
-          onClick={() => setIsDialogOpen(true)}
-        >
-          {tDirectories('users.inviteStudents')}
-        </Button>
+        <div className={styles.actions}>
+          <IconButton
+            icon={SyncIcon}
+            aria-label={tDirectories('users.reload')}
+            onClick={() => refetch()}
+            disabled={isFetching}
+          />
+          <Button
+            variant="primary"
+            leadingVisual={PlusIcon}
+            className={styles.inviteButton}
+            onClick={() => setIsDialogOpen(true)}
+          >
+            {tDirectories('users.inviteStudents')}
+          </Button>
+        </div>
       </div>
 
       {isLoading && (
-        <div className={styles.loadingContainer}>
-          <Spinner size="medium" />
+        <div className={styles.grid}>
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className={styles.cardSkeleton}>
+              <div className={styles.skeletonAvatar} />
+              <div className={styles.skeletonInfo}>
+                <div className={styles.skeletonNameRow}>
+                  <div className={styles.skeletonName} />
+                  <div className={styles.skeletonDot} />
+                </div>
+                <div className={styles.skeletonSubtitle} />
+                <div className={styles.skeletonStatus} />
+              </div>
+              <div className={styles.skeletonActions}>
+                <div className={styles.skeletonButton} />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

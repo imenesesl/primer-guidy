@@ -1,3 +1,4 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
@@ -10,9 +11,21 @@
 }
 
 .codeInputRoot {
-  @apply flex justify-center gap-1.5;
+  @apply flex justify-center gap-1;
+}
+
+@include sm {
+  .codeInputRoot {
+    @apply gap-1.5;
+  }
 }
 
 .codeBox.codeBox {
-  @apply w-10 font-mono text-center;
+  @apply w-8 font-mono text-center text-sm;
+}
+
+@include sm {
+  .codeBox.codeBox {
+    @apply w-10 text-base;
+  }
 }

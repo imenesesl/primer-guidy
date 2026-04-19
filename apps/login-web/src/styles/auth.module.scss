@@ -1,17 +1,30 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
 .root {
-  @apply flex flex-col items-center justify-center min-h-screen;
+  @apply flex flex-col items-center justify-center h-screen overflow-hidden px-4;
 
   background-color: var(--primer-canvas-inset);
 }
 
+@include md {
+  .root {
+    @apply min-h-screen h-auto overflow-visible px-0;
+  }
+}
+
 .card {
-  @apply flex flex-col gap-6 w-full max-w-sm p-8 rounded-xl;
+  @apply flex flex-col gap-4 w-full max-w-sm p-5 rounded-xl;
 
   background-color: var(--primer-canvas-default);
   border: var(--spacing-px) solid var(--primer-border-default);
+}
+
+@include md {
+  .card {
+    @apply gap-6 p-8;
+  }
 }
 
 .heading.heading {

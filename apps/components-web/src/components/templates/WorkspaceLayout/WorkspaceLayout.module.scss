@@ -5,31 +5,66 @@
 .root {
   @apply grid h-screen w-full overflow-hidden;
 
-  grid-template-columns: auto 0 1fr;
+  grid-template-columns: 1fr;
+}
+
+@include md {
+  .root {
+    grid-template-columns: auto auto 1fr;
+  }
 }
 
 .rail {
-  @apply flex flex-col h-screen overflow-y-auto overflow-x-hidden;
+  @apply fixed bottom-0 left-0 right-0 z-20 flex flex-row items-center;
+  @apply overflow-x-auto overflow-y-hidden;
   @apply transition-all duration-200 ease-in-out;
 
-  width: var(--layout-rail-width);
+  height: var(--layout-bottom-nav-height);
   background-color: var(--primer-canvas-inset);
-  border-right: var(--spacing-px) solid var(--primer-border-muted);
+  border-top: var(--spacing-px) solid var(--primer-border-muted);
+}
+
+@include md {
+  .rail {
+    @apply relative bottom-auto left-auto right-auto z-auto;
+    @apply flex-col h-screen overflow-y-auto overflow-x-hidden;
+
+    height: auto;
+    width: var(--layout-rail-width);
+    border-top: none;
+    border-right: var(--spacing-px) solid var(--primer-border-muted);
+  }
 }
 
 .railHidden {
-  @apply w-0 overflow-hidden;
+  @apply hidden;
+}
 
-  border-right: none;
+@include md {
+  .railHidden {
+    @apply flex w-0 overflow-hidden;
+
+    border-right: none;
+  }
 }
 
 .sidebar {
   @apply fixed top-0 left-0 h-screen z-40 overflow-y-auto overflow-x-hidden;
   @apply transition-all duration-200 ease-in-out;
 
-  width: var(--layout-sidebar-width);
+  width: 85vw;
+  max-width: var(--layout-sidebar-width);
   background-color: var(--primer-canvas-subtle);
   border-right: var(--spacing-px) solid var(--primer-border-default);
+}
+
+@include md {
+  .sidebar {
+    @apply relative top-auto left-auto z-auto;
+
+    width: var(--layout-sidebar-width);
+    max-width: none;
+  }
 }
 
 .sidebarHidden {
@@ -41,7 +76,14 @@
 .content {
   @apply flex flex-col h-screen overflow-y-auto;
 
+  padding-bottom: var(--layout-bottom-nav-height);
   background-color: var(--primer-canvas-default);
+}
+
+@include md {
+  .content {
+    @apply pb-0;
+  }
 }
 
 .backdrop.backdrop {
@@ -50,24 +92,16 @@
   background-color: var(--primer-neutral-muted);
 }
 
-.backdropHidden {
+.backdropHidden.backdropHidden {
   @apply hidden;
 }
 
 @include md {
-  .root {
-    grid-template-columns: auto auto 1fr;
-  }
-
-  .sidebar {
-    @apply relative top-auto left-auto z-auto;
-  }
-
   .backdrop.backdrop {
     @apply hidden;
   }
 
-  .backdropHidden {
+  .backdropHidden.backdropHidden {
     @apply hidden;
   }
 }

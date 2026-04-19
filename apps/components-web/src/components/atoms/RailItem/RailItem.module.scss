@@ -1,15 +1,22 @@
+@use '@/styles/breakpoints' as *;
 @reference "tailwindcss/theme";
 @reference "tailwindcss/utilities";
 
 .root.root {
   @apply flex flex-col items-center justify-center gap-0.5;
-  @apply py-1 px-1;
+  @apply py-1.5 px-3;
   @apply transition-all duration-200 ease-in-out;
   @apply border-0 cursor-pointer;
 
   color: var(--primer-fg-muted);
   background: none;
   box-shadow: none;
+}
+
+@include md {
+  .root.root {
+    @apply py-1 px-1;
+  }
 }
 
 .root.root:hover,
@@ -61,4 +68,14 @@
 
 .active.active:hover {
   color: var(--primer-fg-default);
+}
+
+.label {
+  @apply text-[0.625rem] leading-tight;
+}
+
+@include md {
+  .label {
+    @apply text-xs;
+  }
 }
