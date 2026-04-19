@@ -2,7 +2,7 @@
   "level": "realtime-database",
   "paths": {
     "codes/{code}": {
-      "description": "Maps a 10-digit invite code to the user who owns it",
+      "description": "Maps a 10-digit invite code to the user who owns it. Server-only write via generateInviteCode Cloud Function.",
       "schema": {
         "uid": {
           "type": "string",
@@ -12,7 +12,7 @@
       }
     },
     "userCodes/{uid}": {
-      "description": "Maps a user UID to their invite code (null if not yet generated)",
+      "description": "Maps a user UID to their invite code. Server-only write via generateInviteCode Cloud Function. Client read allowed for owner.",
       "type": "string",
       "default": null
     }

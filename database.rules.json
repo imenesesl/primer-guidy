@@ -13,14 +13,14 @@
     "codes": {
       "$code": {
         ".read": "auth != null",
-        ".write": "auth != null"
+        ".write": false
       }
     },
 
     "userCodes": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid"
+        ".write": false
       }
     }
   }

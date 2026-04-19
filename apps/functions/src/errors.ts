@@ -5,6 +5,7 @@ export const ErrorCode = {
   NotFound: 'not-found' as FunctionsErrorCode,
   Unauthenticated: 'unauthenticated' as FunctionsErrorCode,
   AlreadyExists: 'already-exists' as FunctionsErrorCode,
+  Unavailable: 'unavailable' as FunctionsErrorCode,
 } as const
 
 export const ErrorMessage = {
@@ -12,4 +13,6 @@ export const ErrorMessage = {
   StudentNotFound: 'student-not-found',
   WrongPassword: 'wrong-password',
   StudentAlreadyExists: 'student-already-exists',
+  Unauthenticated: 'unauthenticated',
+  CodeGenerationFailed: 'code-generation-failed',
 } as const

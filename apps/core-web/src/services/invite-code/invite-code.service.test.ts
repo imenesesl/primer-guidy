@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { IRealtimeDatabaseProvider } from '@primer-guidy/cloud-services'
+import type { IRealtimeDatabaseProvider, IFunctionsProvider } from '@primer-guidy/cloud-services'
 import { getExistingInviteCode, generateAndSaveInviteCode } from './invite-code.service'
 
 const createMockRtdb = (): IRealtimeDatabaseProvider => ({
@@ -9,6 +9,10 @@ const createMockRtdb = (): IRealtimeDatabaseProvider => ({
   remove: vi.fn(),
   push: vi.fn(),
   onValue: vi.fn(),
+})
+
+const createMockFunctions = (): IFunctionsProvider => ({
+  call: vi.fn(),
 })
 
 describe('getExistingInviteCode', () => {
@@ -37,50 +41,24 @@ describe('getExistingInviteCode', () => {
 })
 
 describe('generateAndSaveInviteCode', () => {
-  let rtdb: IRealtimeDatabaseProvider
+  let functions: IFunctionsProvider
 
   beforeEach(() => {
-    rtdb = createMockRtdb()
+    functions = createMockFunctions()
   })
 
-  it('returns existing code when user already has one', async () => {
-    vi.mocked(rtdb.get).mockResolvedValueOnce('1234567890')
+  it('calls the generateInviteCode Cloud Function and returns the code', async () => {
+    vi.mocked(functions.call).mockResolvedValue({ code: '9876543210' })
 
-    const result = await generateAndSaveInviteCode(rtdb, 'user-1')
+    const result = await generateAndSaveInviteCode(functions)
 
-    expect(result).toBe('1234567890')
-    expect(rtdb.set).not.toHaveBeenCalled()
+    expect(functions.call).toHaveBeenCalledWith('generateInviteCode', {})
+    expect(result).toBe('9876543210')
   })
 
-  it('generates and saves a new code when none exists', async () => {
-    vi.mocked(rtdb.get).mockResolvedValueOnce(null).mockResolvedValueOnce(null)
+  it('propagates errors from the Cloud Function', async () => {
+    vi.mocked(functions.call).mockRejectedValue(new Error('unauthenticated'))
 
-    const result = await generateAndSaveInviteCode(rtdb, 'user-1')
-
-    expect(result).toMatch(/^\d{10}$/)
-    expect(rtdb.set).toHaveBeenCalledTimes(2)
-    expect(rtdb.set).toHaveBeenCalledWith(expect.stringMatching(/^codes\//), { uid: 'user-1' })
-    expect(rtdb.set).toHaveBeenCalledWith('userCodes/user-1', result)
-  })
-
-  it('iterates when code already taken by another user', async () => {
-    vi.mocked(rtdb.get)
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({ uid: 'other-user' })
-      .mockResolvedValueOnce(null)
-
-    const result = await generateAndSaveInviteCode(rtdb, 'user-1')
-
-    expect(result).toMatch(/^\d{10}$/)
-    expect(rtdb.set).toHaveBeenCalledTimes(2)
-  })
-
-  it('reclaims code if already owned by same user', async () => {
-    vi.mocked(rtdb.get).mockResolvedValueOnce(null).mockResolvedValueOnce({ uid: 'user-1' })
-
-    const result = await generateAndSaveInviteCode(rtdb, 'user-1')
-
-    expect(result).toMatch(/^\d{10}$/)
-    expect(rtdb.set).toHaveBeenCalledWith('userCodes/user-1', result)
+    await expect(generateAndSaveInviteCode(functions)).rejects.toThrow('unauthenticated')
   })
 })

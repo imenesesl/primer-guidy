@@ -4,3 +4,4 @@ initializeApp()
 
 export { studentLogin } from './student-login'
 export { studentRegister } from './student-register'
+export { generateInviteCode } from './generate-invite-code'

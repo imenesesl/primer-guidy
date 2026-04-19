@@ -17,3 +17,11 @@ export interface StudentRegisterRequest {
 export interface StudentAuthResponse {
   readonly token: string
 }
+
+export interface GenerateInviteCodeResponse {
+  readonly code: string
+}
+
+export interface InviteCodeEntry {
+  readonly uid: string
+}

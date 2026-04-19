@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useRealtimeDatabase } from '@primer-guidy/cloud-services'
+import { useRealtimeDatabase, useFunctions } from '@primer-guidy/cloud-services'
 import { getExistingInviteCode, generateAndSaveInviteCode } from './invite-code.service'
 
 const INVITE_CODE_KEY = 'invite-code' as const
@@ -14,11 +14,11 @@ export const useInviteCode = (uid: string | null) => {
 }
 
 export const useGenerateInviteCode = () => {
-  const rtdb = useRealtimeDatabase()
+  const functions = useFunctions()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (uid: string) => generateAndSaveInviteCode(rtdb, uid),
+    mutationFn: (_uid: string) => generateAndSaveInviteCode(functions),
     onSuccess: (code, uid) => {
       queryClient.setQueryData([INVITE_CODE_KEY, uid], code)
     },

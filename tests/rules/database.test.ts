@@ -88,9 +88,9 @@ describe('codes/{code}', () => {
     await assertSucceeds(get(ref(db, PATH)))
   })
 
-  it('authenticated user can write code', async () => {
+  it('authenticated user cannot write code (server-only)', async () => {
     const db = testEnv.authenticatedContext('teacher-1').database()
-    await assertSucceeds(set(ref(db, PATH), { uid: 'teacher-1' }))
+    await assertFails(set(ref(db, PATH), { uid: 'teacher-1' }))
   })
 
   it('unauthenticated cannot read code', async () => {
@@ -115,9 +115,9 @@ describe('userCodes/{uid}', () => {
     await assertSucceeds(get(ref(db, PATH)))
   })
 
-  it('owner can write own code', async () => {
+  it('owner cannot write own code (server-only)', async () => {
     const db = testEnv.authenticatedContext(OWNER_UID).database()
-    await assertSucceeds(set(ref(db, PATH), 'ABC1234567'))
+    await assertFails(set(ref(db, PATH), 'ABC1234567'))
   })
 
   it('other authenticated user cannot read code', async () => {
