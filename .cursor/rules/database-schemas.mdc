@@ -105,6 +105,19 @@ export interface UserDocument {
 }
 ```
 
+## Naming Convention
+
+All database path segments MUST use **camelCase**. This applies to both Firestore collection names and Realtime Database node names.
+
+| Convention | Example | Status |
+|------------|---------|--------|
+| camelCase | `studentCredentials`, `userCodes` | Required |
+| kebab-case | `student-credentials` | Forbidden |
+| snake_case | `student_credentials` | Forbidden |
+| PascalCase | `StudentCredentials` | Forbidden |
+
+Single-word paths (`codes`, `students`, `users`) are naturally compliant.
+
 ## Rules
 
 - EVERY Firestore collection or Realtime node with read/write access MUST have a `.schema.json`
@@ -113,3 +126,4 @@ export interface UserDocument {
 - When adding a new field to the database, update the schema FIRST, then the types
 - Schema files are documentation AND contracts — they are reviewed in PRs
 - Collection/node names in `path` MUST match the actual database path used in service functions
+- All path segments MUST use camelCase — NEVER kebab-case, snake_case, or PascalCase

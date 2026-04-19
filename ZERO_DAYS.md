@@ -41,7 +41,7 @@ Severidades: **P0** (explotable hoy, impacto crítico) → **P3** (defensa en pr
 const app = firebase.initializeApp({ apiKey: 'AIzaSy...', ... })
 await firebase.auth().signInAnonymously()
 const db = firebase.database()
-const allCreds = await db.ref('student-credentials').get()
+const allCreds = await db.ref('studentCredentials').get()
 ```
 
 Si las reglas son `read: true`, **se filtra toda la base**: credenciales de estudiantes, perfiles, enrollments, channels, invite codes.
@@ -92,7 +92,7 @@ service cloud.firestore {
   "rules": {
     ".read": false,
     ".write": false,
-    "student-credentials": {
+    "studentCredentials": {
       "$idNumber": {
         ".read": false,
         ".write": false
@@ -114,7 +114,7 @@ service cloud.firestore {
 }
 ```
 
-> Nota: las credenciales de estudiantes ya se verifican server-side vía Cloud Functions (`apps/functions/`). **Bloquear lectura/escritura** de `student-credentials` desde el cliente.
+> Nota: las credenciales de estudiantes ya se verifican server-side vía Cloud Functions (`apps/functions/`). **Bloquear lectura/escritura** de `studentCredentials` desde el cliente.
 
 3. Actualizar `firebase.json` para incluir las reglas en el deploy:
 
@@ -308,7 +308,7 @@ Vite hará tree-shake del bloque en builds de producción → imposible activarl
 | Archivos | `student.service.ts`, `enrollment.service.ts` |
 | -------- | --------------------------------------------- |
 
-**Qué es.** El `identificationNumber` (típicamente DNI/CC/CURP) se usa como **key directa de documento** en `students/{idNumber}`, `student-credentials/{idNumber}`, etc.
+**Qué es.** El `identificationNumber` (típicamente DNI/CC/CURP) se usa como **key directa de documento** en `students/{idNumber}`, `studentCredentials/{idNumber}`, etc.
 
 **En qué consiste.** Las claves de Firestore son **enumerables** vía `listDocuments` (Admin SDK) o adivinables por brute force (los IDs nacionales tienen rangos predecibles). Esto facilita:
 
