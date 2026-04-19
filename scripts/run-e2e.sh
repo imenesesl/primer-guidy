@@ -60,7 +60,7 @@ if ! command -v java &>/dev/null; then
   echo "Install Java or ensure it is in PATH."
   exit 1
 fi
-echo "Java: $(java -version 2>&1 | head -1)"
+echo "Java: $(java -version 2>&1 | head -1 || true)"
 
 echo ""
 echo "Cleaning up stale processes on emulator ports..."
