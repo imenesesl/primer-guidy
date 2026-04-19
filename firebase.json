@@ -1,4 +1,10 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
   "functions": {
     "source": "apps/functions",
     "codebase": "default",
@@ -21,6 +27,7 @@
     "auth": { "port": 9099 },
     "firestore": { "port": 8080 },
     "functions": { "port": 5001 },
+    "database": { "port": 9000 },
     "ui": { "enabled": true, "port": 4000 }
   }
 }

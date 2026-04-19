@@ -25,5 +25,6 @@ test-results/
 
 # Firebase Emulators
 firestore-debug.log
+database-debug.log
 ui-debug.log
 firebase-debug.log

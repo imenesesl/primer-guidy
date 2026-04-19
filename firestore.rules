@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Teacher profiles ──────────────────────────────────────────
+    // Document ID = Firebase Auth UID (teacher).
+    // Only the owner can read/write their own profile.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Channels — teacher writes, any authenticated user reads
+      // (students discover channels via their workspace enrollment).
+      match /channels/{channelId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Enrollment records — teacher reads/updates/deletes,
+      // any authenticated user can create (student joining a workspace).
+      match /students/{identificationNumber} {
+        allow read: if request.auth != null;
+        allow create: if request.auth != null;
+        allow update, delete: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ── Student profiles ──────────────────────────────────────────
+    // Document ID = identification number.
+    // Reads: any authenticated user (students query by uid field).
+    // Writes: Cloud Functions only (studentRegister via Admin SDK).
+    match /students/{identificationNumber} {
+      allow read: if request.auth != null;
+      allow write: if false;
+
+      // Workspace mirror — student reads, teacher writes.
+      // teacherUid = the teacher who owns the workspace.
+      match /workspaces/{teacherUid} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == teacherUid;
+      }
+    }
+
+    // ── Deny everything else ──────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

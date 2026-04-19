@@ -1,0 +1,27 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "studentCredentials": {
+      "$identificationNumber": {
+        ".read": false,
+        ".write": false
+      }
+    },
+
+    "codes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+
+    "userCodes": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}

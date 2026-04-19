@@ -131,9 +131,57 @@ test('displays home after auth', async ({ page }) => {
 })
 ```
 
+## Capa 3: Firebase Security Rules — `@firebase/rules-unit-testing`
+
+Cada regla en `firestore.rules` y `database.rules.json` DEBE tener su test correspondiente en `tests/rules/`.
+
+### Estructura
+
+```
+tests/rules/
+  vitest.config.ts             ← Config (environment: node, 30s timeout)
+  firestore.test.ts            ← Tests por cada match block en firestore.rules
+  database.test.ts             ← Tests por cada nodo en database.rules.json
+```
+
+### Ejecución
+
+```bash
+pnpm run test:rules
+```
+
+Levanta emuladores (Firestore + RTDB) automáticamente y ejecuta los tests.
+
+### Qué testear
+
+Cada `describe` block DEBE cubrir como mínimo:
+- Roles con acceso (owner, authenticated)
+- Roles sin acceso (non-owner, unauthenticated)
+- Operaciones granulares (read, create, update, delete) cuando las reglas difieren por operación
+
+### Ejemplo
+
+```typescript
+import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+
+describe('users/{uid}', () => {
+  it('owner can read own profile', async () => {
+    const db = testEnv.authenticatedContext('teacher-1').firestore()
+    await assertSucceeds(getDoc(doc(db, 'users/teacher-1')))
+  })
+
+  it('non-owner cannot read another profile', async () => {
+    const db = testEnv.authenticatedContext('other').firestore()
+    await assertFails(getDoc(doc(db, 'users/teacher-1')))
+  })
+})
+```
+
 ## Reglas Obligatorias
 
 - NUNCA hacer merge/PR sin tests
 - Cobertura mínima: 80% por componente/módulo
 - Cada bug fix DEBE incluir un test que reproduce el bug ANTES del fix
 - Tests deben ser independientes — sin dependencias de orden ni estado compartido
+- Cada regla en `firestore.rules` o `database.rules.json` DEBE tener tests en `tests/rules/` — sin test = regla no desplegada

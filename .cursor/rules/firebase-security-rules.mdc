@@ -1,0 +1,127 @@
+---
+description: Firebase security rules MUST stay in sync with data access patterns
+globs: "firestore.rules,database.rules.json,**/services/**/*.ts,apps/functions/src/**/*.ts"
+alwaysApply: true
+---
+
+# Firebase Security Rules — Mandatory Sync
+
+Security rules in `firestore.rules` and `database.rules.json` are the **last line of defense** against unauthorized data access. They MUST always reflect the actual data access patterns in the codebase.
+
+## Rule Files
+
+| File | Database | Deployed via |
+|------|----------|-------------|
+| `firestore.rules` | Firestore | `firebase deploy --only firestore:rules` |
+| `database.rules.json` | Realtime Database | `firebase deploy --only database` |
+
+Both files are referenced in `firebase.json` and deployed automatically in CI (`deploy.yml`).
+
+## When to Update Rules
+
+You MUST update security rules when ANY of these changes happen:
+
+| Change | Action |
+|--------|--------|
+| New Firestore collection or subcollection | Add `match` block with appropriate read/write rules |
+| New RTDB node | Add node entry in `database.rules.json` |
+| Service function changes who reads/writes | Verify existing rules still allow the operation |
+| New Cloud Function that writes to Firestore/RTDB | Ensure client rules deny what should be server-only (`allow write: if false`) |
+| Auth flow changes (new sign-in method, roles) | Update `request.auth` conditions in affected rules |
+| Schema file (`.schema.json`) added or modified | Verify rules cover the path documented in the schema |
+
+## Rule Design Principles
+
+### Deny by Default
+
+```
+// Firestore — catch-all at the bottom
+match /{document=**} { allow read, write: if false; }
+
+// RTDB — root-level deny
+{ "rules": { ".read": false, ".write": false, ... } }
+```
+
+Every new path MUST have explicit rules. The catch-all denies anything not explicitly allowed.
+
+### Minimum Privilege
+
+| Pattern | Meaning |
+|---------|---------|
+| `request.auth.uid == uid` | Only the document owner |
+| `request.auth != null` | Any authenticated user |
+| `if false` | Cloud Functions only (Admin SDK bypasses rules) |
+
+Prefer owner-only access. Use `auth != null` only when cross-user reads are architecturally necessary (e.g., students reading teacher channels).
+
+### Separate Read/Write
+
+Always split permissions — NEVER use blanket `allow read, write` unless ownership is verified:
+
+```
+allow read: if request.auth != null;
+allow create: if request.auth != null;
+allow update, delete: if request.auth != null && request.auth.uid == uid;
+```
+
+## Current Architecture
+
+### Firestore
+
+| Path | Read | Write | Notes |
+|------|------|-------|-------|
+| `users/{uid}` | Owner | Owner | Teacher profiles |
+| `users/{uid}/channels/{id}` | Authenticated | Owner | Students discover channels via enrollment |
+| `users/{uid}/students/{idNum}` | Authenticated | Create: authenticated; Update/Delete: owner | Students join, teachers manage |
+| `students/{idNum}` | Authenticated | `false` (Cloud Functions only) | Student profiles — written by `studentRegister` |
+| `students/{idNum}/workspaces/{teacherUid}` | Authenticated | Teacher (`teacherUid`) | Workspace mirror synced by core-web |
+
+### Realtime Database
+
+| Node | Read | Write | Notes |
+|------|------|-------|-------|
+| `studentCredentials/{idNum}` | `false` | `false` | Server-only — Cloud Functions use Admin SDK |
+| `codes/{code}` | Authenticated | Authenticated | Invite code lookup + generation |
+| `userCodes/{uid}` | Owner | Owner | Teacher's invite code |
+
+## Rules Testing — `@firebase/rules-unit-testing`
+
+Tests live in `tests/rules/` and run against the Firebase emulators:
+
+| File | Tests |
+|------|-------|
+| `tests/rules/firestore.test.ts` | Every Firestore `match` block — read, write, create, update, delete per role |
+| `tests/rules/database.test.ts` | Every RTDB node — read, write per role |
+| `tests/rules/vitest.config.ts` | Vitest config — `node` environment, 30s timeout |
+
+Run with: `pnpm run test:rules` (starts emulators automatically via `firebase emulators:exec`).
+
+### When to Update Tests
+
+| Change | Required test update |
+|--------|---------------------|
+| New `match` block in `firestore.rules` | Add `describe` block in `firestore.test.ts` covering read/write for owner, authenticated, unauthenticated |
+| New node in `database.rules.json` | Add `describe` block in `database.test.ts` covering read/write for owner, authenticated, unauthenticated |
+| Permission change on existing rule | Update existing test assertions to match the new behavior |
+| Rule removed | Remove corresponding test block |
+
+### Test Structure
+
+Each `describe` block MUST cover at minimum:
+
+- **Allow cases**: every role that SHOULD have access (owner, authenticated, etc.)
+- **Deny cases**: every role that MUST NOT have access (non-owner, unauthenticated)
+- **Operation granularity**: separate tests for `read`, `create`, `update`, `delete` when rules differ by operation
+
+A rule without a test is not considered deployed. A test without a corresponding rule is dead code.
+
+## Rules
+
+- NEVER deploy an app that reads/writes a new DB path without updating rules first
+- NEVER use `allow read, write: if true` — even temporarily
+- NEVER remove the catch-all deny block at the bottom of `firestore.rules`
+- Security rules are deployed BEFORE hosting and functions in CI — rules must be in place when new code goes live
+- When adding a new `.schema.json`, verify a corresponding rule exists in `firestore.rules` or `database.rules.json`
+- Review `firestore.rules` and `database.rules.json` in every PR that touches `services/` or `apps/functions/`
+- EVERY rule change MUST include a corresponding test update in `tests/rules/` — run `pnpm run test:rules` to verify
+- NEVER merge a PR that adds/modifies rules without passing `test:rules`

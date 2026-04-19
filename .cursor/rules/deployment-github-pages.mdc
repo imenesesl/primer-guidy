@@ -47,11 +47,11 @@ const BASE_PATH = IS_PROD ? `${DEPLOY_PREFIX}/core/` : '/'
 ```
 install → analyze ──────┐
         → test-unit ────┤→ deploy-pages (DEPLOY_PREFIX=/primer-guidy)
-        → test-e2e ─────┤→ deploy-firebase (no prefix) → Cloud Functions + Hosting
+        → test-e2e ─────┤→ deploy-firebase (no prefix) → Test Rules → Deploy Rules → Cloud Functions → Hosting
                         ┘
 ```
 
-Both deploy jobs run in parallel after tests pass. The `deploy-firebase` job deploys Cloud Functions first (via `firebase deploy --only functions`), then Firebase Hosting.
+Both deploy jobs run in parallel after tests pass. The `deploy-firebase` job first runs security rules tests against emulators, then deploys in order: Security Rules (Firestore + RTDB), Cloud Functions, then Firebase Hosting — rules are tested and deployed first to ensure they're in place when new code goes live.
 
 ## Adding a New App
 
