@@ -43,23 +43,20 @@ const shared = tseslint.config(
   },
 )
 
-export const base = tseslint.config(
-  ...shared,
-  {
-    plugins: {
-      react: reactPlugin,
-      'react-hooks': reactHooksPlugin,
-    },
-    rules: {
-      'react/no-array-index-key': 'warn',
-      'react-hooks/exhaustive-deps': 'error',
-      'react-hooks/rules-of-hooks': 'error',
-    },
-    settings: {
-      react: { version: 'detect' },
-    },
+export const base = tseslint.config(...shared, {
+  plugins: {
+    react: reactPlugin,
+    'react-hooks': reactHooksPlugin,
   },
-)
+  rules: {
+    'react/no-array-index-key': 'warn',
+    'react-hooks/exhaustive-deps': 'error',
+    'react-hooks/rules-of-hooks': 'error',
+  },
+  settings: {
+    react: { version: 'detect' },
+  },
+})
 
 export const nestServer = tseslint.config(
   ...shared,

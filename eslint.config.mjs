@@ -6,7 +6,11 @@ export default [
     ignores: ['dist-landing/', '.github/'],
   },
   {
-    files: ['apps/brain-server/**/*.module.ts', 'apps/prompt-validation-server/**/*.module.ts', 'libs/nest-shared/**/*.module.ts'],
+    files: [
+      'apps/brain-server/**/*.module.ts',
+      'apps/prompt-validation-server/**/*.module.ts',
+      'libs/nest-shared/**/*.module.ts',
+    ],
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
     },
