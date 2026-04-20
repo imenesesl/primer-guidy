@@ -1,0 +1,179 @@
+{
+  "id": "02-quiz-valid",
+  "description": "Valid quiz request — generates 1 unique multiple-choice question per student with 4 options",
+  "request": {
+    "type": "task-generator",
+    "task": "quiz",
+    "prompt": "Leyes de Newton",
+    "context": "Física mecánica clásica",
+    "studentCount": 3
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 14044,
+    "body": {
+      "type": "task-generator",
+      "task": "quiz",
+      "valid": true,
+      "guide": {
+        "topic": "Leyes de Newton en Física Mecánica Clásica",
+        "keyConceptCount": 6,
+        "keyConcepts": [
+          "Primera Ley: un objeto en reposo o movimiento uniforme permanece así sin fuerza neta.",
+          "Segunda Ley: la fuerza neta sobre un objeto es igual a su masa por aceleración (F=ma).",
+          "Tercera Ley: toda acción genera una reacción igual en magnitud y opuesta en dirección.",
+          "Inercia es la resistencia de un cuerpo a cambiar su estado de movimiento.",
+          "La masa mide la cantidad de materia y determina la resistencia a la aceleración.",
+          "Las leyes aplican en sistemas de referencia inerciales dentro de la mecánica clásica."
+        ],
+        "rubric": "El estudiante explica cada ley con su fórmula, concepto e ejemplo práctico correctamente."
+      },
+      "studentContents": [
+        {
+          "studentIndex": 0,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "¿Qué mide la masa de un objeto en la mecánica clásica?",
+              "options": [
+                "Resistencia a la aceleración",
+                "Velocidad del objeto",
+                "Fuerza gravitacional",
+                "Cantidad de movimiento"
+              ],
+              "correctIndex": 0,
+              "explanation": "La masa mide la cantidad de materia y determina cuánto resiste un objeto a cambiar su estado de movimiento ante una fuerza aplicada."
+            }
+          ],
+          "chatContext": "Quiz sobre las Leyes de Newton en Física Mecánica Clásica, enfocado en conceptos de inercia, masa y las tres leyes fundamentales.",
+          "metrics": {
+            "durationMs": 2992,
+            "promptTokens": 588,
+            "completionTokens": 163,
+            "totalTokens": 751
+          }
+        },
+        {
+          "studentIndex": 1,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "Un libro reposa sobre una mesa sin moverse. ¿Qué ley de Newton explica este estado?",
+              "options": [
+                "Primera Ley (Inercia)",
+                "Segunda Ley (F=ma)",
+                "Tercera Ley (acción-reacción)",
+                "Ley de Gravitación"
+              ],
+              "correctIndex": 0,
+              "explanation": "La Primera Ley establece que un objeto permanece en reposo si no actúa una fuerza neta sobre él."
+            }
+          ],
+          "chatContext": "Quiz sobre las Leyes de Newton en Física Mecánica Clásica.",
+          "metrics": {
+            "durationMs": 3503,
+            "promptTokens": 588,
+            "completionTokens": 158,
+            "totalTokens": 746
+          }
+        },
+        {
+          "studentIndex": 2,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "Un objeto de 5 kg experimenta una fuerza neta de 20 N. ¿Cuál es su aceleración?",
+              "options": ["4 m/s²", "100 m/s²", "0.25 m/s²", "15 m/s²"],
+              "correctIndex": 0,
+              "explanation": "Aplicando F=ma, despejamos a=F/m=20/5=4 m/s²."
+            }
+          ],
+          "chatContext": "Quiz sobre la Segunda Ley de Newton y el cálculo de aceleración usando F=ma.",
+          "metrics": {
+            "durationMs": 3043,
+            "promptTokens": 588,
+            "completionTokens": 151,
+            "totalTokens": 739
+          }
+        }
+      ],
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 891,
+            "promptTokens": 337,
+            "completionTokens": 4,
+            "totalTokens": 341
+          },
+          "curation": {
+            "durationMs": 1915,
+            "promptTokens": 140,
+            "completionTokens": 124,
+            "totalTokens": 264
+          },
+          "brain.guide": {
+            "durationMs": 4613,
+            "promptTokens": 285,
+            "completionTokens": 217,
+            "totalTokens": 502
+          },
+          "brain.student.0": {
+            "durationMs": 2992,
+            "promptTokens": 588,
+            "completionTokens": 163,
+            "totalTokens": 751
+          },
+          "brain.student.1": {
+            "durationMs": 3503,
+            "promptTokens": 588,
+            "completionTokens": 158,
+            "totalTokens": 746
+          },
+          "brain.student.2": {
+            "durationMs": 3043,
+            "promptTokens": 588,
+            "completionTokens": 151,
+            "totalTokens": 739
+          }
+        },
+        "totalDurationMs": 13977,
+        "totalTokens": 3343
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "name": "studentCount",
+      "passed": true,
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "name": "questionsPerStudent",
+      "passed": true,
+      "expected": "1",
+      "actual": "1"
+    },
+    {
+      "name": "optionsCount",
+      "passed": true,
+      "expected": "4",
+      "actual": "4"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:35:55Z"
+}

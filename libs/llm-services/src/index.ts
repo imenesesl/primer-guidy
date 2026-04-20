@@ -4,8 +4,9 @@ export type {
   CompletionOptions,
   CompletionResult,
   LlmProviderConfig,
+  LlmUsage,
 } from './ports'
 
-export { LlmError, LlmErrorCode } from './ports'
+export { ChatRole, LlmError, LlmErrorCode } from './ports'
 
 export { createLlmProvider } from './factory'

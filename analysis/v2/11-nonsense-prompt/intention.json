@@ -1,0 +1,18 @@
+{
+  "id": "11-nonsense-prompt",
+  "description": "Nonsense — prompt and context are real words but make no coherent sense together",
+  "category": "edge-case",
+  "request": {
+    "type": "task-generator",
+    "task": "quiz",
+    "prompt": "El color del viento cuando las matemáticas duermen en el tejado",
+    "context": "Biología marina y ecosistemas acuáticos",
+    "studentCount": 1
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": false,
+    "guardShouldPass": false,
+    "expectedReason": "malformed_input"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "01-chat-valid",
+  "description": "Valid chat request — student asks about a topic within context, expects guided response",
+  "request": {
+    "type": "chat",
+    "prompt": "¿Cómo puedo resolver una ecuación de primer grado?",
+    "context": "Álgebra básica para estudiantes de secundaria"
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 5780,
+    "body": {
+      "type": "chat",
+      "valid": true,
+      "reply": "¡Excelente pregunta! Las ecuaciones de primer grado son fundamentales en álgebra. Vamos a explorar esto juntos. 😊\n\nAntes de hablar del proceso, dime: **¿qué crees que significa \"resolver\" una ecuación?**\n\n¿Qué estamos buscando cuando resolvemos algo como:\n\n**2x + 4 = 10**\n\n¿Qué representa la **x** en esa ecuación? 🤔",
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 1319,
+            "promptTokens": 353,
+            "completionTokens": 4,
+            "totalTokens": 357
+          },
+          "curation": {
+            "durationMs": 831,
+            "promptTokens": 119,
+            "completionTokens": 21,
+            "totalTokens": 140
+          },
+          "brain.chat": {
+            "durationMs": 3555,
+            "promptTokens": 191,
+            "completionTokens": 121,
+            "totalTokens": 312
+          }
+        },
+        "totalDurationMs": 5720,
+        "totalTokens": 809
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "name": "hasReply",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:35:41Z"
+}

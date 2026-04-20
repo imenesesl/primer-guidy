@@ -1,0 +1,26 @@
+{
+  "id": "15-chat-history",
+  "description": "Valid chat with history — simulates a multi-turn conversation to test context continuity",
+  "category": "happy-path",
+  "request": {
+    "type": "chat",
+    "prompt": "¿Y cómo se aplica en la vida real?",
+    "context": "Probabilidad y estadística",
+    "history": [
+      {
+        "role": "user",
+        "content": "¿Qué es la probabilidad condicional?"
+      },
+      {
+        "role": "assistant",
+        "content": "La probabilidad condicional es la probabilidad de que ocurra un evento dado que otro evento ya ocurrió. Se representa como P(A|B)."
+      }
+    ]
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "hasReply": true,
+    "guardShouldPass": true
+  }
+}

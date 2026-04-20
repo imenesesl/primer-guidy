@@ -1,0 +1,168 @@
+{
+  "id": "04-homework-open-valid",
+  "description": "Valid homework open-ended request — generates N open questions per student with answer hints",
+  "request": {
+    "type": "task-generator",
+    "task": "homework",
+    "prompt": "Reacciones químicas de oxidación-reducción",
+    "context": "Química general para universidad",
+    "studentCount": 2,
+    "questionCount": 2,
+    "openQuestion": true
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 12521,
+    "body": {
+      "type": "task-generator",
+      "task": "homework",
+      "valid": true,
+      "guide": {
+        "topic": "Reacciones de Oxidación-Reducción (Redox)",
+        "keyConceptCount": 6,
+        "keyConcepts": [
+          "Oxidación: pérdida de electrones y aumento del número de oxidación.",
+          "Reducción: ganancia de electrones y disminución del número de oxidación.",
+          "Número de oxidación: carga hipotética asignada a un átomo en un compuesto.",
+          "Agente oxidante: especie que acepta electrones y se reduce en la reacción.",
+          "Agente reductor: especie que cede electrones y se oxida en la reacción.",
+          "Balanceo redox: igualar electrones cedidos y ganados entre semirreacciones."
+        ],
+        "rubric": "Evalúa si el estudiante identifica, balancea y aplica correctamente reacciones redox en contextos reales."
+      },
+      "studentContents": [
+        {
+          "studentIndex": 0,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "En la reacción Zn + CuSO₄ → ZnSO₄ + Cu, identifica el agente oxidante y el agente reductor. Justifica tu respuesta usando números de oxidación.",
+              "expectedAnswerHints": [
+                "Zn se oxida: pierde electrones",
+                "Cu²⁺ se reduce: gana electrones",
+                "Cu²⁺ es agente oxidante; Zn es agente reductor"
+              ]
+            },
+            {
+              "id": "q2",
+              "statement": "Balancea la siguiente semirreacción en medio ácido usando el método de cambio de electrones: MnO₄⁻ + Fe²⁺ → Mn²⁺ + Fe³⁺",
+              "expectedAnswerHints": [
+                "Mn cambia de +7 a +2 (gana 5e⁻)",
+                "Fe cambia de +2 a +3 (pierde 1e⁻)",
+                "Multiplica para igualar electrones cedidos y ganados"
+              ]
+            }
+          ],
+          "chatContext": "El estudiante estudia reacciones redox universitarias: identificación de agentes oxidantes/reductores, números de oxidación y balanceo por semirreacciones.",
+          "metrics": {
+            "durationMs": 4799,
+            "promptTokens": 574,
+            "completionTokens": 303,
+            "totalTokens": 877
+          }
+        },
+        {
+          "studentIndex": 1,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "En la reacción Zn + CuSO₄ → ZnSO₄ + Cu, identifica el agente oxidante y el agente reductor. Justifica tu respuesta con los números de oxidación.",
+              "expectedAnswerHints": [
+                "Zn se oxida, es agente reductor",
+                "Cu²⁺ se reduce, es agente oxidante",
+                "Zn pierde e⁻, Cu²⁺ gana e⁻"
+              ]
+            },
+            {
+              "id": "q2",
+              "statement": "Balancea la siguiente reacción redox en medio ácido usando el método de semirreacciones: MnO₄⁻ + Fe²⁺ → Mn²⁺ + Fe³⁺",
+              "expectedAnswerHints": [
+                "Mn pasa de +7 a +2, gana 5e⁻",
+                "Fe pasa de +2 a +3, pierde 1e⁻",
+                "Multiplica para igualar electrones"
+              ]
+            }
+          ],
+          "chatContext": "El tema es reacciones de oxidación-reducción (redox), incluyendo números de oxidación, identificación de agentes oxidantes y reductores, y balanceo de ecuaciones redox por semirreacciones en medio ácido.",
+          "metrics": {
+            "durationMs": 5409,
+            "promptTokens": 574,
+            "completionTokens": 321,
+            "totalTokens": 895
+          }
+        }
+      ],
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 840,
+            "promptTokens": 341,
+            "completionTokens": 4,
+            "totalTokens": 345
+          },
+          "curation": {
+            "durationMs": 2146,
+            "promptTokens": 144,
+            "completionTokens": 143,
+            "totalTokens": 287
+          },
+          "brain.guide": {
+            "durationMs": 4055,
+            "promptTokens": 301,
+            "completionTokens": 243,
+            "totalTokens": 544
+          },
+          "brain.student.0": {
+            "durationMs": 4799,
+            "promptTokens": 574,
+            "completionTokens": 303,
+            "totalTokens": 877
+          },
+          "brain.student.1": {
+            "durationMs": 5409,
+            "promptTokens": 574,
+            "completionTokens": 321,
+            "totalTokens": 895
+          }
+        },
+        "totalDurationMs": 12461,
+        "totalTokens": 2948
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "name": "studentCount",
+      "passed": true,
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "name": "questionsPerStudent",
+      "passed": true,
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "name": "hasHints",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:36:23Z"
+}

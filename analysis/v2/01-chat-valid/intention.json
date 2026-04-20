@@ -1,0 +1,16 @@
+{
+  "id": "01-chat-valid",
+  "description": "Valid chat request — student asks about a topic within context, expects guided response",
+  "category": "happy-path",
+  "request": {
+    "type": "chat",
+    "prompt": "¿Cómo puedo resolver una ecuación de primer grado?",
+    "context": "Álgebra básica para estudiantes de secundaria"
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "hasReply": true,
+    "guardShouldPass": true
+  }
+}

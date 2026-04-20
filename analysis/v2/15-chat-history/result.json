@@ -1,0 +1,75 @@
+{
+  "id": "15-chat-history",
+  "description": "Valid chat with history — simulates a multi-turn conversation to test context continuity",
+  "request": {
+    "type": "chat",
+    "prompt": "¿Y cómo se aplica en la vida real?",
+    "context": "Probabilidad y estadística",
+    "history": [
+      {
+        "role": "user",
+        "content": "¿Qué es la probabilidad condicional?"
+      },
+      {
+        "role": "assistant",
+        "content": "La probabilidad condicional es la probabilidad de que ocurra un evento dado que otro evento ya ocurrió. Se representa como P(A|B)."
+      }
+    ]
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 7289,
+    "body": {
+      "type": "chat",
+      "valid": true,
+      "reply": "¡Excelente pregunta! Pensemos juntos en esto. 🙂\n\nTe hago algunas preguntas para que lo descubras tú mismo:\n\n**Imagina esta situación:**\nSupón que sabes que una persona ya tiene fiebre. ¿Crees que eso **cambia** la probabilidad de que esa persona tenga gripe, comparado con alguien de quien no sabes nada?\n\n- ¿Por qué sí o por qué no?\n- ¿Qué información **nueva** te está dando el hecho de saber que tiene fiebre?\n\nPiensa también en esto:\n- Cuando ya **conoces algo** sobre una situación, ¿eso afecta tus predicciones sobre lo que puede pasar?\n\n¿Qué conclusión puedes sacar de esto? 😊",
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 1194,
+            "promptTokens": 344,
+            "completionTokens": 4,
+            "totalTokens": 348
+          },
+          "curation": {
+            "durationMs": 813,
+            "promptTokens": 110,
+            "completionTokens": 18,
+            "totalTokens": 128
+          },
+          "brain.chat": {
+            "durationMs": 5229,
+            "promptTokens": 237,
+            "completionTokens": 214,
+            "totalTokens": 451
+          }
+        },
+        "totalDurationMs": 7239,
+        "totalTokens": 927
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "name": "hasReply",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:36:45Z"
+}

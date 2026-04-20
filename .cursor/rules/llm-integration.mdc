@@ -1,0 +1,185 @@
+---
+description: LLM integration — Port/Adapter architecture, factory, type system, error handling, and NestJS wiring
+globs: "libs/llm-services/**/*.ts,libs/nest-shared/src/llm/**/*.ts"
+alwaysApply: true
+---
+
+# LLM Integration — Provider-Agnostic Abstraction
+
+All LLM access goes through `@primer-guidy/llm-services`. The underlying provider (Anthropic) is NEVER exposed to consumers. The factory pattern is kept for future extensibility.
+
+## Architecture — Port/Adapter
+
+```
+libs/llm-services/
+  src/
+    ports/
+      llm.port.ts        → ILlmProvider interface (single public contract)
+      llm.types.ts        → ChatRole, ChatMessage, CompletionOptions, CompletionResult, LlmError
+      index.ts            → barrel re-export
+    adapters/
+      anthropic.adapter.ts → AnthropicAdapter implements ILlmProvider
+    factory.ts            → createLlmProvider(config) — selects adapter
+    index.ts              → Public API: ports + factory only
+```
+
+## Mandatory Rules
+
+- Server apps NEVER import from `@anthropic-ai/sdk` or any provider SDK directly
+- Server apps import ONLY from `@primer-guidy/llm-services`
+- `ILlmProvider` is the ONLY public contract — adapters are implementation details
+- The factory selects the adapter at runtime based on `LlmProviderConfig.provider`
+- Adding a new LLM provider = one new adapter file + one factory case (Open/Closed Principle)
+
+## Port — `ILlmProvider`
+
+The single interface all adapters implement:
+
+```typescript
+interface ILlmProvider {
+  complete(messages: readonly ChatMessage[], options?: CompletionOptions): Promise<CompletionResult>
+}
+```
+
+Consumers depend on this interface via NestJS injection tokens — never on concrete adapter classes.
+
+## Type System
+
+All types use `readonly` fields. NEVER use raw string literals for roles — use `ChatRole` enum.
+
+| Type | Purpose |
+|------|---------|
+| `ChatRole` | Enum: `System`, `User`, `Assistant` — used in all `ChatMessage.role` fields |
+| `ChatMessage` | `{ role: ChatRole; content: string }` — immutable message |
+| `CompletionOptions` | Optional config: `model`, `temperature`, `maxTokens`, `timeoutMs`, `signal`, `jsonMode` |
+| `CompletionResult` | Normalized output: `content`, `model`, `usage` (LlmUsage), `durationMs` |
+| `LlmUsage` | Token counts: `promptTokens`, `completionTokens`, `totalTokens` |
+| `LlmProviderConfig` | Factory input: `provider`, `model`, `apiKey` |
+
+## Error Handling
+
+ALL adapter errors MUST be wrapped in `LlmError(code, message)`. NEVER throw raw errors or provider-specific exceptions.
+
+| `LlmErrorCode` | When to use |
+|-----------------|-------------|
+| `CONNECTION_FAILED` | `fetch` throws (network error, DNS failure) |
+| `MODEL_NOT_FOUND` | Provider returns 404 |
+| `INVALID_REQUEST` | Auth failure (401), bad params, missing API key |
+| `RATE_LIMITED` | Provider returns 429 or equivalent (Anthropic 529) |
+| `TIMEOUT` | `AbortSignal` fires (`DOMException` with `name === 'AbortError'`) |
+| `UNKNOWN` | Any other unrecognized error |
+
+```typescript
+// Adapter error mapping pattern
+private mapHttpError(status: number, body: string): LlmError {
+  if (status === HTTP_UNAUTHORIZED) {
+    return new LlmError(LlmErrorCode.INVALID_REQUEST, 'Invalid API key')
+  }
+  if (status === HTTP_NOT_FOUND) {
+    return new LlmError(LlmErrorCode.MODEL_NOT_FOUND, `Model not found: ${body}`)
+  }
+  if (status === HTTP_RATE_LIMITED) {
+    return new LlmError(LlmErrorCode.RATE_LIMITED, 'Rate limit exceeded')
+  }
+  return new LlmError(LlmErrorCode.UNKNOWN, `Provider error (${status}): ${body}`)
+}
+```
+
+## Adapter Conventions
+
+Every adapter MUST follow this structure:
+
+- **File**: `<provider>.adapter.ts` in `src/adapters/`
+- **Class**: `<Provider>Adapter implements ILlmProvider`
+- **Constructor**: receives only config values (API key, default model)
+- **Constants**: API URLs, HTTP status codes, defaults extracted as top-level `const` (no magic numbers)
+- **Timeout**: use `AbortSignal.timeout(ms)` combined with optional caller signal via `AbortSignal.any([...])`
+- **HTTP errors**: mapped via private `mapHttpError` method
+- **Response normalization**: map provider-specific response shape to `CompletionResult`
+
+```typescript
+class ExampleAdapter implements ILlmProvider {
+  constructor(
+    private readonly apiKey: string,
+    private readonly defaultModel: string,
+  ) {}
+
+  async complete(messages: readonly ChatMessage[], options?: CompletionOptions): Promise<CompletionResult> {
+    const model = options?.model ?? this.defaultModel
+    const start = performance.now()
+    // ... provider-specific call
+    return { content, model, usage: { promptTokens, completionTokens, totalTokens }, durationMs }
+  }
+}
+```
+
+## Factory — `createLlmProvider`
+
+The factory is the ONLY place that instantiates adapters:
+
+```typescript
+const createLlmProvider = (config: LlmProviderConfig): ILlmProvider => {
+  switch (config.provider) {
+    case 'anthropic':
+      return new AnthropicAdapter(config.apiKey, config.model)
+    default:
+      throw new LlmError(LlmErrorCode.INVALID_REQUEST, `Unknown provider`)
+  }
+}
+```
+
+- Adding a provider: create adapter, add case, expand `LlmProviderConfig.provider` union
+
+## NestJS Wiring — `LlmModule`
+
+`LlmModule.register()` in `@primer-guidy/nest-shared` bridges the factory with NestJS DI:
+
+```typescript
+LlmModule.register([
+  { token: LLM_PROVIDER, modelEnv: 'ANTHROPIC_MODEL', defaultModel: 'claude-sonnet-4-6' },
+])
+```
+
+- `token`: string from `src/tokens.ts` — the NestJS injection token
+- `modelEnv`: env var name for model override
+- `defaultModel`: fallback if env var is not set
+- Always uses Anthropic with `ANTHROPIC_API_KEY` from env
+
+Environment variables:
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `ANTHROPIC_API_KEY` | Anthropic API key (required) | — |
+| Per-registration `modelEnv` | Model override per token | `defaultModel` from registration |
+
+## Testing
+
+- **Adapters**: mock `fetch` with `vi.stubGlobal('fetch', vi.fn())`, return mock `Response` objects; assert URL, headers, body, and error code mapping
+- **Factory**: mock adapter constructors with `vi.mock('../adapters/...')`, assert correct adapter is selected and constructor args match config
+- **Consumers**: mock `ILlmProvider` as `{ complete: vi.fn() }`, never instantiate real adapters in unit tests
+
+```typescript
+// Adapter test pattern
+const mockFetch = vi.fn()
+vi.stubGlobal('fetch', mockFetch)
+
+mockFetch.mockResolvedValue(new Response(JSON.stringify(mockResponse), { status: 200 }))
+
+const adapter = new AnthropicAdapter('test-key', 'claude-haiku-4-5')
+const result = await adapter.complete([{ role: ChatRole.User, content: 'Hello' }])
+
+expect(result.content).toBe('response text')
+expect(mockFetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+  method: 'POST',
+  headers: expect.objectContaining({ 'x-api-key': 'test-key' }),
+}))
+```
+
+## Public API (`index.ts`)
+
+The library exports ONLY:
+
+- **Types** (as `export type`): `ILlmProvider`, `ChatMessage`, `CompletionOptions`, `CompletionResult`, `LlmProviderConfig`, `LlmUsage`
+- **Runtime values**: `ChatRole`, `LlmError`, `LlmErrorCode`, `createLlmProvider`
+
+NEVER export adapter classes from the library index.

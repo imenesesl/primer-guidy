@@ -121,7 +121,7 @@ import { LLM_PROVIDER } from './tokens'
   imports: [
     HealthModule,
     LlmModule.register([
-      { token: LLM_PROVIDER, modelEnv: 'OLLAMA_MODEL', defaultModel: 'llama3.1:8b' },
+      { token: LLM_PROVIDER, modelEnv: 'ANTHROPIC_MODEL', defaultModel: 'claude-sonnet-4-6' },
     ]),
     FeatureModule,
   ],
@@ -224,14 +224,16 @@ Services measure their own internal steps (LLM calls, curation steps) and return
 ## LLM Integration
 
 - Inject LLM providers via `@Inject(TOKEN)` using tokens from `src/tokens.ts`
-- NEVER import from `ollama` or `groq-sdk` directly — use `@primer-guidy/llm-services`
+- NEVER import from `@anthropic-ai/sdk` or any provider SDK directly — use `@primer-guidy/llm-services`
 - System prompts live in `src/prompts/` folder — NEVER inline in service files
 - Use low temperature (0-0.3) for classification/validation, higher (0.7) for generation
 - `LlmModule.register()` supports multiple providers per server with different tokens and model env vars
 
+For full LLM patterns (port/adapter architecture, factory, error handling, type system), see `llm-integration.mdc`. For pipeline patterns (metrics, retries, concurrency, JSON validation, prompt management), see `llm-pipeline.mdc`.
+
 ## Server-to-Server Communication
 
-For internal service calls (e.g., prompt-validation calling brain), create a dedicated client service:
+For internal service calls (e.g., guardian-server calling brain), create a dedicated client service:
 
 ```typescript
 @Injectable()

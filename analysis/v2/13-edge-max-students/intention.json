@@ -1,0 +1,20 @@
+{
+  "id": "13-edge-max-students",
+  "description": "Edge case — requests the maximum allowed students (50) to test limits and performance",
+  "category": "edge-case",
+  "request": {
+    "type": "task-generator",
+    "task": "quiz",
+    "prompt": "Tabla periódica de los elementos",
+    "context": "Química general",
+    "studentCount": 50
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "guardShouldPass": true,
+    "studentCount": 50,
+    "questionsPerStudent": 1,
+    "note": "This test is slow — 50 students sequentially with concurrency 10"
+  }
+}

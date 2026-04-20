@@ -1,0 +1,23 @@
+{
+  "id": "04-homework-open-valid",
+  "description": "Valid homework open-ended request — generates N open questions per student with answer hints",
+  "category": "happy-path",
+  "request": {
+    "type": "task-generator",
+    "task": "homework",
+    "prompt": "Reacciones químicas de oxidación-reducción",
+    "context": "Química general para universidad",
+    "studentCount": 2,
+    "questionCount": 2,
+    "openQuestion": true
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "guardShouldPass": true,
+    "studentCount": 2,
+    "questionsPerStudent": 2,
+    "hasOptions": false,
+    "hasHints": true
+  }
+}

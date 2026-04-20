@@ -1,0 +1,59 @@
+{
+  "id": "12-edge-empty-context",
+  "description": "Edge case — sends a valid prompt but with a single-character context to test minimum validation",
+  "request": {
+    "type": "chat",
+    "prompt": "Explícame qué es la fotosíntesis",
+    "context": "x"
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 5408,
+    "body": {
+      "type": "chat",
+      "valid": true,
+      "reply": "Aprecio tu curiosidad sobre la fotosíntesis, ¡es un tema fascinante! Sin embargo, mi rol aquí es guiarte dentro de un contexto específico de estudio, y ese tema está fuera del alcance del material que tengo disponible para trabajar contigo.\n\nTe recomiendo consultar:\n- Tu libro de texto de biología\n- Recursos como Khan Academy\n- Tu profesor o profesora\n\n¿Hay algo dentro del tema que estamos trabajando en lo que pueda ayudarte a reflexionar? 😊",
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 635,
+            "promptTokens": 338,
+            "completionTokens": 4,
+            "totalTokens": 342
+          },
+          "curation": {
+            "durationMs": 907,
+            "promptTokens": 103,
+            "completionTokens": 16,
+            "totalTokens": 119
+          },
+          "brain.chat": {
+            "durationMs": 3828,
+            "promptTokens": 175,
+            "completionTokens": 132,
+            "totalTokens": 307
+          }
+        },
+        "totalDurationMs": 5375,
+        "totalTokens": 768
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:36:37Z"
+}

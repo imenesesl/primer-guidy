@@ -1,17 +1,16 @@
 services:
-  prompt-validation:
+  guardian:
     build:
       context: .
       dockerfile: docker/Dockerfile.server
       args:
-        APP_NAME: prompt-validation-server
+        APP_NAME: guardian-server
         APP_PORT: 8080
     environment:
       - PORT=8080
-      - LLM_PROVIDER=groq
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - GUARD_MODEL=llama-guard-3-8b
-      - CURATION_MODEL=llama-3.1-8b-instant
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GUARD_MODEL=claude-haiku-4-5
+      - CURATION_MODEL=claude-haiku-4-5
       - BRAIN_BASE_URL=${BRAIN_BASE_URL}
       - BRAIN_API_KEY=${BRAIN_API_KEY}
 
@@ -24,7 +23,6 @@ services:
         APP_PORT: 8080
     environment:
       - PORT=8080
-      - LLM_PROVIDER=groq
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - OLLAMA_MODEL=llama-3.3-70b-versatile
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=claude-sonnet-4-6
       - BRAIN_API_KEY=${BRAIN_API_KEY}

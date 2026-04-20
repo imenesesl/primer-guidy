@@ -7,14 +7,14 @@ const PROXY_PORT = 3000
 const LOGIN_PORT = 3001
 const CORE_PORT = 3002
 const FLOW_PORT = 3003
-const PROMPT_VALIDATION_PORT = 3010
+const GUARDIAN_PORT = 3010
 
 const HTTP_REDIRECT = 302
 const HTTP_NOT_FOUND = 404
 const HTTP_BAD_GATEWAY = 502
 
 const routes: readonly { readonly prefix: string; readonly target: number }[] = [
-  { prefix: '/api/prompt-validation', target: PROMPT_VALIDATION_PORT },
+  { prefix: '/api/guardian', target: GUARDIAN_PORT },
   { prefix: '/login', target: LOGIN_PORT },
   { prefix: '/core', target: CORE_PORT },
   { prefix: '/flow', target: FLOW_PORT },
@@ -103,7 +103,7 @@ proxy.listen(PROXY_PORT, () => {
   console.log(`  /login/                → localhost:${LOGIN_PORT}`)
   console.log(`  /core/                 → localhost:${CORE_PORT}`)
   console.log(`  /flow/                 → localhost:${FLOW_PORT}`)
-  console.log(`  /api/prompt-validation → localhost:${PROMPT_VALIDATION_PORT}\n`)
+  console.log(`  /api/guardian           → localhost:${GUARDIAN_PORT}\n`)
 })
 
 const cleanup = () => {

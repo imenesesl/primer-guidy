@@ -1,0 +1,16 @@
+{
+  "id": "12-edge-empty-context",
+  "description": "Edge case — sends a valid prompt but with a single-character context to test minimum validation",
+  "category": "edge-case",
+  "request": {
+    "type": "chat",
+    "prompt": "Explícame qué es la fotosíntesis",
+    "context": "x"
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "guardShouldPass": true,
+    "note": "Short context should still pass validation since there is no min-length on context content, only on the DTO field"
+  }
+}

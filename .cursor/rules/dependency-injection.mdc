@@ -78,7 +78,7 @@ export class SafetyGuardService {
 }
 ```
 
-`LlmModule.register()` is a `@Global()` dynamic module — registered tokens are available in all feature modules without re-importing.
+`LlmModule.register()` is a `@Global()` dynamic module — registered tokens are available in all feature modules without re-importing. For full LLM DI patterns including multi-provider registration, model env resolution, adapter selection, and the port/adapter type system, see `llm-integration.mdc`.
 
 ## React (Web)
 

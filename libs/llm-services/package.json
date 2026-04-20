@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "@primer-guidy/eslint-config": "workspace:*"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0"
   }
 }

@@ -97,8 +97,8 @@ libs/llm-services/src/
   factory.ts
   factory.test.ts                 ← MANDATORY TEST
   adapters/
-    ollama.adapter.ts
-    ollama.adapter.test.ts        ← MANDATORY TEST
+    anthropic.adapter.ts
+    anthropic.adapter.test.ts     ← MANDATORY TEST
 ```
 
 ```

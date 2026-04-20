@@ -11,7 +11,7 @@
     "dev:core": "pnpm --filter @primer-guidy/core-web dev",
     "dev:login": "pnpm --filter @primer-guidy/login-web dev",
     "dev:flow": "pnpm --filter @primer-guidy/flow-web dev",
-    "dev:prompt-validation": "pnpm --filter @primer-guidy/prompt-validation-server dev",
+    "dev:guardian": "pnpm --filter @primer-guidy/guardian-server dev",
     "dev:brain": "pnpm --filter @primer-guidy/brain-server dev",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",

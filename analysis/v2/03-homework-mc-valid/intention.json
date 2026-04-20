@@ -1,0 +1,22 @@
+{
+  "id": "03-homework-mc-valid",
+  "description": "Valid homework multiple-choice request — generates N questions per student with 4 options each",
+  "category": "happy-path",
+  "request": {
+    "type": "task-generator",
+    "task": "homework",
+    "prompt": "Derivadas e integrales",
+    "context": "Cálculo diferencial e integral",
+    "studentCount": 2,
+    "questionCount": 3
+  },
+  "expectation": {
+    "httpStatus": 201,
+    "valid": true,
+    "guardShouldPass": true,
+    "studentCount": 2,
+    "questionsPerStudent": 3,
+    "hasOptions": true,
+    "optionsCount": 4
+  }
+}

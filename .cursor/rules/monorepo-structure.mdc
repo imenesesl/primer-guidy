@@ -14,7 +14,7 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 | React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/`, `apps/login-web/` |
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | Cloud Functions | `apps/functions/` | tsc + firebase-functions | `apps/functions/` |
-| NestJS server | `apps/<name>-server/` | NestJS CLI + SWC | `apps/prompt-validation-server/`, `apps/brain-server/` |
+| NestJS server | `apps/<name>-server/` | NestJS CLI + SWC | `apps/guardian-server/`, `apps/brain-server/` |
 | Cloud services abstraction | `libs/cloud-services/` | tsc + Vitest | `libs/cloud-services/` |
 | LLM services abstraction | `libs/llm-services/` | tsc + Vitest | `libs/llm-services/` |
 | Shared NestJS modules | `libs/nest-shared/` | tsc + Vitest | `libs/nest-shared/` |
@@ -64,10 +64,10 @@ Provider-agnostic abstraction for cloud services (auth, database, firestore, hos
 
 Provider-agnostic abstraction for LLM inference. Same Port/Adapter pattern as cloud-services.
 
-- NestJS servers NEVER import from `ollama` or `groq-sdk` directly
+- NestJS servers NEVER import from `@anthropic-ai/sdk` or any provider SDK directly
 - Import ONLY from `@primer-guidy/llm-services`
-- Adapters: `OllamaAdapter` (local dev), `GroqAdapter` (production)
-- Factory: `createLlmProvider(config)` selects adapter based on `LLM_PROVIDER` env var
+- Adapter: `AnthropicAdapter` (Anthropic Claude API)
+- Factory: `createLlmProvider(config)` selects adapter based on `LlmProviderConfig.provider`
 
 ## Shared NestJS Modules — `@primer-guidy/nest-shared`
 
@@ -119,8 +119,8 @@ The monorepo uses a layered `.env` approach for safe configuration:
 
 | File | Committed | Purpose | Priority |
 |------|-----------|---------|----------|
-| `.env` | Yes | Safe defaults for local dev (public keys, `LLM_PROVIDER=ollama`) | Lowest |
-| `.env.local` | No (gitignored via `*.local`) | Secrets and personal overrides (`BRAIN_API_KEY`, Groq keys) | Highest |
+| `.env` | Yes | Safe defaults for local dev (public keys, Anthropic model defaults) | Lowest |
+| `.env.local` | No (gitignored via `*.local`) | Secrets and personal overrides (`BRAIN_API_KEY`, `ANTHROPIC_API_KEY`) | Highest |
 | `.env.example` | Yes | Template showing all required variables | Reference only |
 
 ### Loading Order
@@ -147,12 +147,11 @@ NestJS servers are containerized via a shared parameterized Dockerfile at `docke
 ### Local Development
 
 ```bash
-pnpm docker:up     # starts Ollama + all servers via docker-compose.yml
+pnpm docker:up     # starts all servers via docker-compose.yml
 pnpm docker:down   # stops all containers
 ```
 
-- `docker-compose.yml` — Local dev: Ollama + servers on Docker bridge network. Build context is monorepo root (`.`) with explicit `dockerfile: docker/Dockerfile.server`
-- `scripts/ollama-setup.sh` — Pulls required LLM models into Ollama
+- `docker-compose.yml` — Local dev: servers on Docker bridge network. Build context is monorepo root (`.`) with explicit `dockerfile: docker/Dockerfile.server`. Requires `ANTHROPIC_API_KEY` in `.env`
 
 ### Adding a New Server
 
@@ -190,7 +189,7 @@ The root `package.json` MUST have a `dev:<name>` script for each app:
 {
   "dev:core": "pnpm --filter @primer-guidy/core-web dev",
   "dev:login": "pnpm --filter @primer-guidy/login-web dev",
-  "dev:prompt-validation": "pnpm --filter @primer-guidy/prompt-validation-server dev",
+  "dev:guardian": "pnpm --filter @primer-guidy/guardian-server dev",
   "dev:brain": "pnpm --filter @primer-guidy/brain-server dev"
 }
 ```
@@ -204,7 +203,6 @@ Recursive scripts (`build`, `typecheck`, `lint`, `test`) run across all packages
 Cross-app tooling scripts live in `scripts/` at the monorepo root:
 
 - `scripts/run-e2e.sh` — Shared E2E runner (starts emulators, runs Playwright, cleans up)
-- `scripts/ollama-setup.sh` — Pulls required LLM models into Ollama
 
 Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `package.json`.
 

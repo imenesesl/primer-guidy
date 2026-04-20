@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common'
 import { HealthModule, LlmModule } from '@primer-guidy/nest-shared'
-import { GenerationModule } from './modules/generation/generation.module'
+import { ChatModule } from './modules/chat/chat.module'
+import { TaskModule } from './modules/task/task.module'
 import { LLM_PROVIDER } from './tokens'
 
 @Module({
   imports: [
     HealthModule,
     LlmModule.register([
-      { token: LLM_PROVIDER, modelEnv: 'OLLAMA_MODEL', defaultModel: 'llama3.1:8b' },
+      { token: LLM_PROVIDER, modelEnv: 'ANTHROPIC_MODEL', defaultModel: 'claude-sonnet-4-6' },
     ]),
-    GenerationModule,
+    ChatModule,
+    TaskModule,
   ],
 })
 export class AppModule {}

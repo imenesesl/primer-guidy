@@ -1,36 +1,20 @@
 services:
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - '11434:11434'
-    volumes:
-      - ollama_data:/root/.ollama
-    healthcheck:
-      test: ['CMD-SHELL', 'curl -f http://localhost:11434/api/tags || exit 1']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  prompt-validation:
+  guardian:
     build:
       context: .
       dockerfile: docker/Dockerfile.server
       args:
-        APP_NAME: prompt-validation-server
+        APP_NAME: guardian-server
         APP_PORT: 3010
     ports:
       - '3010:3010'
     environment:
       - PORT=3010
-      - LLM_PROVIDER=ollama
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - GUARD_MODEL=llama-guard3:8b
-      - CURATION_MODEL=llama3.1:8b
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GUARD_MODEL=claude-haiku-4-5
+      - CURATION_MODEL=claude-haiku-4-5
       - BRAIN_BASE_URL=http://brain:3011
       - BRAIN_API_KEY=${BRAIN_API_KEY}
-    depends_on:
-      ollama:
-        condition: service_healthy
 
   brain:
     build:
@@ -43,13 +27,6 @@ services:
       - '3011:3011'
     environment:
       - PORT=3011
-      - LLM_PROVIDER=ollama
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - OLLAMA_MODEL=llama3.1:8b
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=claude-sonnet-4-6
       - BRAIN_API_KEY=${BRAIN_API_KEY}
-    depends_on:
-      ollama:
-        condition: service_healthy
-
-volumes:
-  ollama_data:

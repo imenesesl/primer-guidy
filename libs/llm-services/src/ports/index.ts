@@ -4,5 +4,6 @@ export type {
   CompletionOptions,
   CompletionResult,
   LlmProviderConfig,
+  LlmUsage,
 } from './llm.types'
-export { LlmError, LlmErrorCode } from './llm.types'
+export { ChatRole, LlmError, LlmErrorCode } from './llm.types'

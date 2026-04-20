@@ -1,5 +1,8 @@
+import type { LlmUsage } from '@primer-guidy/llm-services'
+
 export interface GenerationResponseDto {
   readonly content: string
   readonly model: string
-  readonly tokensUsed: number
+  readonly usage: LlmUsage
+  readonly durationMs: number
 }

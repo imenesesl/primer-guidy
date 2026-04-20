@@ -1,0 +1,254 @@
+---
+description: LLM pipeline — prompt management, metrics, JSON validation, retry/concurrency, constants, and pipeline stages
+globs: "apps/*-server/src/**/*.ts"
+alwaysApply: true
+---
+
+# LLM Pipeline — Server-Side Consumption Patterns
+
+How NestJS servers consume `@primer-guidy/llm-services`. For the library-level architecture (port/adapter, factory, types), see `llm-integration.mdc`.
+
+## Prompt Management
+
+### File Structure
+
+All system prompts live in `src/prompts/` — NEVER inline in service files:
+
+```
+src/prompts/
+  index.ts              → barrel re-export
+  chat-guide.ts         → export const CHAT_GUIDE_PROMPT = `...`
+  task-guide.ts         → export const TASK_GUIDE_PROMPT = `...`
+  quiz-content.ts       → export const QUIZ_CONTENT_PROMPT = `...`
+```
+
+### Rules
+
+- One file per prompt concern
+- Export as `SCREAMING_SNAKE_CASE` constants
+- Barrel `index.ts` re-exports everything
+- Template placeholders use a `TemplatePlaceholder` const object — NEVER raw strings:
+
+```typescript
+// constants.ts
+export const TemplatePlaceholder = {
+  StudentIndex: '{{STUDENT_INDEX}}',
+  QuestionCount: '{{QUESTION_COUNT}}',
+} as const
+
+// service.ts
+const prompt = template
+  .replace(TemplatePlaceholder.StudentIndex, String(index))
+  .replace(TemplatePlaceholder.QuestionCount, String(count))
+```
+
+### Message Construction
+
+Always use `ChatRole` enum for roles — NEVER string literals:
+
+```typescript
+import { ChatRole } from '@primer-guidy/llm-services'
+
+const messages: ChatMessage[] = [
+  { role: ChatRole.System, content: SYSTEM_PROMPT },
+  { role: ChatRole.User, content: userInput },
+]
+```
+
+## Metrics Collection
+
+### Pattern
+
+Every LLM-calling endpoint MUST track metrics using `MetricsCollector`:
+
+```typescript
+// Controller — instantiate per request
+@Post()
+async handle(@Body() dto: RequestDto): Promise<ResponseDto> {
+  const collector = new MetricsCollector()
+  const result = await this.service.generate(dto, collector)
+  return { ...result, metrics: collector.build() }
+}
+
+// Service — wrap each LLM call
+const result = await collector.record(MetricsStep.Chat, () =>
+  this.llm.complete(messages, options),
+)
+```
+
+### Step Naming
+
+Step names MUST come from enums/helpers — NEVER hardcoded strings:
+
+```typescript
+// constants.ts
+export enum MetricsStep {
+  Guide = 'guide',
+  Chat = 'chat',
+}
+
+export const studentStep = (index: number): string => `student.${index}`
+```
+
+- Use `MetricsStep.Guide`, `MetricsStep.Chat` for fixed steps
+- Use `studentStep(i)` for dynamic per-student steps
+- Inter-server metrics merge with `brain.${stepName}` prefix
+
+## JSON Mode + Zod Validation
+
+When requesting structured JSON output from LLMs:
+
+### Request
+
+- Set `jsonMode: true` in `CompletionOptions` — the adapter appends a strict JSON instruction to the system prompt
+- Use low temperature (0.2) for structured output
+
+### Response Parsing
+
+1. **Extract**: use `extractJson(rawContent)` to handle markdown fences or surrounding text
+2. **Parse**: `JSON.parse()` with error mapping to domain error
+3. **Validate**: Zod schema `.safeParse()` for structural validation
+4. **Fail fast**: if parse or validation fails, throw immediately with step context
+
+```typescript
+parseJson<T>(raw: string, step: string): T {
+  try {
+    const extracted = extractJson(raw)
+    return JSON.parse(extracted) as T
+  } catch {
+    throw new HttpException(`${BrainError.JsonParseFailed} "${step}"`, HttpStatus.BAD_GATEWAY)
+  }
+}
+```
+
+### Schema Location
+
+Zod schemas live in `schemas/` subdirectory per feature module:
+
+```
+modules/task/quiz/
+  schemas/
+    quiz.schema.ts        → QuizSchema, QuizQuestionSchema
+  quiz.service.ts
+  quiz.controller.ts
+```
+
+- Extract all numeric constraints to named constants (`MIN_STATEMENT_LENGTH`, `OPTIONS_COUNT`, etc.)
+- Schemas are passed to the shared `TaskGuideService` — feature services only wire config
+
+## Retry + Concurrency
+
+### Retry Pattern
+
+Fan-out LLM calls (per-student generation) MUST use retry with exponential backoff:
+
+```typescript
+const MAX_RETRIES = 2
+const RETRY_DELAY_BASE_MS = 500
+
+for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+  try {
+    return await generateForStudent(index, signal)
+  } catch (error) {
+    lastError = error as Error
+    if (attempt < MAX_RETRIES) {
+      await new Promise((r) => setTimeout(r, RETRY_DELAY_BASE_MS * (attempt + 1)))
+    }
+  }
+}
+throw lastError as Error
+```
+
+### Concurrency Control
+
+Parallel LLM calls MUST be bounded:
+
+- `TASK_CONCURRENCY` env var controls max parallel calls (default: 2)
+- Process students in batches using sliced `Promise.all`
+- Use `AbortController` to cancel in-flight work when any batch fails
+
+```typescript
+const ENV_TASK_CONCURRENCY = 'TASK_CONCURRENCY'
+const DEFAULT_CONCURRENCY = 2
+const CONCURRENCY_LIMIT = Math.max(1, Number(process.env[ENV_TASK_CONCURRENCY]) || DEFAULT_CONCURRENCY)
+```
+
+## Constants Pattern
+
+Server-level constants live in `src/constants.ts`. NEVER use hardcoded strings or magic numbers in services.
+
+| Constant type | Pattern | Example |
+|---------------|---------|---------|
+| Metric step names | `enum MetricsStep` | `MetricsStep.Guide`, `MetricsStep.Chat` |
+| Dynamic step names | Helper function | `studentStep(index)` → `student.${index}` |
+| Error messages | `enum BrainError` | `BrainError.JsonParseFailed`, `BrainError.SchemaValidationFailed` |
+| Route paths | `as const` object | `BrainRoute.Chat`, `BrainRoute.Quiz` |
+| Template placeholders | `as const` object | `TemplatePlaceholder.StudentIndex` |
+| LLM config | Top-level `const` | `CHAT_TEMPERATURE`, `CHAT_MAX_TOKENS`, `GUIDE_TEMPERATURE` |
+| Env var keys | Top-level `const` | `ENV_TASK_CONCURRENCY` |
+
+## Pipeline Stages
+
+LLM pipelines follow a staged architecture. Each stage is a separate `@Injectable()` service.
+
+### Validation Server Pipeline
+
+```
+Request → SafetyGuardService → PromptCurationService → BrainClientService → Response
+            (fast, low tokens)    (rewrite prompt)       (HTTP to brain-server)
+```
+
+- **Guard**: low temperature (0), minimal tokens — classifies safe/unsafe
+- **Curation**: low temperature (0.2) — rewrites prompt for clarity
+- **Brain client**: HTTP call to brain-server with typed request interfaces
+
+### Brain Server Pipeline
+
+```
+Request → Service → TaskGuideService.generateGuide → TaskGuideService.generateStudents → Response
+                      (single LLM call, JSON mode)     (fan-out, retry, bounded concurrency)
+```
+
+- **Guide generation**: single LLM call, low temperature (0.2), JSON mode, high max tokens
+- **Student generation**: per-student fan-out with retry, higher temperature (0.7), bounded by `TASK_CONCURRENCY`
+- Feature services (`QuizService`, `HomeworkService`) only orchestrate — they pass config to `TaskGuideService`
+
+## Inter-Server Communication
+
+When one server calls another (e.g., validation → brain):
+
+- Dedicated `*ClientService` with typed request/response interfaces
+- Endpoint paths as `const` objects — NEVER inline strings
+- Always send `X-API-Key` header
+- Merge downstream metrics under `brain.${stepName}` prefix
+- Default base URL as named constant, overridable via env var
+
+```typescript
+const DEFAULT_BRAIN_BASE_URL = 'http://localhost:3011'
+
+const BrainEndpoint = {
+  Chat: '/api/chat',
+  Quiz: '/api/task/quiz',
+  Homework: '/api/task/homework',
+} as const
+```
+
+## Temperature Guidelines
+
+| Purpose | Temperature | Rationale |
+|---------|-------------|-----------|
+| Safety guard / classification | 0 | Deterministic yes/no decisions |
+| Prompt curation / rewriting | 0.2 | Consistent rewrites with minimal creativity |
+| Guide generation (JSON) | 0.2 | Structured, predictable output |
+| Content generation (per-student) | 0.7 | Varied, unique content per student |
+| Chat / conversation | 0.4 | Balanced: coherent but not robotic |
+
+## Adding a New LLM-Powered Feature
+
+1. Create prompt file in `src/prompts/<name>.ts`, add to barrel
+2. Create Zod schema in `modules/<feature>/schemas/<name>.schema.ts` if JSON output
+3. Add `MetricsStep` enum member in `src/constants.ts`
+4. Create service that injects `ILlmProvider` via token from `src/tokens.ts`
+5. Use `MetricsCollector.record()` for every LLM call
+6. Controller instantiates `MetricsCollector`, includes `metrics: collector.build()` in response
+7. Write unit tests mocking `ILlmProvider` as `{ complete: vi.fn() }`

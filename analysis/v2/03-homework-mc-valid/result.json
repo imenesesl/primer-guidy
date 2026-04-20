@@ -1,0 +1,188 @@
+{
+  "id": "03-homework-mc-valid",
+  "description": "Valid homework multiple-choice request — generates N questions per student with 4 options each",
+  "request": {
+    "type": "task-generator",
+    "task": "homework",
+    "prompt": "Derivadas e integrales",
+    "context": "Cálculo diferencial e integral",
+    "studentCount": 2,
+    "questionCount": 3
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 14905,
+    "body": {
+      "type": "task-generator",
+      "task": "homework",
+      "valid": true,
+      "guide": {
+        "topic": "Derivadas e Integrales en Cálculo",
+        "keyConceptCount": 6,
+        "keyConcepts": [
+          "La derivada mide la tasa de cambio instantánea de una función en un punto.",
+          "Geométricamente, la derivada representa la pendiente de la recta tangente a la curva.",
+          "Las reglas de derivación incluyen potencia, producto, cociente y cadena.",
+          "La integral es la operación inversa de la derivada, acumulando cantidades continuas.",
+          "Geométricamente, la integral definida representa el área bajo la curva en un intervalo.",
+          "El Teorema Fundamental del Cálculo conecta derivación e integración como operaciones inversas."
+        ],
+        "rubric": "El estudiante define, interpreta geométricamente y aplica correctamente derivadas e integrales con ejemplos."
+      },
+      "studentContents": [
+        {
+          "studentIndex": 0,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "¿Qué representa geométricamente la derivada de una función f(x) en un punto x=a?",
+              "options": [
+                "Pendiente de la recta tangente",
+                "Área bajo la curva",
+                "Volumen de revolución",
+                "Longitud del arco"
+              ],
+              "correctIndex": 0,
+              "explanation": "La derivada en un punto equivale a la pendiente de la recta tangente a la curva en ese punto específico."
+            },
+            {
+              "id": "q2",
+              "statement": "Aplica la regla de la cadena: si h(x)=sin(x³), ¿cuál es h'(x)?",
+              "options": ["cos(x³)", "3x²·cos(x³)", "3x²·sin(x³)", "cos(3x²)"],
+              "correctIndex": 1,
+              "explanation": "La regla de la cadena indica h'(x)=f'(g(x))·g'(x), siendo f=sin y g=x³, por lo que h'(x)=3x²·cos(x³)."
+            },
+            {
+              "id": "q3",
+              "statement": "Según el Teorema Fundamental del Cálculo, si F'(x)=f(x), entonces ∫[a,b] f(x)dx es igual a:",
+              "options": ["f(b)+f(a)", "F(b)-F(a)", "F(a)-F(b)", "f(b)·f(a)"],
+              "correctIndex": 1,
+              "explanation": "El Teorema Fundamental establece que la integral definida se evalúa como la diferencia F(b)-F(a), conectando integración y derivación."
+            }
+          ],
+          "chatContext": "Estudio de derivadas e integrales: definiciones, interpretación geométrica, reglas de derivación e integración, y el Teorema Fundamental del Cálculo.",
+          "metrics": {
+            "durationMs": 7155,
+            "promptTokens": 541,
+            "completionTokens": 447,
+            "totalTokens": 988
+          }
+        },
+        {
+          "studentIndex": 1,
+          "questions": [
+            {
+              "id": "q1",
+              "statement": "¿Qué representa geométricamente la derivada de una función f(x) en un punto x₀?",
+              "options": [
+                "Pendiente de la recta tangente",
+                "Área bajo la curva",
+                "Valor máximo de f(x)",
+                "Longitud del arco de la curva"
+              ],
+              "correctIndex": 0,
+              "explanation": "La derivada en un punto representa la pendiente de la recta tangente a la curva en ese punto específico."
+            },
+            {
+              "id": "q2",
+              "statement": "Al aplicar la regla de la cadena para derivar f(g(x)), ¿cuál es la expresión correcta?",
+              "options": ["f(x)·g(x)", "f'(g(x))·g'(x)", "f'(x)+g'(x)", "f'(x)/g'(x)"],
+              "correctIndex": 1,
+              "explanation": "La regla de la cadena establece que la derivada de una función compuesta es f'(g(x)) multiplicado por g'(x)."
+            },
+            {
+              "id": "q3",
+              "statement": "¿Qué establece el Teorema Fundamental del Cálculo sobre derivadas e integrales?",
+              "options": [
+                "Son operaciones independientes",
+                "Son operaciones inversas entre sí",
+                "La integral siempre es mayor",
+                "La derivada es siempre positiva"
+              ],
+              "correctIndex": 1,
+              "explanation": "El Teorema Fundamental del Cálculo establece que la derivación y la integración son operaciones inversas, conectando ambas ramas del cálculo."
+            }
+          ],
+          "chatContext": "El tema abarca definiciones, interpretación geométrica, reglas de derivación e integración, y el Teorema Fundamental del Cálculo.",
+          "metrics": {
+            "durationMs": 7114,
+            "promptTokens": 541,
+            "completionTokens": 415,
+            "totalTokens": 956
+          }
+        }
+      ],
+      "model": "claude-sonnet-4-6",
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 1126,
+            "promptTokens": 339,
+            "completionTokens": 4,
+            "totalTokens": 343
+          },
+          "curation": {
+            "durationMs": 2014,
+            "promptTokens": 142,
+            "completionTokens": 92,
+            "totalTokens": 234
+          },
+          "brain.guide": {
+            "durationMs": 4520,
+            "promptTokens": 253,
+            "completionTokens": 206,
+            "totalTokens": 459
+          },
+          "brain.student.1": {
+            "durationMs": 7114,
+            "promptTokens": 541,
+            "completionTokens": 415,
+            "totalTokens": 956
+          },
+          "brain.student.0": {
+            "durationMs": 7155,
+            "promptTokens": 541,
+            "completionTokens": 447,
+            "totalTokens": 988
+          }
+        },
+        "totalDurationMs": 14827,
+        "totalTokens": 2980
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "valid",
+      "passed": true,
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "name": "studentCount",
+      "passed": true,
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "name": "questionsPerStudent",
+      "passed": true,
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "name": "optionsCount",
+      "passed": true,
+      "expected": "4",
+      "actual": "4"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:36:10Z"
+}

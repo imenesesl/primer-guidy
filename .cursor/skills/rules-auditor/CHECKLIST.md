@@ -247,7 +247,7 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 - Controllers NEVER access repositories directly
 - Services NEVER handle HTTP concerns (request/response objects)
 - LLM injection via `@Inject(TOKEN)` with `ILlmProvider` from `@primer-guidy/llm-services`
-- NEVER import `ollama` or `groq-sdk` directly
+- NEVER import `@anthropic-ai/sdk` or any provider SDK directly
 - Server-to-server calls use `fetch` + `X-API-Key` header
 - Dev script uses `ts-node --swc -r reflect-metadata` — NOT `tsx`
 - Performance timing via `performance.now()` in controllers and services

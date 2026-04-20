@@ -1,0 +1,15 @@
+{
+  "id": "14-edge-missing-fields",
+  "description": "Edge case — sends task-generator without required fields (task, studentCount) to test DTO validation",
+  "category": "edge-case",
+  "request": {
+    "type": "task-generator",
+    "prompt": "Ecuaciones diferenciales",
+    "context": "Matemáticas avanzadas"
+  },
+  "expectation": {
+    "httpStatus": 400,
+    "valid": false,
+    "note": "Should fail DTO validation before reaching the guard"
+  }
+}

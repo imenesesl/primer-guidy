@@ -1,0 +1,52 @@
+{
+  "id": "11-nonsense-prompt",
+  "description": "Nonsense — prompt and context are real words but make no coherent sense together",
+  "request": {
+    "type": "task-generator",
+    "task": "quiz",
+    "prompt": "El color del viento cuando las matemáticas duermen en el tejado",
+    "context": "Biología marina y ecosistemas acuáticos",
+    "studentCount": 1
+  },
+  "response": {
+    "httpStatus": 201,
+    "durationMs": 985,
+    "body": {
+      "type": "task-generator",
+      "valid": false,
+      "error": {
+        "reason": "malformed_input",
+        "message": "Gibberish content - The message contains nonsens",
+        "step": "safetyGuard"
+      },
+      "metrics": {
+        "steps": {
+          "safetyGuard": {
+            "durationMs": 942,
+            "promptTokens": 352,
+            "completionTokens": 16,
+            "totalTokens": 368
+          }
+        },
+        "totalDurationMs": 942,
+        "totalTokens": 368
+      }
+    }
+  },
+  "assertions": [
+    {
+      "name": "httpStatus",
+      "passed": true,
+      "expected": "201",
+      "actual": "201"
+    },
+    {
+      "name": "expectedReason",
+      "passed": true,
+      "expected": "malformed_input",
+      "actual": "malformed_input"
+    }
+  ],
+  "passed": true,
+  "timestamp": "2026-04-20T21:36:32Z"
+}

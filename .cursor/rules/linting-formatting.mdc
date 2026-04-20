@@ -44,7 +44,7 @@ NestJS servers do NOT have individual `eslint.config.mjs` files. Instead, add th
 {
   files: [
     'apps/brain-server/**/*.module.ts',
-    'apps/prompt-validation-server/**/*.module.ts',
+    'apps/guardian-server/**/*.module.ts',
     'apps/my-new-server/**/*.module.ts',        // ← add here
     'libs/nest-shared/**/*.module.ts',
   ],
@@ -53,7 +53,7 @@ NestJS servers do NOT have individual `eslint.config.mjs` files. Instead, add th
 {
   files: [
     'apps/brain-server/**/*.{controller,service,guard}.ts',
-    'apps/prompt-validation-server/**/*.{controller,service,guard}.ts',
+    'apps/guardian-server/**/*.{controller,service,guard}.ts',
     'apps/my-new-server/**/*.{controller,service,guard}.ts',  // ← add here
     'libs/nest-shared/**/*.{controller,service,guard}.ts',
   ],
