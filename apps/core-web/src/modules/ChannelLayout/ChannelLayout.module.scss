@@ -1,0 +1,48 @@
+@use '@/styles/breakpoints' as *;
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col h-full;
+}
+
+.tabBar {
+  @apply flex gap-0 px-2;
+
+  border-bottom: var(--spacing-px) solid var(--primer-border-default);
+}
+
+@include md {
+  .tabBar {
+    @apply px-4;
+  }
+}
+
+.tab.tab {
+  @apply flex-1 px-2 py-2 text-sm font-medium cursor-pointer no-underline text-center;
+  @apply transition-colors duration-200 ease-in-out;
+
+  color: var(--primer-fg-muted);
+  border-bottom: calc(var(--spacing-px) * 2) solid transparent;
+
+  &:hover {
+    @apply no-underline;
+
+    color: var(--primer-fg-default);
+  }
+}
+
+@include md {
+  .tab.tab {
+    @apply flex-none px-4 text-left;
+  }
+}
+
+.tabActive.tabActive {
+  color: var(--primer-fg-default);
+  border-bottom-color: var(--primer-accent-fg);
+}
+
+.content {
+  @apply flex-1;
+}

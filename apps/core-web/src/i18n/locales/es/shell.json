@@ -19,6 +19,10 @@
       "history": "Historial"
     }
   },
+  "channelTabs": {
+    "content": "Contenido",
+    "ai": "IA"
+  },
   "breadcrumb": {
     "home": "Inicio",
     "directories": "Directorios",
@@ -28,6 +32,8 @@
     "announcements": "Anuncios",
     "activity": "Actividad",
     "notifications": "Notificaciones",
-    "history": "Historial"
+    "history": "Historial",
+    "content": "Contenido",
+    "ai": "IA"
   }
 }

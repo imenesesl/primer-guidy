@@ -55,7 +55,7 @@ describe('BrainClientService', () => {
       json: () => Promise.resolve({ guide: {}, studentContents: [], model: 'm' }),
     })
 
-    await service.quiz({ prompt: 'p', context: 'c', studentCount: 2 }, collector)
+    await service.quiz({ prompt: 'p', context: 'c', students: ['STU-001', 'STU-002'] }, collector)
 
     expect(mockFetch.mock.calls[0][0]).toBe('http://test-brain:3011/api/task/quiz')
   })
@@ -67,7 +67,7 @@ describe('BrainClientService', () => {
     })
 
     await service.homework(
-      { prompt: 'p', context: 'c', studentCount: 2, questionCount: 3 },
+      { prompt: 'p', context: 'c', students: ['STU-001', 'STU-002'], questionCount: 3 },
       collector,
     )
 

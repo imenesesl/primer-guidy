@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ChannelDetail } from '@/modules/ChannelDetail'
+import { ChannelLayout } from '@/modules/ChannelLayout'
 
 export const Route = createFileRoute('/_shell/channels/$channelId')({
-  component: ChannelDetail,
+  component: ChannelLayout,
 })

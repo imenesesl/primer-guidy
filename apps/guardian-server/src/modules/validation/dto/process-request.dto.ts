@@ -3,7 +3,6 @@ import { ChatRole } from '@primer-guidy/llm-services'
 import { PROCESS_TYPES, TASK_KINDS } from '@primer-guidy/nest-shared'
 
 const HISTORY_ROLES = [ChatRole.User, ChatRole.Assistant] as const
-const MAX_STUDENTS = 50
 const MAX_QUESTIONS = 20
 
 class HistoryTurnDto {
@@ -43,12 +42,12 @@ export class ProcessRequestDto {
   task?: string
 
   @ApiPropertyOptional({
+    type: [String],
     description:
-      'Required when type is "task-generator". Number of students to generate unique content for.',
-    minimum: 1,
-    maximum: MAX_STUDENTS,
+      'Required when type is "task-generator". Student identification numbers to generate unique content for.',
+    minItems: 1,
   })
-  studentCount?: number
+  students?: string[]
 
   @ApiPropertyOptional({
     description: 'Required when task is "homework". Number of questions per student.',

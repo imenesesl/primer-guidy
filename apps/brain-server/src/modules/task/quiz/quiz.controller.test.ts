@@ -24,7 +24,7 @@ describe('QuizController', () => {
     const result = await controller.quiz({
       prompt: 'Newton laws of motion',
       context: 'Physics',
-      studentCount: 3,
+      students: ['STU-001', 'STU-002', 'STU-003'],
     })
 
     expect(mockGenerate).toHaveBeenCalledOnce()
@@ -42,14 +42,14 @@ describe('QuizController', () => {
     await controller.quiz({
       prompt: 'algebra',
       context: 'math',
-      studentCount: 5,
+      students: ['STU-001', 'STU-002', 'STU-003', 'STU-004', 'STU-005'],
     })
 
     const call = mockGenerate.mock.calls[0][0]
     expect(call).toEqual({
       prompt: 'algebra',
       context: 'math',
-      studentCount: 5,
+      students: ['STU-001', 'STU-002', 'STU-003', 'STU-004', 'STU-005'],
     })
   })
 })

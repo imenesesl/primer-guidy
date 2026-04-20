@@ -54,7 +54,7 @@
 }
 
 .contentHeader {
-  @apply flex items-center gap-1 p-2 sticky top-0 z-10;
+  @apply flex items-center gap-1 p-2 sticky top-0;
 
   background-color: var(--primer-canvas-subtle);
   border-bottom: var(--spacing-px) solid var(--primer-border-default);

@@ -14,8 +14,12 @@ const HTTP_REDIRECT = 302
 const HTTP_NOT_FOUND = 404
 const HTTP_BAD_GATEWAY = 502
 
-const routes: readonly { readonly prefix: string; readonly target: number }[] = [
-  { prefix: '/api/guardian', target: GUARDIAN_PORT },
+const routes: readonly {
+  readonly prefix: string
+  readonly target: number
+  readonly stripPrefix?: boolean
+}[] = [
+  { prefix: '/api/guardian', target: GUARDIAN_PORT, stripPrefix: true },
   { prefix: '/login', target: LOGIN_PORT },
   { prefix: '/core', target: CORE_PORT },
   { prefix: '/flow', target: FLOW_PORT },
@@ -39,11 +43,13 @@ const proxy = http.createServer((req, res) => {
     return
   }
 
+  const targetPath = route.stripPrefix ? url.slice(route.prefix.length) || '/' : url
+
   const proxyReq = http.request(
     {
       hostname: 'localhost',
       port: route.target,
-      path: url,
+      path: targetPath,
       method: req.method,
       headers: req.headers,
     },
@@ -69,8 +75,10 @@ proxy.on('upgrade', (req, socket, head) => {
     return
   }
 
+  const wsPath = route.stripPrefix ? url.slice(route.prefix.length) || '/' : url
+
   const conn = net.connect(route.target, 'localhost', () => {
-    const reqLine = `${req.method} ${url} HTTP/${req.httpVersion}\r\n`
+    const reqLine = `${req.method} ${wsPath} HTTP/${req.httpVersion}\r\n`
     const headers = Object.entries(req.headers)
       .map(([k, v]) => `${k}: ${v}`)
       .join('\r\n')

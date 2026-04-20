@@ -17,6 +17,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_FIREBASE_MEASUREMENT_ID: string
   readonly PUBLIC_FIREBASE_HOSTING_SITE: string
   readonly E2E_BYPASS: string
+  readonly GUARDIAN_BASE_URL: string
+  readonly VALIDATION_API_KEY: string
 }
 
 interface ImportMeta {

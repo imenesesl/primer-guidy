@@ -24,7 +24,7 @@ describe('HomeworkController', () => {
     const result = await controller.homework({
       prompt: 'Derivatives',
       context: 'Calculus',
-      studentCount: 2,
+      students: ['STU-001', 'STU-002'],
       questionCount: 3,
     })
 
@@ -43,7 +43,7 @@ describe('HomeworkController', () => {
     await controller.homework({
       prompt: 'p',
       context: 'c',
-      studentCount: 1,
+      students: ['STU-001'],
       openQuestion: true,
     })
 

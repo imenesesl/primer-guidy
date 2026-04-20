@@ -90,7 +90,7 @@ describe('ValidationService', () => {
     mockCurate.mockResolvedValueOnce('curated task prompt')
     mockQuiz.mockResolvedValueOnce({
       guide: { topic: 'algebra' },
-      studentContents: [{ studentIndex: 0, questions: [] }],
+      studentContents: [{ identificationNumber: 'STU-001', questions: [] }],
       model: 'llama3.1:8b',
     })
 
@@ -99,7 +99,7 @@ describe('ValidationService', () => {
       task: 'quiz',
       prompt: 'create quiz',
       context: 'algebra',
-      studentCount: 1,
+      students: ['STU-001'],
     })
 
     expect(result.valid).toBe(true)
@@ -112,7 +112,7 @@ describe('ValidationService', () => {
     mockCurate.mockResolvedValueOnce('curated hw prompt')
     mockHomework.mockResolvedValueOnce({
       guide: { topic: 'calculus' },
-      studentContents: [{ studentIndex: 0, questions: [] }],
+      studentContents: [{ identificationNumber: 'STU-001', questions: [] }],
       model: 'llama3.1:8b',
     })
 
@@ -121,7 +121,7 @@ describe('ValidationService', () => {
       task: 'homework',
       prompt: 'derivatives',
       context: 'calculus',
-      studentCount: 2,
+      students: ['STU-001', 'STU-002'],
       questionCount: 3,
       openQuestion: true,
     })

@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, IsNotEmpty, IsInt, Min, Max } from 'class-validator'
-
-const MAX_STUDENTS = 50
+import { IsString, IsNotEmpty, IsArray, ArrayMinSize } from 'class-validator'
 
 export class QuizRequestDto {
   @ApiProperty({ example: 'Newton laws of motion' })
@@ -14,9 +12,10 @@ export class QuizRequestDto {
   @IsNotEmpty()
   context!: string
 
-  @ApiProperty({ minimum: 1, maximum: MAX_STUDENTS })
-  @IsInt()
-  @Min(1)
-  @Max(MAX_STUDENTS)
-  studentCount!: number
+  @ApiProperty({ type: [String], description: 'Student identification numbers', minItems: 1 })
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  students!: string[]
 }

@@ -7,7 +7,7 @@ import { QuizSchema } from './schemas/quiz.schema'
 export interface QuizRequest {
   readonly prompt: string
   readonly context: string
-  readonly studentCount: number
+  readonly students: readonly string[]
 }
 
 export interface QuizResponse {
@@ -31,7 +31,7 @@ export class QuizService {
       {
         prompt: request.prompt,
         context: request.context,
-        studentCount: request.studentCount,
+        students: request.students,
         questionCount: 1,
         systemPromptTemplate: QUIZ_CONTENT_PROMPT,
         schema: QuizSchema,

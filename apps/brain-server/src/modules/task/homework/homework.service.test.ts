@@ -21,7 +21,7 @@ const GUIDE_RESULT: GuideResult = {
 }
 
 const MC_STUDENT: StudentContentDto = {
-  studentIndex: 0,
+  identificationNumber: 'STU-001',
   questions: [
     {
       id: 'q1',
@@ -36,7 +36,7 @@ const MC_STUDENT: StudentContentDto = {
 }
 
 const OPEN_STUDENT: StudentContentDto = {
-  studentIndex: 0,
+  identificationNumber: 'STU-001',
   questions: [
     {
       id: 'q1',
@@ -63,7 +63,7 @@ describe('HomeworkService', () => {
     mockGenerateStudents.mockResolvedValueOnce([MC_STUDENT])
 
     const result = await service.generate(
-      { prompt: 'equations', context: 'algebra', studentCount: 1, questionCount: 3 },
+      { prompt: 'equations', context: 'algebra', students: ['STU-001'], questionCount: 3 },
       collector,
     )
 
@@ -82,7 +82,7 @@ describe('HomeworkService', () => {
     mockGenerateStudents.mockResolvedValueOnce([OPEN_STUDENT])
 
     await service.generate(
-      { prompt: 'p', context: 'c', studentCount: 1, questionCount: 2, openQuestion: true },
+      { prompt: 'p', context: 'c', students: ['STU-001'], questionCount: 2, openQuestion: true },
       collector,
     )
 
@@ -95,7 +95,7 @@ describe('HomeworkService', () => {
     mockGenerateGuide.mockResolvedValueOnce(GUIDE_RESULT)
     mockGenerateStudents.mockResolvedValueOnce([])
 
-    await service.generate({ prompt: 'p', context: 'c', studentCount: 1 }, collector)
+    await service.generate({ prompt: 'p', context: 'c', students: ['STU-001'] }, collector)
 
     const config = mockGenerateStudents.mock.calls[0][0]
     expect(config.questionCount).toBe(5)
@@ -106,7 +106,7 @@ describe('HomeworkService', () => {
     mockGenerateStudents.mockResolvedValueOnce([])
 
     await service.generate(
-      { prompt: 'derivatives', context: 'calculus', studentCount: 1 },
+      { prompt: 'derivatives', context: 'calculus', students: ['STU-001'] },
       collector,
     )
 

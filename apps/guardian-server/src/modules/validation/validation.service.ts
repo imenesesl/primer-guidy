@@ -91,7 +91,7 @@ export class ValidationService {
             {
               prompt: curatedPrompt,
               context: taskDto.context,
-              studentCount: taskDto.studentCount,
+              students: taskDto.students,
             },
             collector,
           )
@@ -99,7 +99,7 @@ export class ValidationService {
             {
               prompt: curatedPrompt,
               context: taskDto.context,
-              studentCount: taskDto.studentCount,
+              students: taskDto.students,
               questionCount: taskDto.questionCount,
               openQuestion: taskDto.openQuestion,
             },

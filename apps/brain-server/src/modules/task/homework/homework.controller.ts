@@ -27,7 +27,7 @@ export class HomeworkController {
       {
         prompt: body.prompt,
         context: body.context,
-        studentCount: body.studentCount,
+        students: body.students,
         questionCount: body.questionCount,
         openQuestion: body.openQuestion,
       },

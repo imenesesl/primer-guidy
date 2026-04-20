@@ -105,7 +105,7 @@ describe('TaskGuideService', () => {
         {
           prompt: 'p',
           context: 'c',
-          studentCount: 2,
+          students: ['STU-001', 'STU-002'],
           questionCount: 1,
           systemPromptTemplate:
             'Generate for student {{STUDENT_INDEX}}, {{QUESTION_COUNT}} questions',
@@ -116,8 +116,8 @@ describe('TaskGuideService', () => {
       )
 
       expect(results).toHaveLength(2)
-      expect(results[0].studentIndex).toBe(0)
-      expect(results[1].studentIndex).toBe(1)
+      expect(results[0].identificationNumber).toBe('STU-001')
+      expect(results[1].identificationNumber).toBe('STU-002')
     })
 
     it('records per-student steps in metrics', async () => {
@@ -127,7 +127,7 @@ describe('TaskGuideService', () => {
         {
           prompt: 'p',
           context: 'c',
-          studentCount: 1,
+          students: ['STU-001'],
           questionCount: 1,
           systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}}',
           schema: TestSchema,
@@ -149,7 +149,7 @@ describe('TaskGuideService', () => {
         {
           prompt: 'p',
           context: 'c',
-          studentCount: 1,
+          students: ['STU-001'],
           questionCount: 1,
           systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}}',
           schema: TestSchema,

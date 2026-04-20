@@ -1,7 +1,7 @@
 import { Injectable, Inject, HttpException, HttpStatus, Logger } from '@nestjs/common'
 import { ChatRole } from '@primer-guidy/llm-services'
 import type { ILlmProvider, ChatMessage } from '@primer-guidy/llm-services'
-import type { MetricsCollector, StudentContentDto } from '@primer-guidy/nest-shared'
+import type { MetricsCollector, StudentContentDto, QuestionDto } from '@primer-guidy/nest-shared'
 import { LLM_PROVIDER } from '../../../tokens'
 import { TASK_GUIDE_PROMPT } from '../../../prompts'
 import { MetricsStep, BrainError, TemplatePlaceholder, studentStep } from '../../../constants'
@@ -19,12 +19,13 @@ const STUDENT_TEMPERATURE = 0.7
 const MAX_TOKENS = 8192
 const TIMEOUT_MS = 90_000
 const RETRY_DELAY_BASE_MS = 500
+const MIN_SHUFFLEABLE_OPTIONS = 2
 const JSON_INDENT = 2
 
 export interface StudentGenerationConfig {
   readonly prompt: string
   readonly context: string
-  readonly studentCount: number
+  readonly students: readonly string[]
   readonly questionCount: number
   readonly systemPromptTemplate: string
   readonly schema: ZodSchema
@@ -87,13 +88,14 @@ export class TaskGuideService {
     signal: AbortSignal,
     collector: MetricsCollector,
   ): Promise<StudentContentDto[]> {
-    const indices = Array.from({ length: config.studentCount }, (_, i) => i)
     const results: StudentContentDto[] = []
 
-    for (let start = 0; start < indices.length; start += CONCURRENCY_LIMIT) {
-      const batch = indices.slice(start, start + CONCURRENCY_LIMIT)
+    for (let start = 0; start < config.students.length; start += CONCURRENCY_LIMIT) {
+      const batch = config.students.slice(start, start + CONCURRENCY_LIMIT)
       const batchResults = await Promise.all(
-        batch.map((i) => this.generateWithRetry(i, config, guide, signal, collector)),
+        batch.map((id, batchIdx) =>
+          this.generateWithRetry(start + batchIdx, id, config, guide, signal, collector),
+        ),
       )
       results.push(...batchResults)
     }
@@ -103,6 +105,7 @@ export class TaskGuideService {
 
   private async generateWithRetry(
     index: number,
+    identificationNumber: string,
     config: StudentGenerationConfig,
     guide: Record<string, unknown>,
     signal: AbortSignal,
@@ -112,7 +115,14 @@ export class TaskGuideService {
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        return await this.generateForStudent(index, config, guide, signal, collector)
+        return await this.generateForStudent(
+          index,
+          identificationNumber,
+          config,
+          guide,
+          signal,
+          collector,
+        )
       } catch (err) {
         lastError = err as Error
         if (signal.aborted) throw lastError
@@ -132,6 +142,7 @@ export class TaskGuideService {
 
   private async generateForStudent(
     index: number,
+    identificationNumber: string,
     config: StudentGenerationConfig,
     guide: Record<string, unknown>,
     signal: AbortSignal,
@@ -160,10 +171,12 @@ export class TaskGuideService {
     )
 
     const parsed = this.parseAndValidate(result.content, config.schema, studentStep(index))
-    const trimmedQuestions = parsed.questions.slice(0, config.questionCount)
+    const trimmedQuestions = parsed.questions
+      .slice(0, config.questionCount)
+      .map(TaskGuideService.shuffleOptions)
 
     return {
-      studentIndex: index,
+      identificationNumber,
       questions: trimmedQuestions,
       chatContext: parsed.chatContext,
       metrics: {
@@ -172,6 +185,35 @@ export class TaskGuideService {
         completionTokens: result.usage.completionTokens,
         totalTokens: result.usage.totalTokens,
       },
+    }
+  }
+
+  private static shuffleOptions(question: QuestionDto): QuestionDto {
+    const { options, correctIndex } = question
+
+    if (
+      !options ||
+      correctIndex == null ||
+      correctIndex >= options.length ||
+      options.length < MIN_SHUFFLEABLE_OPTIONS
+    ) {
+      return question
+    }
+
+    const correctAnswer = options[correctIndex] as string
+    const indices = Array.from({ length: options.length }, (_, i) => i)
+
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[indices[i], indices[j]] = [indices[j], indices[i]] as [number, number]
+    }
+
+    const shuffled = indices.map((i) => options[i] as string)
+
+    return {
+      ...question,
+      options: shuffled,
+      correctIndex: shuffled.indexOf(correctAnswer),
     }
   }
 
@@ -204,7 +246,7 @@ export class TaskGuideService {
     raw: string,
     schema: ZodSchema,
     step: string,
-  ): { questions: never[]; chatContext: string } {
+  ): { questions: QuestionDto[]; chatContext: string } {
     const parsed = this.parseJson(raw, step)
     const result = schema.safeParse(parsed)
 
@@ -215,6 +257,6 @@ export class TaskGuideService {
       )
     }
 
-    return result.data as { questions: never[]; chatContext: string }
+    return result.data as { questions: QuestionDto[]; chatContext: string }
   }
 }

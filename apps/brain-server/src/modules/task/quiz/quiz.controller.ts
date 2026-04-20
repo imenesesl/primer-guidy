@@ -27,7 +27,7 @@ export class QuizController {
       {
         prompt: body.prompt,
         context: body.context,
-        studentCount: body.studentCount,
+        students: body.students,
       },
       collector,
     )

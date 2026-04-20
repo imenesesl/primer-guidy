@@ -11,5 +11,34 @@
   "announcements": {
     "title": "Anuncios",
     "description": "Anuncios importantes"
+  },
+  "generator": {
+    "createContent": "Crear Contenido",
+    "title": "Crear Contenido",
+    "cancel": "Cancelar",
+    "generate": "Generar",
+    "generating": "Generando...",
+    "taskType": "Tipo de generación",
+    "taskTypeHint": "Elige el tipo de contenido que deseas generar para tus estudiantes",
+    "kinds": {
+      "quiz": "Quiz",
+      "homework": "Tarea"
+    },
+    "prompt": "Instrucción",
+    "promptHint": "Describe lo que quieres generar",
+    "context": "Contexto",
+    "contextHint": "Proporciona información de referencia o material de apoyo",
+    "studentCountBanner": "Este contenido se generará para {{count}} estudiantes inscritos",
+    "homeworkOptions": "Opciones de tarea",
+    "questionCount": "Número de preguntas",
+    "questionCountHint": "Entre 1 y 20",
+    "openQuestion": "Preguntas abiertas",
+    "openQuestionHint": "Genera preguntas abiertas en lugar de opción múltiple"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "maxLength": "Límite máximo de caracteres excedido",
+    "minValue": "El valor es muy bajo",
+    "maxValue": "El valor es muy alto"
   }
 }

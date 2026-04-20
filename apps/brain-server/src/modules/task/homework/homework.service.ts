@@ -7,7 +7,7 @@ import { HomeworkMultipleChoiceSchema, HomeworkOpenSchema } from './schemas/home
 export interface HomeworkRequest {
   readonly prompt: string
   readonly context: string
-  readonly studentCount: number
+  readonly students: readonly string[]
   readonly questionCount?: number
   readonly openQuestion?: boolean
 }
@@ -39,7 +39,7 @@ export class HomeworkService {
       {
         prompt: request.prompt,
         context: request.context,
-        studentCount: request.studentCount,
+        students: request.students,
         questionCount,
         systemPromptTemplate: promptTemplate,
         schema,

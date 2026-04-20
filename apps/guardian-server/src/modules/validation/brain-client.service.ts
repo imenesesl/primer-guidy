@@ -18,13 +18,13 @@ export interface ChatBrainRequest {
 export interface QuizBrainRequest {
   readonly prompt: string
   readonly context: string
-  readonly studentCount: number
+  readonly students: readonly string[]
 }
 
 export interface HomeworkBrainRequest {
   readonly prompt: string
   readonly context: string
-  readonly studentCount: number
+  readonly students: readonly string[]
   readonly questionCount?: number
   readonly openQuestion?: boolean
 }

@@ -1,0 +1,62 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.body {
+  @apply flex flex-col gap-4;
+}
+
+.card {
+  @apply flex flex-col gap-3 rounded-xl p-4 ring-1 ring-inset;
+
+  background-color: var(--primer-canvas-subtle);
+
+  --tw-ring-color: var(--primer-border-muted);
+}
+
+.cardHeader {
+  @apply flex items-center gap-2;
+
+  color: var(--primer-fg-default);
+}
+
+.cardTitle {
+  @apply text-sm font-semibold m-0;
+
+  color: var(--primer-fg-default);
+}
+
+.cardDescription {
+  @apply text-xs m-0;
+
+  color: var(--primer-fg-muted);
+}
+
+.banner {
+  @apply rounded-xl;
+}
+
+.bannerContent {
+  @apply flex items-center gap-2;
+}
+
+.bannerText {
+  @apply text-sm font-medium;
+}
+
+.fieldGroup {
+  @apply flex flex-col gap-1;
+}
+
+.divider {
+  border-top: var(--spacing-px) solid var(--primer-border-muted);
+}
+
+.checkboxLabel {
+  @apply inline-flex items-center gap-1.5;
+}
+
+.charCounter {
+  @apply text-xs m-0 text-right;
+
+  color: var(--primer-fg-muted);
+}

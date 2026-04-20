@@ -10,7 +10,7 @@ export interface QuestionDto {
 }
 
 export interface StudentContentDto {
-  readonly studentIndex: number
+  readonly identificationNumber: string
   readonly questions: QuestionDto[]
   readonly chatContext: string
   readonly metrics: StepMetrics

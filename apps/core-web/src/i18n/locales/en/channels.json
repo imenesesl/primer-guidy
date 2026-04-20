@@ -20,6 +20,35 @@
     "save": "Save",
     "noActiveStudents": "No active students available. Activate students in the Users tab first."
   },
+  "generator": {
+    "createContent": "Create Content",
+    "title": "Create Content",
+    "cancel": "Cancel",
+    "generate": "Generate",
+    "generating": "Generating...",
+    "taskType": "Generation type",
+    "taskTypeHint": "Choose the type of content you want to generate for your students",
+    "kinds": {
+      "quiz": "Quiz",
+      "homework": "Homework"
+    },
+    "prompt": "Prompt",
+    "promptHint": "Describe what you want to generate",
+    "context": "Context",
+    "contextHint": "Provide background information or reference material",
+    "studentCountBanner": "This content will be generated for {{count}} enrolled students",
+    "homeworkOptions": "Homework options",
+    "questionCount": "Number of questions",
+    "questionCountHint": "Between 1 and 20",
+    "openQuestion": "Open-ended questions",
+    "openQuestionHint": "Generate open-ended questions instead of multiple-choice"
+  },
+  "validation": {
+    "required": "This field is required",
+    "maxLength": "Maximum character limit exceeded",
+    "minValue": "Value is too low",
+    "maxValue": "Value is too high"
+  },
   "channelDetail": {
     "title": "Channel: {{channelId}}"
   },
