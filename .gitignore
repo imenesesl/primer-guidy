@@ -14,9 +14,6 @@ dist/
 .DS_Store
 Thumbs.db
 
-# AI test runs
-brain/
-
 # Build
 *.tsbuildinfo
 dist-landing/
