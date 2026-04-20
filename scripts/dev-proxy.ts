@@ -8,6 +8,7 @@ const LOGIN_PORT = 3001
 const CORE_PORT = 3002
 const FLOW_PORT = 3003
 const GUARDIAN_PORT = 3010
+const BRAIN_PORT = 3011
 
 const HTTP_REDIRECT = 302
 const HTTP_NOT_FOUND = 404
@@ -83,33 +84,28 @@ proxy.on('upgrade', (req, socket, head) => {
 
 const env = { ...process.env, DEV_PROXY: 'true' }
 
-const login = spawn('pnpm', ['--filter', '@primer-guidy/login-web', 'dev'], {
-  stdio: 'inherit',
-  env,
-})
+const spawnApp = (filter: string) =>
+  spawn('pnpm', ['--filter', filter, 'dev'], { stdio: 'inherit', env })
 
-const core = spawn('pnpm', ['--filter', '@primer-guidy/core-web', 'dev'], {
-  stdio: 'inherit',
-  env,
-})
-
-const flow = spawn('pnpm', ['--filter', '@primer-guidy/flow-web', 'dev'], {
-  stdio: 'inherit',
-  env,
-})
+const children = [
+  spawnApp('@primer-guidy/brain-server'),
+  spawnApp('@primer-guidy/guardian-server'),
+  spawnApp('@primer-guidy/login-web'),
+  spawnApp('@primer-guidy/core-web'),
+  spawnApp('@primer-guidy/flow-web'),
+]
 
 proxy.listen(PROXY_PORT, () => {
   console.log(`\n  Dev proxy running at http://localhost:${PROXY_PORT}`)
   console.log(`  /login/                → localhost:${LOGIN_PORT}`)
   console.log(`  /core/                 → localhost:${CORE_PORT}`)
   console.log(`  /flow/                 → localhost:${FLOW_PORT}`)
-  console.log(`  /api/guardian           → localhost:${GUARDIAN_PORT}\n`)
+  console.log(`  /api/guardian           → localhost:${GUARDIAN_PORT}`)
+  console.log(`  brain-server           → localhost:${BRAIN_PORT}\n`)
 })
 
 const cleanup = () => {
-  login.kill()
-  core.kill()
-  flow.kill()
+  for (const child of children) child.kill()
   process.exit()
 }
 
