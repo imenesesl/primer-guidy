@@ -161,11 +161,18 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 ## 16. testing-tdd
 
 - Every component, hook, utility, service has `.test.tsx` or `.test.ts`
-- Tests use `screen`, `render`, `userEvent`
+- Web tests use `screen`, `render`, `userEvent`
 - Query priority: `getByRole` > `getByLabelText` > `getByText` > `getByTestId`
 - Tests independent — no shared state
 - E2E in `e2e/` per app, using `@primer-guidy/e2e-helpers`
 - E2E infrastructure NOT duplicated
+- NestJS: every controller, service, guard, adapter has `.test.ts` colocated
+- NestJS tests use manual DI with mocks — NOT NestJS testing module
+- NestJS tests use `vi.mock` for modules, `vi.stubGlobal('fetch', ...)` for HTTP
+- NestJS tests use `vi.clearAllMocks()` in `beforeEach`
+- Shared libs (`llm-services`, `nest-shared`) have tests for all public API
+- Server `tsconfig.json` excludes `**/*.test.ts` from build
+- Server `vitest.config.ts` includes `src/**/*.test.ts` with `globals: true`
 
 ## 17. forms-validation
 
@@ -226,10 +233,27 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 
 ## 25. nestjs-conventions
 
-- Module structure: `module.ts`, `controller.ts`, `service.ts`, `repository.ts`, `interfaces/`, `dto/`, `guards/`
-- Controllers NEVER access repositories
-- Services NEVER handle HTTP concerns
-- Separate Create/Update/Response DTOs
+- Module structure: `module.ts`, `controller.ts`, `controller.test.ts`, `service.ts`, `service.test.ts`, `dto/`
+- `main.ts` calls `loadMonorepoEnv(__dirname)` BEFORE `NestFactory.create()`
+- `main.ts` calls `setupSwagger(app, config)` for API docs at `/docs`
+- `main.ts` calls `app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))`
+- Injection tokens in `src/tokens.ts` — NEVER in `app.module.ts`
+- System prompts in `src/prompts/` folder — NEVER inline in service files
+- Each prompt has its own file + barrel `index.ts`
+- `tsconfig.json` extends `../../tsconfig.nest.json` with `outDir: "dist"` and decorator flags
+- `tsconfig.json` excludes `**/*.test.ts` from build
+- `nest-cli.json`: SWC builder + `typeCheck: false` + Swagger plugin
+- ESLint NestJS overrides in ROOT `eslint.config.mjs` — servers do NOT have individual ESLint configs
+- Controllers NEVER access repositories directly
+- Services NEVER handle HTTP concerns (request/response objects)
+- LLM injection via `@Inject(TOKEN)` with `ILlmProvider` from `@primer-guidy/llm-services`
+- NEVER import `ollama` or `groq-sdk` directly
+- Server-to-server calls use `fetch` + `X-API-Key` header
+- Dev script uses `ts-node --swc -r reflect-metadata` — NOT `tsx`
+- Performance timing via `performance.now()` in controllers and services
+- Every controller and service has a `.test.ts` file
+- Tests use manual constructor injection with mocks — NOT NestJS testing module
+- Shared modules come from `@primer-guidy/nest-shared` — NEVER duplicate HealthModule, LlmModule, guards, or DTOs
 
 ## 26. backend-ready-contracts (additional)
 

@@ -1,6 +1,6 @@
 ---
 description: NestJS server conventions with single responsibility per service
-globs: "**/*-server/**/*.ts"
+globs: "**/*-server/**/*.ts,libs/nest-shared/**/*.ts,libs/llm-services/**/*.ts"
 alwaysApply: true
 ---
 
@@ -12,20 +12,91 @@ alwaysApply: true
 apps/<name>-server/
   package.json                   → extends shared deps pattern
   tsconfig.json                  → extends tsconfig.nest.json
-  nest-cli.json                  → SWC builder + typeCheck
-  eslint.config.mjs              → imports { nestServer } from @primer-guidy/eslint-config
+  nest-cli.json                  → SWC builder + Swagger plugin
+  vitest.config.ts               → test config (globals: true, include src/**/*.test.ts)
   src/
-    main.ts                      → bootstrap: NestFactory + ValidationPipe + listen on PORT env
+    main.ts                      → bootstrap: loadMonorepoEnv + NestFactory + ValidationPipe + setupSwagger + listen
     app.module.ts                → imports HealthModule, LlmModule.register([...]), feature modules
+    tokens.ts                    → injection token constants (NEVER in app.module.ts)
+    prompts/
+      index.ts                   → re-exports all prompt constants
+      <name>.ts                  → each system prompt as named export constant
     modules/
       <feature>/
         <feature>.module.ts
         <feature>.controller.ts
+        <feature>.controller.test.ts  ← TEST OBLIGATORIO
         <feature>.service.ts
-        <feature>.repository.ts  → (if data access needed)
+        <feature>.service.test.ts     ← TEST OBLIGATORIO
         dto/                     → (app-specific DTOs only)
-        guards/                  → (app-specific guards only)
 ```
+
+## Bootstrap Pattern — main.ts
+
+Every NestJS server MUST follow this exact bootstrap sequence:
+
+```typescript
+import { NestFactory } from '@nestjs/core'
+import { ValidationPipe } from '@nestjs/common'
+import { loadMonorepoEnv, setupSwagger } from '@primer-guidy/nest-shared'
+import { AppModule } from './app.module'
+
+const DEFAULT_PORT = 3010
+
+loadMonorepoEnv(__dirname)
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule)
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
+
+  setupSwagger(app, {
+    title: 'My API',
+    description: 'API description',
+    version: '1.0',
+  })
+
+  const port = process.env['PORT'] ?? DEFAULT_PORT
+  await app.listen(port)
+}
+
+void bootstrap()
+```
+
+- `loadMonorepoEnv(__dirname)` MUST be called BEFORE `NestFactory.create()` — it loads `.env.local` then `.env` from monorepo root
+- `setupSwagger` provides automatic API docs at `/docs`
+- Public-facing servers SHOULD call `app.enableCors()` after `NestFactory.create()`
+
+## Injection Tokens — src/tokens.ts
+
+Injection tokens MUST live in a dedicated `src/tokens.ts` file, NEVER in `app.module.ts`. This prevents circular dependencies during module initialization.
+
+```typescript
+// src/tokens.ts
+export const LLM_PROVIDER = 'ILlmProvider'
+```
+
+```typescript
+// src/modules/generation/generation.service.ts
+import { LLM_PROVIDER } from '../../tokens'
+
+@Injectable()
+export class GenerationService {
+  constructor(@Inject(LLM_PROVIDER) private readonly llm: ILlmProvider) {}
+}
+```
+
+## System Prompts — src/prompts/
+
+System prompt strings MUST live in `src/prompts/` with one file per prompt and an `index.ts` barrel:
+
+```
+src/prompts/
+  index.ts                → export { GUARD_SYSTEM_PROMPT } from './guard'
+  guard.ts                → export const GUARD_SYSTEM_PROMPT = `...`
+  curation.ts             → export const CURATION_SYSTEM_PROMPT = `...`
+```
+
+NEVER define system prompts inline in service files. The `prompts/` folder makes them easy to find, iterate on, and tune.
 
 ## Shared Modules — `@primer-guidy/nest-shared`
 
@@ -38,16 +109,19 @@ Before creating any module, check if `@primer-guidy/nest-shared` already provide
 | `ApiKeyGuard` | Apply via `@UseGuards(ApiKeyGuard)` for server-to-server auth |
 | `PromptContextDto` | Use as `@Body()` parameter for prompt + context endpoints |
 | `GenerationResponseDto` | Return type for LLM generation responses |
+| `setupSwagger(app, config)` | Swagger UI at `/docs` with API key security scheme |
+| `loadMonorepoEnv(appDir)` | Loads `.env.local` then `.env` from monorepo root |
 
 ```typescript
 // app.module.ts — typical server setup
 import { HealthModule, LlmModule } from '@primer-guidy/nest-shared'
+import { LLM_PROVIDER } from './tokens'
 
 @Module({
   imports: [
     HealthModule,
     LlmModule.register([
-      { token: 'ILlmProvider', modelEnv: 'OLLAMA_MODEL', defaultModel: 'llama3.1:8b' },
+      { token: LLM_PROVIDER, modelEnv: 'OLLAMA_MODEL', defaultModel: 'llama3.1:8b' },
     ]),
     FeatureModule,
   ],
@@ -61,20 +135,26 @@ ALL NestJS servers MUST use the shared configs:
 
 | Config | Path | What it provides |
 |--------|------|-----------------|
-| `tsconfig.nest.json` | `../../tsconfig.nest.json` | CommonJS, node resolution, decorators, strict mode |
-| `nestServer` ESLint | `@primer-guidy/eslint-config` | `no-extraneous-class` off for modules, `consistent-type-imports` off for DI files |
-| `nest-cli.json` | Per server (identical) | SWC builder with typeCheck |
+| `tsconfig.nest.json` | `../../tsconfig.nest.json` | CommonJS, node resolution, decorators, strict mode, `types: ["node"]` |
+| Root `eslint.config.mjs` | Monorepo root | NestJS-specific overrides for modules and DI files |
+| `nest-cli.json` | Per server (identical) | SWC builder + Swagger plugin |
 
-Server `tsconfig.json` MUST extend `tsconfig.nest.json` and add only `outDir` + `rootDir`:
+Server `tsconfig.json` MUST extend `tsconfig.nest.json` and add `outDir` + decorator flags:
 
 ```json
 {
   "extends": "../../tsconfig.nest.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "src" },
+  "compilerOptions": {
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
 ```
+
+ESLint NestJS overrides live in the ROOT `eslint.config.mjs` — servers do NOT have individual `eslint.config.mjs` files. When adding a new server, add its path patterns to the root config.
 
 ## Single Responsibility per Service
 
@@ -102,30 +182,107 @@ class ReportService { generateReport() { /* ... */ } }
 
 | Layer | Responsibility |
 |-------|---------------|
-| Controller | HTTP handling, validation, response shaping |
-| Service | Business logic, orchestration |
+| Controller | HTTP handling, validation, response shaping, timing aggregation |
+| Service | Business logic, orchestration, LLM calls |
 | Repository | Data access, query building |
 
 - Controllers NEVER access repositories directly
 - Services NEVER handle HTTP concerns (request/response objects)
 - Repositories NEVER contain business logic
 
+## Performance Timing
+
+Controllers SHOULD measure execution time using `performance.now()` and include timing data in responses:
+
+```typescript
+@Post()
+async validate(@Body() dto: PromptContextDto): Promise<FullValidationResponse> {
+  const totalStart = performance.now()
+  const result = await this.service.process(dto.prompt, dto.context)
+
+  return {
+    ...result,
+    timing: {
+      ...result.timing,
+      totalMs: Math.round(performance.now() - totalStart),
+    },
+  }
+}
+```
+
+Services measure their own internal steps (LLM calls, curation steps) and return timing in the response DTO.
+
 ## DTOs & Validation
 
-- Use `class-validator` + `class-transformer` for all DTOs
-- Separate `CreateDto`, `UpdateDto`, `ResponseDto` per entity
+- Use `class-validator` + `class-transformer` for all request DTOs
+- Separate request DTOs from response interfaces
+- Request DTOs use `class-validator` decorators + `@ApiProperty()` for Swagger
+- Response types are plain TypeScript interfaces (no class-validator needed)
 - NEVER expose internal entities in API responses
 - Check `@primer-guidy/nest-shared` for shared DTOs before creating new ones
 
 ## LLM Integration
 
-- Inject LLM providers via `@Inject(TOKEN)` using tokens defined in `app.module.ts`
+- Inject LLM providers via `@Inject(TOKEN)` using tokens from `src/tokens.ts`
 - NEVER import from `ollama` or `groq-sdk` directly — use `@primer-guidy/llm-services`
-- System prompts are constants in the service file that uses them
+- System prompts live in `src/prompts/` folder — NEVER inline in service files
 - Use low temperature (0-0.3) for classification/validation, higher (0.7) for generation
+- `LlmModule.register()` supports multiple providers per server with different tokens and model env vars
+
+## Server-to-Server Communication
+
+For internal service calls (e.g., prompt-validation calling brain), create a dedicated client service:
+
+```typescript
+@Injectable()
+export class BrainClientService {
+  private readonly baseUrl: string
+  private readonly apiKey: string
+
+  constructor() {
+    this.baseUrl = process.env['BRAIN_BASE_URL'] ?? 'http://localhost:3011'
+    this.apiKey = process.env['BRAIN_API_KEY'] ?? ''
+  }
+
+  async generate(prompt: string, context: string): Promise<GenerationResponseDto> {
+    const response = await fetch(`${this.baseUrl}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': this.apiKey,
+      },
+      body: JSON.stringify({ prompt, context }),
+    })
+    // ... error handling
+  }
+}
+```
+
+- Use `fetch` directly — no need for `@nestjs/axios` or HTTP module
+- Always send `X-API-Key` header for authenticated endpoints
+- Throw `HttpException` on errors with the upstream status code
 
 ## Docker
 
 - ALL servers use the shared `docker/Dockerfile.server` (parameterized via `APP_NAME` and `APP_PORT` build args)
 - NEVER create per-server Dockerfiles
 - Server-to-server communication uses Docker network hostnames in local, Cloud Run URLs in production
+- `docker-compose.yml` sets build context to monorepo root (`.`) with explicit `dockerfile` path
+
+## Dev Scripts
+
+```json
+{
+  "dev": "ts-node --swc -r reflect-metadata src/main.ts",
+  "build": "nest build",
+  "start": "node dist/main.js",
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "typecheck": "tsc --noEmit",
+  "lint": "eslint src/"
+}
+```
+
+- Use `ts-node --swc -r reflect-metadata` for local dev — NOT `tsx` (decorator issues)
+- `nest build` uses SWC for production builds
+- `vitest run` for tests (add `vitest` to devDependencies)

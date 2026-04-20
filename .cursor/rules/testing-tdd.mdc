@@ -1,5 +1,5 @@
 ---
-description: Mandatory testing with TDD — unit tests with React Testing Library, E2E with Playwright
+description: Mandatory testing with TDD — unit tests with React Testing Library / Vitest, E2E with Playwright, NestJS server tests
 globs: "**/*.ts,**/*.tsx,**/*.test.ts,**/*.test.tsx,**/*.spec.ts"
 alwaysApply: true
 ---
@@ -16,7 +16,7 @@ TODO código DEBE tener pruebas. Sin pruebas = no está terminado. Seguir TDD es
 
 NUNCA escribir implementación sin su test previo. El test dicta el contrato.
 
-## Capa 1: Unit Tests — React Testing Library + Vitest
+## Capa 1: Unit Tests — React Testing Library + Vitest (Web)
 
 Cada componente, hook, utilidad y servicio DEBE tener su archivo `.test.tsx` o `.test.ts`.
 
@@ -77,7 +77,181 @@ describe('Button', () => {
 })
 ```
 
-## Capa 2: E2E Tests — Playwright
+## Capa 2: Unit Tests — NestJS Servers + Shared Libs (Vitest)
+
+Cada controller, service, guard, adapter y factory en NestJS servers y libs compartidas DEBE tener su `.test.ts` al lado del archivo que testea.
+
+### Estructura de archivos
+
+```
+apps/<name>-server/src/
+  modules/<feature>/
+    <feature>.controller.ts
+    <feature>.controller.test.ts  ← TEST OBLIGATORIO
+    <feature>.service.ts
+    <feature>.service.test.ts     ← TEST OBLIGATORIO
+```
+
+```
+libs/llm-services/src/
+  factory.ts
+  factory.test.ts                 ← TEST OBLIGATORIO
+  adapters/
+    ollama.adapter.ts
+    ollama.adapter.test.ts        ← TEST OBLIGATORIO
+```
+
+```
+libs/nest-shared/src/
+  guards/
+    api-key.guard.ts
+    api-key.guard.test.ts         ← TEST OBLIGATORIO
+  env/
+    load-env.ts
+    load-env.test.ts              ← TEST OBLIGATORIO
+```
+
+### Principios de testing (NestJS)
+
+- **Inyección manual con mocks** — NO usar NestJS testing module. Crear el servicio con `new Service(mockDep as never)` pasando mocks por constructor
+- **vi.mock para módulos externos** — `vi.mock('dotenv', ...)`, `vi.mock('node:fs', ...)`
+- **vi.stubGlobal para fetch** — `vi.stubGlobal('fetch', mockFetch)` para servicios HTTP
+- **process.env para configuración** — manipular directamente en `beforeEach`, limpiar con `delete process.env['KEY']`
+- **No React Testing Library** — estos son servicios puros TypeScript
+- **vi.clearAllMocks() en beforeEach** — cada test empieza limpio
+- Tests deben ser independientes — sin dependencias de orden ni estado compartido
+
+### Ejemplo — Service con LLM mock
+
+```typescript
+// generation.service.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { ILlmProvider, CompletionResult } from '@primer-guidy/llm-services'
+import { GenerationService } from './generation.service'
+
+const mockComplete = vi.fn<() => Promise<CompletionResult>>()
+const mockProvider: ILlmProvider = { complete: mockComplete }
+
+describe('GenerationService', () => {
+  let service: GenerationService
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    service = new GenerationService(mockProvider)
+  })
+
+  it('calls llm.complete with system prompt and user message', async () => {
+    mockComplete.mockResolvedValueOnce({
+      content: 'generated content',
+      model: 'llama-3.1',
+      tokensUsed: 42,
+    })
+
+    await service.generate('explain closures', 'JavaScript')
+
+    expect(mockComplete).toHaveBeenCalledOnce()
+    const [messages] = mockComplete.mock.calls[0]
+    expect(messages[0].role).toBe('system')
+    expect(messages[1].role).toBe('user')
+  })
+})
+```
+
+### Ejemplo — Guard con process.env
+
+```typescript
+// api-key.guard.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { UnauthorizedException } from '@nestjs/common'
+import { ApiKeyGuard } from './api-key.guard'
+
+const createMockContext = (headers: Record<string, string | undefined> = {}) => ({
+  switchToHttp: () => ({ getRequest: () => ({ headers }) }),
+})
+
+describe('ApiKeyGuard', () => {
+  const guard = new ApiKeyGuard()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    delete process.env['BRAIN_API_KEY']
+  })
+
+  it('allows request when X-API-Key matches', () => {
+    process.env['BRAIN_API_KEY'] = 'secret'
+    const ctx = createMockContext({ 'x-api-key': 'secret' })
+    expect(guard.canActivate(ctx as never)).toBe(true)
+  })
+
+  it('throws when key is missing', () => {
+    process.env['BRAIN_API_KEY'] = 'secret'
+    const ctx = createMockContext({})
+    expect(() => guard.canActivate(ctx as never)).toThrow(UnauthorizedException)
+  })
+})
+```
+
+### Ejemplo — HTTP client con vi.stubGlobal('fetch')
+
+```typescript
+// brain-client.service.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { HttpException } from '@nestjs/common'
+import { BrainClientService } from './brain-client.service'
+
+const mockFetch = vi.fn()
+
+describe('BrainClientService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    process.env['BRAIN_BASE_URL'] = 'http://test:3011'
+    process.env['BRAIN_API_KEY'] = 'test-key'
+    vi.stubGlobal('fetch', mockFetch)
+  })
+
+  it('calls brain API with correct headers', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ content: 'ok', model: 'llama', tokensUsed: 1 }),
+    })
+
+    const service = new BrainClientService()
+    await service.generate('prompt', 'ctx')
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://test:3011/api/generate',
+      expect.objectContaining({
+        headers: expect.objectContaining({ 'X-API-Key': 'test-key' }),
+      }),
+    )
+  })
+
+  it('throws HttpException on network error', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('ECONNREFUSED'))
+    const service = new BrainClientService()
+    await expect(service.generate('p', 'c')).rejects.toThrow(HttpException)
+  })
+})
+```
+
+### Vitest Config para Servers
+
+Servers que usan vitest directamente (sin Nest test utilities) DEBEN tener un `vitest.config.ts`:
+
+```typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    globals: true,
+    include: ['src/**/*.test.ts'],
+  },
+})
+```
+
+Los `tsconfig.json` de servers DEBEN excluir tests del build: `"exclude": ["node_modules", "dist", "**/*.test.ts"]`
+
+## Capa 3: E2E Tests — Playwright
 
 Playwright valida flujos completos de usuario. Viven en `e2e/` en la raíz de cada app.
 
@@ -185,3 +359,6 @@ describe('users/{uid}', () => {
 - Cada bug fix DEBE incluir un test que reproduce el bug ANTES del fix
 - Tests deben ser independientes — sin dependencias de orden ni estado compartido
 - Cada regla en `firestore.rules` o `database.rules.json` DEBE tener tests en `tests/rules/` — sin test = regla no desplegada
+- Cada NestJS service, controller, guard y adapter DEBE tener su `.test.ts` — sin test = no está terminado
+- NestJS server tests usan inyección manual con mocks, NO NestJS testing module
+- Shared libs (`libs/llm-services`, `libs/nest-shared`) DEBEN tener tests para toda su API pública

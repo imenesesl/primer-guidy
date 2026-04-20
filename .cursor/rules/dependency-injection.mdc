@@ -10,7 +10,9 @@ ALL code MUST use Dependency Injection. Depend on abstractions, never concretion
 
 ## NestJS (Server)
 
-Use NestJS built-in DI container. Always inject via constructor with interfaces.
+Use NestJS built-in DI container. Always inject via constructor with string tokens and interfaces.
+
+### Standard Service DI
 
 ```typescript
 interface IUserRepository {
@@ -37,6 +39,46 @@ class UserService {
 })
 export class UserModule {}
 ```
+
+### LLM Provider DI via LlmModule
+
+For LLM providers, use `LlmModule.register()` from `@primer-guidy/nest-shared`. Injection tokens MUST be defined in `src/tokens.ts` (NEVER in `app.module.ts`) to avoid circular dependencies:
+
+```typescript
+// src/tokens.ts — tokens separate from modules
+export const LLM_GUARD = 'ILlmGuardProvider'
+export const LLM_CURATION = 'ILlmCurationProvider'
+```
+
+```typescript
+// app.module.ts — register tokens with model env vars
+import { LlmModule } from '@primer-guidy/nest-shared'
+import { LLM_GUARD, LLM_CURATION } from './tokens'
+
+@Module({
+  imports: [
+    LlmModule.register([
+      { token: LLM_GUARD, modelEnv: 'GUARD_MODEL', defaultModel: 'llama-guard3:8b' },
+      { token: LLM_CURATION, modelEnv: 'CURATION_MODEL', defaultModel: 'llama3.1:8b' },
+    ]),
+  ],
+})
+export class AppModule {}
+```
+
+```typescript
+// service.ts — inject by token, type by interface
+import { Inject } from '@nestjs/common'
+import type { ILlmProvider } from '@primer-guidy/llm-services'
+import { LLM_GUARD } from '../../tokens'
+
+@Injectable()
+export class SafetyGuardService {
+  constructor(@Inject(LLM_GUARD) private readonly guard: ILlmProvider) {}
+}
+```
+
+`LlmModule.register()` is a `@Global()` dynamic module — registered tokens are available in all feature modules without re-importing.
 
 ## React (Web)
 
@@ -71,3 +113,6 @@ Composition root (app entry / root route) is the ONLY place where `new` is allow
 - Composition root = app entry, root route, or provider wrappers
 - EVERY service/repository MUST have a corresponding interface
 - Test doubles (mocks) replace implementations via DI — no monkey-patching
+- NestJS injection tokens MUST live in `src/tokens.ts` — NEVER in `app.module.ts` (prevents circular dependencies)
+- LLM providers are injected via `@Inject(TOKEN)` with `ILlmProvider` type from `@primer-guidy/llm-services`
+- For tests, create mocks manually and pass via constructor: `new Service(mockProvider as never)` — no NestJS testing module needed

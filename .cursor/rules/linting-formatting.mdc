@@ -37,12 +37,31 @@ ALL code MUST pass ESLint, Prettier, and Stylelint before commit.
 
 ### Adding a New Server
 
-```javascript
-// eslint.config.mjs — for any NestJS server
-import { nestServer } from '@primer-guidy/eslint-config'
+NestJS servers do NOT have individual `eslint.config.mjs` files. Instead, add the new server's path patterns to the ROOT `eslint.config.mjs`:
 
-export default [...nestServer]
+```javascript
+// eslint.config.mjs (root) — add your new server paths
+{
+  files: [
+    'apps/brain-server/**/*.module.ts',
+    'apps/prompt-validation-server/**/*.module.ts',
+    'apps/my-new-server/**/*.module.ts',        // ← add here
+    'libs/nest-shared/**/*.module.ts',
+  ],
+  rules: { '@typescript-eslint/no-extraneous-class': 'off' },
+},
+{
+  files: [
+    'apps/brain-server/**/*.{controller,service,guard}.ts',
+    'apps/prompt-validation-server/**/*.{controller,service,guard}.ts',
+    'apps/my-new-server/**/*.{controller,service,guard}.ts',  // ← add here
+    'libs/nest-shared/**/*.{controller,service,guard}.ts',
+  ],
+  rules: { '@typescript-eslint/consistent-type-imports': 'off' },
+},
 ```
+
+The `nestServer` preset from `@primer-guidy/eslint-config` is available for servers that need their own `eslint.config.mjs`, but the current convention is centralized root overrides.
 
 ## Prettier
 

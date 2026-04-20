@@ -113,6 +113,33 @@ apps/functions/src/
 - Password hashing with `argon2id` — NEVER SHA-256 or other non-KDF algorithms
 - Entry point `src/index.ts` calls `initializeApp()` and re-exports all functions
 
+## Environment Variables Strategy
+
+The monorepo uses a layered `.env` approach for safe configuration:
+
+| File | Committed | Purpose | Priority |
+|------|-----------|---------|----------|
+| `.env` | Yes | Safe defaults for local dev (public keys, `LLM_PROVIDER=ollama`) | Lowest |
+| `.env.local` | No (gitignored via `*.local`) | Secrets and personal overrides (`BRAIN_API_KEY`, Groq keys) | Highest |
+| `.env.example` | Yes | Template showing all required variables | Reference only |
+
+### Loading Order
+
+`libs/nest-shared` provides `loadMonorepoEnv(appDir)` which:
+1. Walks up from `appDir` to find the monorepo root (by `pnpm-workspace.yaml`)
+2. Loads `.env.local` first (if exists)
+3. Loads `.env` second (if exists)
+4. Uses `override: false` — already-set env vars (from Docker, CI, Cloud Run) are NEVER overridden
+
+Every NestJS server calls `loadMonorepoEnv(__dirname)` BEFORE `NestFactory.create()`.
+
+### Rules
+
+- NEVER commit secrets to `.env` — only safe defaults
+- NEVER commit `.env.local` — it's gitignored via `*.local`
+- Production env vars are set via Cloud Run environment configuration, NOT via `.env` files
+- `BRAIN_API_KEY` MUST be set in `.env.local` for local server-to-server auth
+
 ## Docker & Containerization
 
 NestJS servers are containerized via a shared parameterized Dockerfile at `docker/Dockerfile.server`.
@@ -124,16 +151,36 @@ pnpm docker:up     # starts Ollama + all servers via docker-compose.yml
 pnpm docker:down   # stops all containers
 ```
 
-- `docker-compose.yml` — Local dev: Ollama + servers on Docker bridge network
-- `docker-compose.prod.yml` — Production override: Groq API, Cloud Run port 8080
+- `docker-compose.yml` — Local dev: Ollama + servers on Docker bridge network. Build context is monorepo root (`.`) with explicit `dockerfile: docker/Dockerfile.server`
 - `scripts/ollama-setup.sh` — Pulls required LLM models into Ollama
 
 ### Adding a New Server
 
-1. Create `apps/<name>-server/` following NestJS conventions
+1. Create `apps/<name>-server/` following NestJS conventions (see `nestjs-conventions` rule)
 2. Add service to `docker-compose.yml` using `docker/Dockerfile.server` with `APP_NAME` and `APP_PORT` args
 3. Add `dev:<name>` script to root `package.json`
-4. If public-facing, add route to `scripts/dev-proxy.ts`
+4. Add server path patterns to root `eslint.config.mjs` NestJS overrides
+5. If public-facing, add route to `scripts/dev-proxy.ts`
+
+## Prompt Testing — `brain/`
+
+The `brain/` directory at monorepo root contains prompt testing infrastructure:
+
+```
+brain/
+  prompts/
+    attack.json            → Adversarial prompts to test safety guard
+    teacher.json           → Realistic teacher-like prompts
+    edge-cases.json        → Boundary condition prompts
+  run-validation.sh        → Script to run parallel validation calls
+  YYYY-MM-DD_HH-MM-SS/    → Timestamped run results
+    results.json           → Merged results sorted by index
+    prompts-source.json    → Copy of input prompts
+```
+
+Usage: `bash brain/run-validation.sh brain/prompts/teacher.json`
+
+This data is for analyzing LLM behavior and tuning system prompts in `src/prompts/`.
 
 ## Root Scripts Convention
 
