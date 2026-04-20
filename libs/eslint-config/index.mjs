@@ -3,14 +3,10 @@ import tseslint from 'typescript-eslint'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
-export const base = tseslint.config(
+const shared = tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.strict,
   {
-    plugins: {
-      react: reactPlugin,
-      'react-hooks': reactHooksPlugin,
-    },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -34,12 +30,6 @@ export const base = tseslint.config(
         },
       ],
       'no-console': 'warn',
-      'react/no-array-index-key': 'warn',
-      'react-hooks/exhaustive-deps': 'error',
-      'react-hooks/rules-of-hooks': 'error',
-    },
-    settings: {
-      react: { version: 'detect' },
     },
   },
   {
@@ -50,5 +40,39 @@ export const base = tseslint.config(
   },
   {
     ignores: ['dist/', 'node_modules/', '*.gen.ts'],
+  },
+)
+
+export const base = tseslint.config(
+  ...shared,
+  {
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    rules: {
+      'react/no-array-index-key': 'warn',
+      'react-hooks/exhaustive-deps': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+    },
+    settings: {
+      react: { version: 'detect' },
+    },
+  },
+)
+
+export const nestServer = tseslint.config(
+  ...shared,
+  {
+    files: ['**/*.module.ts'],
+    rules: {
+      '@typescript-eslint/no-extraneous-class': 'off',
+    },
+  },
+  {
+    files: ['**/*.controller.ts', '**/*.service.ts', '**/*.guard.ts'],
+    rules: {
+      '@typescript-eslint/consistent-type-imports': 'off',
+    },
   },
 )

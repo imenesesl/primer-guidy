@@ -11,6 +11,10 @@
     "dev:core": "pnpm --filter @primer-guidy/core-web dev",
     "dev:login": "pnpm --filter @primer-guidy/login-web dev",
     "dev:flow": "pnpm --filter @primer-guidy/flow-web dev",
+    "dev:prompt-validation": "pnpm --filter @primer-guidy/prompt-validation-server dev",
+    "dev:brain": "pnpm --filter @primer-guidy/brain-server dev",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
     "build": "pnpm -r build",
     "generate:landing": "npx tsx .github/pages/generate.ts",
     "typecheck": "pnpm -r --if-present typecheck",
@@ -36,7 +40,9 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "argon2"
+      "argon2",
+      "@nestjs/core",
+      "@swc/core"
     ]
   },
   "devDependencies": {
@@ -62,6 +68,7 @@
     "stylelint-declaration-strict-value": "^1.11.1",
     "stylelint-scss": "^7.0.0",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.4"
   }

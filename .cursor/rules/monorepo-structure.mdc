@@ -14,8 +14,10 @@ This is a **100% TypeScript monorepo**. Every package, app, and library MUST be 
 | React web app | `apps/<name>-web/` | Rsbuild | `apps/core-web/`, `apps/login-web/` |
 | Shared UI (Design System) | `apps/components-web/` | tsc + Vitest | `apps/components-web/` |
 | Cloud Functions | `apps/functions/` | tsc + firebase-functions | `apps/functions/` |
-| NestJS server | `apps/<name>-server/` | NestJS CLI | `apps/auth-server/` |
+| NestJS server | `apps/<name>-server/` | NestJS CLI + SWC | `apps/prompt-validation-server/`, `apps/brain-server/` |
 | Cloud services abstraction | `libs/cloud-services/` | tsc + Vitest | `libs/cloud-services/` |
+| LLM services abstraction | `libs/llm-services/` | tsc + Vitest | `libs/llm-services/` |
+| Shared NestJS modules | `libs/nest-shared/` | tsc + Vitest | `libs/nest-shared/` |
 | Shared E2E helpers | `libs/e2e-helpers/` | Playwright | `libs/e2e-helpers/` |
 | Shared library | `libs/<name>/` | tsc | `libs/shared-types/` |
 
@@ -58,6 +60,30 @@ Provider-agnostic abstraction for cloud services (auth, database, firestore, hos
 - Import ONLY from `@primer-guidy/cloud-services`
 - Uses Port/Adapter pattern — Firebase is the hidden implementation
 
+## LLM Services — `@primer-guidy/llm-services`
+
+Provider-agnostic abstraction for LLM inference. Same Port/Adapter pattern as cloud-services.
+
+- NestJS servers NEVER import from `ollama` or `groq-sdk` directly
+- Import ONLY from `@primer-guidy/llm-services`
+- Adapters: `OllamaAdapter` (local dev), `GroqAdapter` (production)
+- Factory: `createLlmProvider(config)` selects adapter based on `LLM_PROVIDER` env var
+
+## Shared NestJS Modules — `@primer-guidy/nest-shared`
+
+Reusable NestJS building blocks shared across ALL server apps:
+
+- `HealthModule` — `/health` endpoint for container liveness probes
+- `LlmModule.register([...])` — Dynamic module for LLM provider DI with configurable tokens
+- `ApiKeyGuard` — Server-to-server `X-API-Key` header validation
+- `PromptContextDto` — Shared request DTO (`prompt` + `context`)
+- `GenerationResponseDto` — Shared response type for LLM generation
+
+```typescript
+// In any server app
+import { HealthModule, LlmModule, ApiKeyGuard, PromptContextDto } from '@primer-guidy/nest-shared'
+```
+
 ## Cloud Functions — `apps/functions/`
 
 Server-side callable functions using Firebase Cloud Functions v2 + `firebase-admin`. Used for privileged operations that MUST NOT happen client-side (credential verification, password hashing, custom token creation).
@@ -87,14 +113,38 @@ apps/functions/src/
 - Password hashing with `argon2id` — NEVER SHA-256 or other non-KDF algorithms
 - Entry point `src/index.ts` calls `initializeApp()` and re-exports all functions
 
+## Docker & Containerization
+
+NestJS servers are containerized via a shared parameterized Dockerfile at `docker/Dockerfile.server`.
+
+### Local Development
+
+```bash
+pnpm docker:up     # starts Ollama + all servers via docker-compose.yml
+pnpm docker:down   # stops all containers
+```
+
+- `docker-compose.yml` — Local dev: Ollama + servers on Docker bridge network
+- `docker-compose.prod.yml` — Production override: Groq API, Cloud Run port 8080
+- `scripts/ollama-setup.sh` — Pulls required LLM models into Ollama
+
+### Adding a New Server
+
+1. Create `apps/<name>-server/` following NestJS conventions
+2. Add service to `docker-compose.yml` using `docker/Dockerfile.server` with `APP_NAME` and `APP_PORT` args
+3. Add `dev:<name>` script to root `package.json`
+4. If public-facing, add route to `scripts/dev-proxy.ts`
+
 ## Root Scripts Convention
 
-The root `package.json` MUST have a `dev:<name>` script for each web app:
+The root `package.json` MUST have a `dev:<name>` script for each app:
 
 ```json
 {
   "dev:core": "pnpm --filter @primer-guidy/core-web dev",
-  "dev:login": "pnpm --filter @primer-guidy/login-web dev"
+  "dev:login": "pnpm --filter @primer-guidy/login-web dev",
+  "dev:prompt-validation": "pnpm --filter @primer-guidy/prompt-validation-server dev",
+  "dev:brain": "pnpm --filter @primer-guidy/brain-server dev"
 }
 ```
 
@@ -107,6 +157,7 @@ Recursive scripts (`build`, `typecheck`, `lint`, `test`) run across all packages
 Cross-app tooling scripts live in `scripts/` at the monorepo root:
 
 - `scripts/run-e2e.sh` — Shared E2E runner (starts emulators, runs Playwright, cleans up)
+- `scripts/ollama-setup.sh` — Pulls required LLM models into Ollama
 
 Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `package.json`.
 
@@ -120,10 +171,10 @@ Apps invoke shared scripts via `bash ../../scripts/<script>.sh` in their `packag
 ## Constraints
 
 - NO JavaScript files (`.js`, `.jsx`) — TypeScript only (`.ts`, `.tsx`). Exception: `.mjs` files are allowed for tooling configs (e.g., `eslint.config.mjs`)
-- Every package with TypeScript source MUST have its own `tsconfig.json` extending root config. Exceptions:
-  - Pure JS config packages with no TS source (e.g., `eslint-config`) do not need a `tsconfig.json`
-  - Packages that need to emit (`outDir`/`declaration`) use a standalone `tsconfig.json` since `tsconfig.base.json` has `noEmit: true`
-  - Cloud Functions (`apps/functions/`) use a standalone `tsconfig.json` with `commonjs` module and `moduleResolution: "node"` (required by Firebase)
+- Every package with TypeScript source MUST have its own `tsconfig.json` extending root config:
+  - Web apps extend `tsconfig.base.json` (ESNext modules, bundler resolution)
+  - NestJS servers extend `tsconfig.nest.json` (CommonJS, node resolution, decorators)
+  - Cloud Functions (`apps/functions/`) use a standalone `tsconfig.json` with `commonjs` module and `moduleResolution: "node"` (Firebase Functions requirement)
 - Strict TypeScript: `strict: true` always enabled
 - NO `any` type — use `unknown` and narrow with type guards
 - Shared types/interfaces go in `libs/shared-types/`

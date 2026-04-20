@@ -6,19 +6,74 @@ alwaysApply: true
 
 # NestJS Conventions
 
-## Module Structure
+## Server App Structure
 
 ```
-src/
-  modules/
-    <feature>/
-      <feature>.module.ts
-      <feature>.controller.ts
-      <feature>.service.ts
-      <feature>.repository.ts
-      interfaces/
-      dto/
-      guards/
+apps/<name>-server/
+  package.json                   → extends shared deps pattern
+  tsconfig.json                  → extends tsconfig.nest.json
+  nest-cli.json                  → SWC builder + typeCheck
+  eslint.config.mjs              → imports { nestServer } from @primer-guidy/eslint-config
+  src/
+    main.ts                      → bootstrap: NestFactory + ValidationPipe + listen on PORT env
+    app.module.ts                → imports HealthModule, LlmModule.register([...]), feature modules
+    modules/
+      <feature>/
+        <feature>.module.ts
+        <feature>.controller.ts
+        <feature>.service.ts
+        <feature>.repository.ts  → (if data access needed)
+        dto/                     → (app-specific DTOs only)
+        guards/                  → (app-specific guards only)
+```
+
+## Shared Modules — `@primer-guidy/nest-shared`
+
+Before creating any module, check if `@primer-guidy/nest-shared` already provides it:
+
+| Module | Usage |
+|--------|-------|
+| `HealthModule` | Import directly — provides `GET /health` |
+| `LlmModule.register([...])` | Configure LLM providers with token + env var mappings |
+| `ApiKeyGuard` | Apply via `@UseGuards(ApiKeyGuard)` for server-to-server auth |
+| `PromptContextDto` | Use as `@Body()` parameter for prompt + context endpoints |
+| `GenerationResponseDto` | Return type for LLM generation responses |
+
+```typescript
+// app.module.ts — typical server setup
+import { HealthModule, LlmModule } from '@primer-guidy/nest-shared'
+
+@Module({
+  imports: [
+    HealthModule,
+    LlmModule.register([
+      { token: 'ILlmProvider', modelEnv: 'OLLAMA_MODEL', defaultModel: 'llama3.1:8b' },
+    ]),
+    FeatureModule,
+  ],
+})
+export class AppModule {}
+```
+
+## Shared Configs
+
+ALL NestJS servers MUST use the shared configs:
+
+| Config | Path | What it provides |
+|--------|------|-----------------|
+| `tsconfig.nest.json` | `../../tsconfig.nest.json` | CommonJS, node resolution, decorators, strict mode |
+| `nestServer` ESLint | `@primer-guidy/eslint-config` | `no-extraneous-class` off for modules, `consistent-type-imports` off for DI files |
+| `nest-cli.json` | Per server (identical) | SWC builder with typeCheck |
+
+Server `tsconfig.json` MUST extend `tsconfig.nest.json` and add only `outDir` + `rootDir`:
+
+```json
+{
+  "extends": "../../tsconfig.nest.json",
+  "compilerOptions": { "outDir": "dist", "rootDir": "src" },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}
 ```
 
 ## Single Responsibility per Service
@@ -60,3 +115,17 @@ class ReportService { generateReport() { /* ... */ } }
 - Use `class-validator` + `class-transformer` for all DTOs
 - Separate `CreateDto`, `UpdateDto`, `ResponseDto` per entity
 - NEVER expose internal entities in API responses
+- Check `@primer-guidy/nest-shared` for shared DTOs before creating new ones
+
+## LLM Integration
+
+- Inject LLM providers via `@Inject(TOKEN)` using tokens defined in `app.module.ts`
+- NEVER import from `ollama` or `groq-sdk` directly — use `@primer-guidy/llm-services`
+- System prompts are constants in the service file that uses them
+- Use low temperature (0-0.3) for classification/validation, higher (0.7) for generation
+
+## Docker
+
+- ALL servers use the shared `docker/Dockerfile.server` (parameterized via `APP_NAME` and `APP_PORT` build args)
+- NEVER create per-server Dockerfiles
+- Server-to-server communication uses Docker network hostnames in local, Cloud Run URLs in production

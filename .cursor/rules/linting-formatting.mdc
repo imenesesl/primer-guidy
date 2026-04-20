@@ -9,7 +9,14 @@ ALL code MUST pass ESLint, Prettier, and Stylelint before commit.
 
 ## ESLint
 
-Strict TypeScript rules enforced:
+`@primer-guidy/eslint-config` exports two presets:
+
+| Preset | Used by | Import |
+|--------|---------|--------|
+| `base` | Web apps, shared libs, components | `import { base } from '@primer-guidy/eslint-config'` |
+| `nestServer` | NestJS server apps, `libs/nest-shared` | `import { nestServer } from '@primer-guidy/eslint-config'` |
+
+### Shared Rules (both presets)
 
 - `@typescript-eslint/strict` preset
 - `no-explicit-any`: error
@@ -18,7 +25,24 @@ Strict TypeScript rules enforced:
 - `consistent-type-imports`: error (use `import type`)
 - `no-magic-numbers`: error (raw numeric literals MUST be extracted into named constants — tests excluded). The constant definition itself (`const ICON_SIZE = 20`) is allowed; the violation is using the raw number inline (`size={20}`).
 - `no-console`: warn (use logger utilities)
+
+### `base` — Additional Rules (React)
+
 - React rules: `react-hooks/exhaustive-deps`, `react/no-array-index-key`
+
+### `nestServer` — Additional Rules (NestJS)
+
+- `no-extraneous-class`: off for `*.module.ts` (NestJS modules are empty decorated classes)
+- `consistent-type-imports`: off for `*.controller.ts`, `*.service.ts`, `*.guard.ts` (NestJS DI with `emitDecoratorMetadata` requires runtime imports)
+
+### Adding a New Server
+
+```javascript
+// eslint.config.mjs — for any NestJS server
+import { nestServer } from '@primer-guidy/eslint-config'
+
+export default [...nestServer]
+```
 
 ## Prettier
 

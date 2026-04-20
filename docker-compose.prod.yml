@@ -1,0 +1,30 @@
+services:
+  prompt-validation:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+      args:
+        APP_NAME: prompt-validation-server
+        APP_PORT: 8080
+    environment:
+      - PORT=8080
+      - LLM_PROVIDER=groq
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GUARD_MODEL=llama-guard-3-8b
+      - CURATION_MODEL=llama-3.1-8b-instant
+      - BRAIN_BASE_URL=${BRAIN_BASE_URL}
+      - BRAIN_API_KEY=${BRAIN_API_KEY}
+
+  brain:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+      args:
+        APP_NAME: brain-server
+        APP_PORT: 8080
+    environment:
+      - PORT=8080
+      - LLM_PROVIDER=groq
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OLLAMA_MODEL=llama-3.3-70b-versatile
+      - BRAIN_API_KEY=${BRAIN_API_KEY}
