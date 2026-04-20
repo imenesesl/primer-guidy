@@ -1,0 +1,152 @@
+[
+  {
+    "_category": "CONTEXT BUENO + PROMPT VAGO",
+    "context": "Cinemática: movimiento rectilíneo uniforme y uniformemente acelerado, ecuaciones de posición, velocidad y aceleración",
+    "prompt": "explícame eso"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT VAGO",
+    "context": "Trigonometría: funciones seno, coseno y tangente aplicadas a triángulos rectángulos",
+    "prompt": "no entiendo nada, ayúdame"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT VAGO",
+    "context": "Álgebra: resolución de ecuaciones de segundo grado por fórmula general y factorización",
+    "prompt": "qué es esto?"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT VAGO",
+    "context": "Estática: condiciones de equilibrio de cuerpos rígidos, torque y momento de fuerza",
+    "prompt": "dame un resumen"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT CONTRADICE CONTEXT",
+    "context": "Óptica geométrica: reflexión y refracción de la luz, espejos y lentes",
+    "prompt": "Resuelve una integral definida de 0 a pi de sen(x)dx"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT CONTRADICE CONTEXT",
+    "context": "Termodinámica: primera y segunda ley, procesos isotérmicos, isobáricos y adiabáticos",
+    "prompt": "Explica cómo balancear la ecuación química del ácido sulfúrico con hidróxido de sodio"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT CONTRADICE CONTEXT",
+    "context": "Geometría analítica: ecuación de la recta, pendiente, distancia entre dos puntos",
+    "prompt": "Cuáles son las partes de la célula eucariota y sus funciones"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT DEMASIADO AMPLIO",
+    "context": "Vectores: suma, resta, producto punto y producto cruz en R2 y R3",
+    "prompt": "Enséñame todo sobre vectores desde cero hasta nivel universitario incluyendo espacios vectoriales, transformaciones lineales, autovalores y toda la teoría"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT DEMASIADO AMPLIO",
+    "context": "Probabilidad: eventos simples, compuestos, regla de Laplace",
+    "prompt": "Explícame toda la estadística y probabilidad que existe"
+  },
+  {
+    "_category": "CONTEXT MALO + PROMPT BUENO",
+    "context": "cosas de mates",
+    "prompt": "Resuelve el sistema de ecuaciones: 3x + 2y = 12, x - y = 1. Usa el método de sustitución y verifica la respuesta."
+  },
+  {
+    "_category": "CONTEXT MALO + PROMPT BUENO",
+    "context": "fisica",
+    "prompt": "Un proyectil se lanza con velocidad inicial de 50 m/s a un ángulo de 45°. Calcula el alcance máximo, la altura máxima y el tiempo total de vuelo. Usa g=9.8 m/s²."
+  },
+  {
+    "_category": "CONTEXT MALO + PROMPT BUENO",
+    "context": "lo que sea de bachillerato",
+    "prompt": "Demuestra el teorema de Pitágoras usando áreas de cuadrados construidos sobre los lados de un triángulo rectángulo."
+  },
+  {
+    "_category": "CONTEXT INEXISTENTE + PROMPT BUENO",
+    "context": "",
+    "prompt": "Calcula el área de un hexágono regular de lado 8cm."
+  },
+  {
+    "_category": "CONTEXT Y PROMPT EN DIFERENTES IDIOMAS",
+    "context": "Kinematics: uniform motion and uniformly accelerated motion",
+    "prompt": "Un carro parte del reposo y acelera a 3 m/s² durante 8 segundos. ¿Qué distancia recorre?"
+  },
+  {
+    "_category": "CONTEXT Y PROMPT EN DIFERENTES IDIOMAS",
+    "context": "Geometría euclidiana: triángulos, cuadriláteros y circunferencias",
+    "prompt": "Calculate the area of a circle with radius 7cm and explain the relationship between circumference and diameter"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT TIENE ERRORES CONCEPTUALES",
+    "context": "Leyes de Newton: primera, segunda y tercera ley del movimiento",
+    "prompt": "Explica por qué cuando un objeto pesa más cae más rápido según la segunda ley de Newton. Un objeto de 10kg cae más rápido que uno de 1kg, ¿verdad?"
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT TIENE ERRORES CONCEPTUALES",
+    "context": "Geometría: áreas y perímetros de figuras planas",
+    "prompt": "El área de un círculo es pi por radio al cubo. Calcula el área de un círculo de radio 5."
+  },
+  {
+    "_category": "CONTEXT BUENO + PROMPT TIENE ERRORES CONCEPTUALES",
+    "context": "Electricidad: ley de Ohm, circuitos en serie y paralelo",
+    "prompt": "En un circuito en serie, la corriente se divide entre las resistencias. Si tengo 3 resistencias de 10Ω en serie con 12V, cuánta corriente pasa por cada resistencia?"
+  },
+  {
+    "_category": "CONTEXT HIPER-ESPECIFICO + PROMPT BUENO",
+    "context": "Cálculo del volumen de un cono truncado usando integración por discos en el eje Y",
+    "prompt": "Explica el método paso a paso y resuelve un ejemplo con radio mayor 6cm, radio menor 3cm y altura 10cm"
+  },
+  {
+    "_category": "CONTEXT HIPER-ESPECIFICO + PROMPT BUENO",
+    "context": "Aplicación del teorema del coseno para triángulos oblicuángulos donde no se puede usar el teorema de Pitágoras",
+    "prompt": "En un triángulo con lados a=7, b=10 y ángulo C=120°, encuentra el lado c y los ángulos restantes"
+  },
+  {
+    "_category": "PROMPT MULTI-PASO COMPLEJO",
+    "context": "Matemáticas de bachillerato: álgebra, geometría y funciones",
+    "prompt": "Un granjero tiene 100 metros de cerca para hacer un corral rectangular pegado a una pared (solo necesita 3 lados). ¿Qué dimensiones maximizan el área? Plantea la función, encuentra el máximo con derivadas y verifica que sea máximo."
+  },
+  {
+    "_category": "PROMPT MULTI-PASO COMPLEJO",
+    "context": "Física: cinemática y dinámica de Newton",
+    "prompt": "Dos bloques de 3kg y 5kg están conectados por una cuerda sobre una polea sin fricción. El bloque de 5kg cuelga verticalmente y el de 3kg está en una mesa sin fricción. Calcula: a) la aceleración del sistema, b) la tensión en la cuerda, c) la velocidad del sistema después de 2 segundos desde el reposo."
+  },
+  {
+    "_category": "PROMPT REQUIERE OPINION PERSONAL",
+    "context": "Geometría: áreas y perímetros de figuras planas",
+    "prompt": "¿Cuál es la figura geométrica más bonita y por qué? Dame tu opinión personal como profesor."
+  },
+  {
+    "_category": "PROMPT REQUIERE OPINION PERSONAL",
+    "context": "Matemáticas de bachillerato",
+    "prompt": "¿Las matemáticas son la materia más importante del bachillerato? Argumenta tu posición."
+  },
+  {
+    "_category": "PROMPT CON DATOS INSUFICIENTES",
+    "context": "Geometría: triángulos y teorema de Pitágoras",
+    "prompt": "Calcula la hipotenusa de un triángulo rectángulo."
+  },
+  {
+    "_category": "PROMPT CON DATOS INSUFICIENTES",
+    "context": "Cinemática: movimiento uniformemente acelerado",
+    "prompt": "¿A qué velocidad llega un carro si acelera durante un tiempo?"
+  },
+  {
+    "_category": "CONTEXT MUY LARGO Y DETALLADO",
+    "context": "Unidad 3 del curso de Física para 4to año de bachillerato del Liceo Nacional Simón Bolívar, sección B, turno de la mañana, profesor García. Tema: Movimiento Parabólico o Movimiento de Proyectiles. Subtemas: composición de movimientos (MRU horizontal + caída libre vertical), ecuaciones paramétricas x(t) e y(t), alcance horizontal, altura máxima, tiempo de vuelo, ángulo de tiro óptimo para máximo alcance. Nivel: ejercicios de aplicación sin resistencia del aire.",
+    "prompt": "Para la evaluación del viernes: un futbolista patea un balón con velocidad de 25 m/s a 37° sobre la horizontal. La portería está a 30 metros. ¿El balón llega? ¿A qué altura pasa sobre la portería o a qué distancia se queda corto?"
+  },
+  {
+    "_category": "PROMPT COLOQUIAL NATURAL",
+    "context": "Ecuaciones de segundo grado: fórmula general, discriminante",
+    "prompt": "profe no le entiendo a esa formula con la b al cuadrado y la raiz, me puede explicar con un ejemplo facil?"
+  },
+  {
+    "_category": "PROMPT COLOQUIAL NATURAL",
+    "context": "Dinámica: fuerzas, masa y aceleración",
+    "prompt": "por qué si la tierra jala todo hacia abajo los aviones no se caen? osea cómo le hacen para mantenerse arriba?"
+  },
+  {
+    "_category": "PROMPT COLOQUIAL NATURAL",
+    "context": "Trigonometría: razones trigonométricas",
+    "prompt": "profe para q sirve el seno y coseno en la vida real? tipo nunca voy a usar eso fuera del cole"
+  }
+]

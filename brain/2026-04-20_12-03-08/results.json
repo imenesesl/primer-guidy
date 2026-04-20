@@ -1,0 +1,402 @@
+[
+  {
+    "index": 0,
+    "context": "Geometría de bachillerato",
+    "prompt": "Un terreno tiene forma de trapecio con bases de 20m y 14m, y una altura de 8m. Calcula su área y el costo de cercarlo si el metro de cerca cuesta $45.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula la superficie del terreno en forma de trapecio con bases de 20 metros y 14 metros y altura de 8 metros, utilizando la fórmula para el área de un trapecio: A = (1/2) × (b1 + b2) × h. Luego, determina el costo de cercar el terreno si se necesita una longitud de cerca equivalente a su perímetro y cada metro cuesta $45.",
+      "timing": {
+        "safetyGuardMs": 13701,
+        "curationMs": 26846,
+        "brainMs": 155026,
+        "totalMs": 195572
+      },
+      "generation": {
+        "content": "**Cálculo de la Superficie del Terreno en Forma de Trapecio**\n\nPara calcular la superficie del terreno en forma de trapecio, necesitamos utilizar la fórmula para el área de un trapecio:\n\nA = (1/2) × (b1 + b2) × h\n\n**Datos del Problema:**\n\n* Base 1 (b1): 20 metros\n* Base 2 (b2): 14 metros\n* Altura (h): 8 metros\n\n**Cálculo de la Superficie:**\n\nSustituyamos los valores dados en la fórmula:\n\nA = (1/2) × (20 + 14) × 8\n= (1/2) × 34 × 8\n= 17 × 8\n= 136 metros cuadrados\n\n**Cálculo del Perímetro:**\n\nPara determinar el costo de cercar el terreno, necesitamos calcular su perímetro. El perímetro de un trapecio se puede encontrar sumando la longitud de las bases y multiplicando por 2:\n\nP = (b1 + b2) × 2\n= (20 + 14) × 2\n= 34 × 2\n= 68 metros\n\n**Cálculo del Costo de Cercar el Terreno:**\n\nDado que cada metro cuesta $45, podemos multiplicar el perímetro por el costo por metro para encontrar el costo total:\n\nCosto = Perímetro × Costo por metro\n= 68 metros × $45/metro\n= $3,060\n\n**Resumen:**\n\nLa superficie del terreno en forma de trapecio es de 136 metros cuadrados. El perímetro del terreno es de 68 metros y el costo de cercar el terreno es de $3,060.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 636
+      }
+    }
+  },
+  {
+    "index": 1,
+    "context": "Geometría de bachillerato",
+    "prompt": "Demuestra que la suma de los ángulos internos de cualquier triángulo es 180° usando el método de la recta paralela.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Demuestra que la suma de los ángulos internos de cualquier triángulo es igual a 180 grados mediante la construcción de una recta paralela a uno de sus lados y la aplicación del ángulo correspondiente en el punto de intersección con el lado opuesto.",
+      "timing": {
+        "safetyGuardMs": 11395,
+        "curationMs": 19345,
+        "brainMs": 83908,
+        "totalMs": 114649
+      },
+      "generation": {
+        "content": "**La suma de los ángulos internos de un triángulo**\n\nEn geometría, sabemos que un triángulo es una figura geométrica con tres lados y tres vértices. Los ángulos internos de un triángulo son los ángulos formados por dos lados del triángulo y el tercer lado.\n\n**Demostración**\n\nPara demostrar que la suma de los ángulos internos de cualquier triángulo es igual a 180 grados, utilizaremos la siguiente construcción:\n\n1. Dibuja un triángulo cualquiera con tres lados y tres vértices.\n2. Dibuja una recta paralela a uno de los lados del triángulo, por ejemplo, el lado AB.\n3. Llama al punto de intersección de la línea paralela con el lado opuesto AC como P.\n\n**Aplicación del ángulo correspondiente**\n\nSegún la definición de ángulo correspondiente, sabemos que el ángulo formado por una recta paralela a uno de los lados de un triángulo y el tercer lado es igual al ángulo interno opuesto.\n\nPor lo tanto, el ángulo APE (que es el ángulo correspondiente) es igual al ángulo ABC (el ángulo interno).\n\nDel mismo modo, el ángulo CPG (que es el ángulo correspondiente) es igual al ángulo CAB (el ángulo interno).\n\n**Demostración de la suma**\n\nAhora podemos demostrar que la suma de los ángulos internos del triángulo es igual a 180 grados.\n\nComo sabemos que APE = ABC y CPG = CAB, podemos escribir:\n\nABC + CAB = APE + CPG\n\nPero también sabemos que la recta PE es paralela al lado AB, por lo que el ángulo PEA (que es el ángulo correspondiente) es igual al ángulo BAC.\n\nEntonces, tenemos:\n\nAPE + CPG = 180 grados (ya que los ángulos externos de un triángulo son suplementarios)\n\nSustituyendo la expresión anterior obtenemos:\n\nABC + CAB = 180 grados\n\nPor lo tanto, hemos demostrado que la suma de los ángulos internos de cualquier triángulo es igual a 180 grados.\n\n**Conclusión**\n\nEn conclusión, la suma de los ángulos internos de un triángulo es igual a 180 grados. Esto se puede demostrar utilizando la construcción de una recta paralela a uno de los lados del triángulo y aplicando el ángulo correspondiente en el punto de intersección con el lado opuesto.\n\n**Ejemplo**\n\nConsideremos un triángulo ABC con lados AB = 5 cm, BC = 6 cm y AC = 7 cm. Dibuja una recta paralela a AB y llama al punto de intersección con el lado opuesto AC como P.\n\nUtilizando la demostración anterior, podemos determinar que la suma de los ángulos internos del triángulo ABC es igual a 180 grados.\n\n**Resumen**\n\n* La suma de los ángulos internos de un triángulo es igual a 180 grados.\n* Se puede demostrar utilizando la construcción de una recta paralela a uno de los lados del triángulo y aplicando el ángulo correspondiente en el punto de intersección con el lado opuesto.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 970
+      }
+    }
+  },
+  {
+    "index": 2,
+    "context": "Geometría de bachillerato",
+    "prompt": "Un tanque cilíndrico tiene 2 metros de diámetro y 3 metros de alto. ¿Cuántos litros de agua puede almacenar? Si se llena al 75%, ¿cuántos litros tiene?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Un cilindro con un diámetro de 2 metros y una altura de 3 metros, ¿cuál es su volumen en litros? Luego, si está lleno al 75% de su capacidad, ¿cuántos litros de agua contiene?",
+      "timing": {
+        "safetyGuardMs": 12182,
+        "curationMs": 21019,
+        "brainMs": 102753,
+        "totalMs": 135954
+      },
+      "generation": {
+        "content": "**Volumen de un cilindro**\n\nEl volumen de un cilindro se puede calcular utilizando la fórmula:\n\nV = πr²h\n\ndonde V es el volumen, π (pi) es un valor constante aproximadamente igual a 3,14159, r es el radio del cilindro y h es su altura.\n\n**Calculando el volumen**\n\nDado que tenemos la medida del diámetro (2 metros), podemos encontrar el radio restando el diámetro por 2:\n\nRadio (r) = Diámetro / 2\n= 2 m / 2\n= 1 m\n\nAhora, podemos sustituir los valores conocidos en la fórmula para calcular el volumen:\n\nV = πr²h\n= 3,14159 × (1 m)² × 3 m\n= 3,14159 × 1 m² × 3 m\n= 9,42477 m³\n\n**Conviertiendo metros cúbicos a litros**\n\nPara encontrar el volumen en litros, debemos recordar que 1 metro cúbico (m³) equivale a 1000 litros. Por lo tanto:\n\nVolumen en litros = Volumen en m³ × 1000\n= 9,42477 m³ × 1000\n≈ 9424,77 litros\n\n**Agua contenida al 75% de la capacidad**\n\nSi el cilindro está lleno al 75% de su capacidad, debemos encontrar el volumen correspondiente:\n\nVolumen contenido = Volumen total × (75/100)\n= 9424,77 litros × (75/100)\n≈ 7068,58 litros\n\nPor lo tanto, si un cilindro con un diámetro de 2 metros y una altura de 3 metros está lleno al 75% de su capacidad, contiene aproximadamente **7069 litros** de agua.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 621
+      }
+    }
+  },
+  {
+    "index": 3,
+    "context": "Geometría de bachillerato",
+    "prompt": "En un triángulo ABC, el ángulo A mide 40° y el ángulo B mide 75°. Clasifica el triángulo según sus ángulos y según sus lados si AB=8cm, BC=5.2cm y AC=7.8cm.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Clasifica el triángulo ABC según su tipo (rectángulo, obtusángulo o acutángulo) basándose en los ángulos A y B, que miden 40° y 75° respectivamente. Además, clasifícalo según su tipo (equilátero, isósceles o escaleno) según sus lados AB=8cm, BC=5.2cm y AC=7.8cm.",
+      "timing": {
+        "safetyGuardMs": 10757,
+        "curationMs": 17363,
+        "brainMs": 28051,
+        "totalMs": 56171
+      },
+      "generation": {
+        "content": "**Clasificación del Triángulo ABC**\n\n**Tipo por ángulos:**\n\nPara determinar el tipo de triángulo según los ángulos A y B, debemos considerar las siguientes características:\n\n* Un triángulo rectángulo tiene un ángulo recto (90°).\n* Un triángulo obtusángulo tiene uno o más ángulos que miden más de 90°.\n* Un triángulo acutángulo tiene todos sus ángulos menores a 90°.\n\nEn este caso, los ángulos A y B miden 40° y 75° respectivamente. Como ninguno de estos ángulos es recto ni supera la medida de 90°, el triángulo ABC es un **triángulo acutángulo**.\n\n**Tipo por lados:**\n\nPara determinar el tipo de triángulo según sus lados, debemos considerar las siguientes características:\n\n* Un triángulo equilátero tiene todos sus lados iguales.\n* Un triángulo isósceles tiene al menos dos lados iguales.\n* Un triángulo escaleno tiene todos sus lados diferentes.\n\nEn este caso, los lados del triángulo ABC son AB=8cm, BC=5.2cm y AC=7.8cm. Como ningún lado es igual a los otros dos, el triángulo ABC es un **triángulo escaleno**.\n\n**Resumen:**\n\n* El triángulo ABC es un triángulo acutángulo según sus ángulos.\n* El triángulo ABC es un triángulo escaleno según sus lados.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 587
+      }
+    }
+  },
+  {
+    "index": 4,
+    "context": "Geometría de bachillerato",
+    "prompt": "Una escalera de 5 metros se apoya contra una pared. Si el pie de la escalera está a 3 metros de la pared, ¿a qué altura de la pared llega? ¿Qué ángulo forma con el suelo?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Una escalera de longitud 5 metros se encuentra en posición inclinada contra una pared, con un pie que está a 3 metros de distancia desde la pared. Calcular la altura máxima a la que llega la escalera y determinar el ángulo que forma con el suelo.",
+      "timing": {
+        "safetyGuardMs": 12940,
+        "curationMs": 23277,
+        "brainMs": 131364,
+        "totalMs": 167580
+      },
+      "generation": {
+        "content": "**Problema: Escalera Inclinada**\n\n**Resumen del problema**\n\nUna escalera de longitud 5 metros se encuentra en posición inclinada contra una pared, con un pie que está a 3 metros de distancia desde la pared. Nuestro objetivo es calcular la altura máxima a la que llega la escalera y determinar el ángulo que forma con el suelo.\n\n**Representación gráfica**\n\nPara abordar este problema, podemos representarlo mediante una diagonal en un triángulo rectángulo. La distancia entre el pie de la escalera y la pared representa el cateto más corto (3 metros), mientras que la longitud total de la escalera es la hipotenusa del triángulo.\n\n**Cálculo de la altura máxima**\n\nDado que tenemos una relación triángulo rectángulo, podemos aplicar las propiedades de los triángulos rectángulos para encontrar la altura. El teorema de Pitágoras establece que en un triángulo rectángulo, el cuadrado de la longitud del cateto opuesto al ángulo recto (la hipotenusa) es igual a la suma de los cuadros de las longitudes de los otros dos catetos.\n\nEn este caso, podemos considerar la altura como uno de los catetos. Sea h la altura máxima a la que llega la escalera. Según el teorema de Pitágoras:\n\nh² + 3² = 5²\n\nSimplificando la ecuación obtenemos:\n\nh² + 9 = 25\n\nRestar 9 de ambos lados nos da:\n\nh² = 16\n\nSacando la raíz cuadrada de ambos lados, encontramos que h = √16 = 4 metros.\n\n**Cálculo del ángulo**\n\nPara encontrar el ángulo que forma la escalera con el suelo (α), podemos utilizar la función seno. La función seno relaciona la longitud de un cateto en un triángulo rectángulo con la longitud de la hipotenusa y el ángulo correspondiente.\n\nEn nuestro caso, tenemos:\n\nsen(α) = 3 / 5\n\nPara encontrar α, podemos tomar el seno inverso (arcoseno o arco) del lado izquierdo de la ecuación. Esto nos da:\n\nα = arcsen(3/5)\n\nUsando una calculadora para evaluar esta expresión, encontramos que α ≈ 36,87°.\n\n**Conclusión**\n\nLa altura máxima a la que llega la escalera es de 4 metros y el ángulo que forma con el suelo es aproximadamente 36,87°.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 778
+      }
+    }
+  },
+  {
+    "index": 5,
+    "context": "Geometría de bachillerato",
+    "prompt": "Dos cuerdas de una circunferencia se cruzan en un punto interior. Una mide 12cm y se divide en segmentos de 4 y 8. La otra se divide en segmentos de 6 y x. Encuentra x.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Dos cuerdas que se cruzan en un punto interior de una circunferencia forman dos ángulos correspondientes congruentes. Si la cuerda de longitud 12 cm se divide en segmentos de 4 y 8, entonces el ángulo inscrito en el segmento de 4 es igual al ángulo inscrito en el segmento de 6 de la otra cuerda. Usando esta relación de proporcionalidad, encuentre el valor de x.",
+      "timing": {
+        "safetyGuardMs": 37992,
+        "curationMs": 120783,
+        "brainMs": 79988,
+        "totalMs": 238763
+      },
+      "generation": {
+        "content": "**Proporcionalidad de Ángulos Inscritos**\n\nSabemos que dos cuerdas que se cruzan en un punto interior de una circunferencia forman dos ángulos correspondientes congruentes. En este problema, tenemos dos cuerdas que se cruzan en un punto interior de la circunferencia y queremos encontrar el valor del ángulo inscrito en uno de los segmentos.\n\n**Relación de Proporcionalidad**\n\nLa cuerda de longitud 12 cm se divide en segmentos de 4 y 8. Como sabemos que los ángulos inscritos en cada segmento son congruentes, podemos establecer una relación de proporcionalidad entre ellos:\n\nÁngulo inscrito en el segmento de 4 ∝ Ángulo inscrito en el segmento de 6\n\nSabemos que la razón entre dos segmentos es igual a la razón entre sus ángulos inscritos. Por lo tanto, podemos escribir:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 4/8\n\n**Resolución del Problema**\n\nQueremos encontrar el valor de x, que representa el ángulo inscrito en el segmento de 6. Podemos utilizar la relación de proporcionalidad establecida anteriormente para resolver x.\n\nSi multiplicamos ambos lados de la ecuación por 8 y luego dividimos ambos lados entre 4, obtenemos:\n\nÁngulo inscrito en el segmento de 6 = (1/2) × Ángulo inscrito en el segmento de 4\n\nComo sabemos que el ángulo inscrito en el segmento de 4 es igual a x - y, donde y representa el ángulo inscrito en el otro segmento, podemos sustituir esta expresión en la ecuación anterior:\n\nx - y = (1/2) × (x + y)\n\nAhora necesitamos encontrar el valor de x. Para hacer esto, podemos utilizar la relación de proporcionalidad establecida anteriormente:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 4/8\n\nSustituyendo las expresiones obtenemos:\n\n(x - y) / (x + y) = 1/2\n\nMultiplicando ambos lados por 2 obtenemos:\n\n2(x - y) = x + y\n\nDistribuyendo el 2 en el lado izquierdo obtenemos:\n\n2x - 2y = x + y\n\nSumando y a ambos lados obtenemos:\n\n2x - y = x + 2y\n\nRestando x de ambos lados obtenemos:\n\nx - y = 2y\n\nSumando y a ambos lados obtenemos:\n\nx = 3y\n\nPero sabemos que el ángulo inscrito en el segmento de 4 es igual al ángulo inscrito en el segmento de 6, por lo tanto x = y.\n\nSustituyendo esto en la ecuación anterior obtenemos:\n\nx = 3 × x\n\nDividiendo ambos lados por x obtenemos:\n\n1 = 3\n\nEsto no tiene sentido, entonces algo debe haber salido mal en nuestros cálculos. Vamos a revisar nuestra ecuación de proporcionalidad.\n\nLa relación de proporcionalidad establecida anteriormente fue:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 4/8\n\nPero también sabemos que los ángulos inscritos en cada segmento son congruentes. Esto significa que la relación de proporcionalidad entre ellos debe ser igual a 1.\n\nEntonces, nuestra ecuación de proporcionalidad debería ser:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 1\n\nAhora podemos sustituir las expresiones obteniendo:\n\n(x - y) / (x + y) = 1\n\nMultiplicando ambos lados por x + y obtenemos:\n\nx - y = x + y\n\nRestando x de ambos lados obtenemos:\n\n-y = y\n\nDividiendo ambos lados por -y obtenemos:\n\n-1 = 1\n\nEsto sigue sin sentido, entonces algo debe haber salido mal en nuestros cálculos. Vamos a revisar nuestra ecuación de proporcionalidad.\n\nLa relación de proporcionalidad establecida anteriormente fue:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 4/8\n\nPero también sabemos que los ángulos inscritos en cada segmento son congruentes. Esto significa que la relación de proporcionalidad entre ellos debe ser igual a 1.\n\nEntonces, nuestra ecuación de proporcionalidad debería ser:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 1\n\nPero también sabemos que la razón entre dos segmentos es igual a la razón entre sus ángulos inscritos. Entonces, nuestra ecuación de proporcionalidad debería ser:\n\n4/8 = (Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6)\n\nPero también sabemos que los ángulos inscritos en cada segmento son congruentes. Esto significa que la relación de proporcionalidad entre ellos debe ser igual a 1.\n\nEntonces, nuestra ecuación de proporcionalidad debería ser:\n\n(Ángulo inscrito en el segmento de 4) / (Ángulo inscrito en el segmento de 6) = 1\n\nMultiplicando ambos lados por 8 obtenemos:\n\n4 = Ángulo inscrito en el segmento de 6\n\nAhora podemos sustituir esta expresión en la ecuación anterior:\n\nx - y = (1/2) × (x + y)\n\nSustituyendo x = 4 y y = x - 4 obtenemos:\n\n4 - (x - 4) = (1/2) × (x + (x - 4))\n\nSimplificando la ecuación obtenemos:\n\n8 = (3/2) × x\n\nDividiendo ambos lados por (3/2) obtenemos:\n\n(16/3) = x\n\nLa respuesta final es x = (16/3).",
+        "model": "llama3.1:8b",
+        "tokensUsed": 1712
+      }
+    }
+  },
+  {
+    "index": 6,
+    "context": "Geometría de bachillerato",
+    "prompt": "Calcula el área sombreada entre un cuadrado de 10cm de lado y un círculo inscrito en él.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula el área del sector circular que queda dentro de un cuadrado de 10 cm de lado, considerando solo la parte que está completamente dentro del cuadrado.",
+      "timing": {
+        "safetyGuardMs": 25728,
+        "curationMs": 91197,
+        "brainMs": 125064,
+        "totalMs": 241990
+      },
+      "generation": {
+        "content": "**Área de un Sector Circular**\n\nUn sector circular es una porción de un círculo limitada por dos radios y su arco correspondiente.\n\n**Cálculo del Área del Sector Circular**\n\nPara calcular el área del sector circular que queda dentro del cuadrado, debemos considerar la relación entre el ángulo central (el ángulo formado por los dos radios) y la totalidad de 360° del círculo.\n\nEn este caso, el cuadrado tiene un lado de 10 cm. Dibujando un radio desde cualquier vértice hasta el centro del cuadrado, podemos ver que forma un triángulo rectángulo con las mitades de los lados opuestos.\n\n**Ángulo Central**\n\nEl ángulo central (α) es la porción del círculo que queda dentro del cuadrado. Dado que el cuadrado tiene cuatro ángulos rectos iguales, cada uno mide 90°. Por lo tanto, el ángulo central α es:\n\nα = 90° / 4\nα = 22,5°\n\n**Área de un Sector Circular**\n\nLa fórmula para calcular la área de un sector circular es:\n\nA = (θ / 360) × πr^2\n\ndonde θ es el ángulo central en grados y r es el radio del círculo.\n\nSustituyendo los valores, obtenemos:\n\nA = (22,5° / 360) × π(5)^2\nA = (0,0625) × 3,14159 × 25\nA ≈ 24,54 cm^2\n\n**Conclusión**\n\nEl área del sector circular que queda completamente dentro del cuadrado de 10 cm de lado es aproximadamente 24,54 cm^2.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 562
+      }
+    }
+  },
+  {
+    "index": 7,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Un comerciante compra camisetas a $15 y las vende con un 40% de ganancia. Si hace una promoción de 2x1 en la segunda unidad con 20% de descuento, ¿cuánto gana por cada par vendido?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Un comerciante compra camisetas a $15 cada una y las vende con un 40% de ganancia. Si ofrece una promoción de 2x1 en la segunda unidad con un 20% de descuento, ¿cuánto gana por cada par vendido, considerando el precio original de la primera camiseta y el precio promocional de la segunda?",
+      "timing": {
+        "safetyGuardMs": 5216,
+        "curationMs": 94413,
+        "brainMs": 161154,
+        "totalMs": 260783
+      },
+      "generation": {
+        "content": "**Problema: Cálculo del beneficio por par de camisetas**\n\nUn comerciante compra camisetas a $15 cada una. Las vende con un 40% de ganancia, pero ofrece una promoción de 2x1 en la segunda unidad con un 20% de descuento.\n\n**Paso 1: Calcular el precio de venta de la primera camiseta**\n\nEl comerciante vende las camisetas con un 40% de ganancia. Esto significa que el precio de venta es el precio original más el 40% del precio original.\n\nPrecio original = $15\nGanancia = 40% de $15 = (40/100) × $15 = $6\n\nPrecio de venta de la primera camiseta = Precio original + Ganancia\n= $15 + $6\n= $21\n\n**Paso 2: Calcular el precio promocional de la segunda camiseta**\n\nLa segunda unidad se vende con un 20% de descuento. Esto significa que el precio de venta es el precio original menos el 20% del precio original.\n\nPrecio original = $15\nDescuento = 20% de $15 = (20/100) × $15 = $3\n\nPrecio promocional de la segunda camiseta = Precio original - Descuento\n= $15 - $3\n= $12\n\n**Paso 3: Calcular el beneficio por par de camisetas**\n\nEl comerciante vende cada par de camisetas por $21 + $12 = $33.\n\nBeneficio por par = (Precio de venta de la primera camiseta + Precio promocional de la segunda camiseta) - 2 × Precio original\n= ($21 + $12) - 2 × $15\n= $33 - $30\n= $3\n\nPor lo tanto, el comerciante gana $3 por cada par de camisetas vendidas.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 642
+      }
+    }
+  },
+  {
+    "index": 8,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "La población de una ciudad era de 50,000 en 2020. Si crece 3% anual, ¿cuál será la población en 2030? Usa la fórmula de crecimiento exponencial.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calculemos la población de la ciudad en 2030 utilizando la fórmula de crecimiento exponencial: P(t) = P0 * e^(rt), donde P0 es la población inicial (50,000), r es el tasa de crecimiento anual (3% o 0.03 como decimal), y t es el número de años que ha crecido la población desde 2020 hasta 2030.",
+      "timing": {
+        "safetyGuardMs": 51553,
+        "curationMs": 81119,
+        "brainMs": 123963,
+        "totalMs": 256634
+      },
+      "generation": {
+        "content": "**Cálculo de la Población en 2030**\n\nLa fórmula de crecimiento exponencial nos permite calcular la población de una ciudad en un momento futuro, dado el número inicial de habitantes y la tasa de crecimiento anual. En este caso, queremos encontrar la población de la ciudad en 2030 utilizando la siguiente información:\n\n* Población inicial (P0) = 50,000\n* Tasa de crecimiento anual (r) = 3% o 0.03 como decimal\n* Número de años que ha crecido la población desde 2020 hasta 2030 = 10 años\n\n**Fórmula de Crecimiento Exponencial**\n\nLa fórmula para calcular la población en un momento futuro (P(t)) es:\n\nP(t) = P0 \\* e^(rt)\n\nDonde:\n- P0 es la población inicial\n- r es la tasa de crecimiento anual\n- t es el número de años que ha crecido la población\n\n**Cálculo**\n\nSustituimos los valores dados en la fórmula:\n\nP(2030) = 50,000 \\* e^(0.03\\*10)\n\nPara calcular e^(0.3), podemos usar una calculadora o una herramienta de cálculo. El valor aproximado es:\n\ne^(0.3) ≈ 1,3499\n\nAhora, multiplicamos la población inicial por este valor:\n\nP(2030) = 50,000 \\* 1,3499\nP(2030) ≈ 67,495\n\n**Conclusión**\n\nLa población de la ciudad en 2030, según la fórmula de crecimiento exponencial y con los valores dados, sería aproximadamente 67,495 habitantes.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 628
+      }
+    }
+  },
+  {
+    "index": 9,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "María tiene el doble de edad que Pedro. Hace 5 años, María tenía el triple de la edad de Pedro. ¿Cuántos años tiene cada uno? Plantea el sistema de ecuaciones y resuélvelo.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Sea M la edad actual de María y P la edad actual de Pedro. Se nos da que M = 2P y M - 5 = 3(P - 5). Podemos reescribir la segunda ecuación como M - 5 = 3P - 15, lo que se simplifica a M = 3P - 10. Dado que M = 2P, podemos sustituir esta expresión en la ecuación anterior para obtener 2P = 3P - 10. Resolviendo para P, obtenemos P = 10. Sustituyendo este valor de P en la ecuación M = 2P, encontramos que M = 20. Por lo tanto, María tiene 20 años y Pedro tiene 10 años.",
+      "timing": {
+        "safetyGuardMs": 24201,
+        "curationMs": 88385,
+        "brainMs": 146376,
+        "totalMs": 258962
+      },
+      "generation": {
+        "content": "**Ejemplo: Resolviendo dos variables con dos ecuaciones**\n\nEn esta sección, resolveremos un problema de algebra que involucra dos variables y dos ecuaciones.\n\n### Paso 1: Entender las ecuaciones dadas\n\nTenemos dos ecuaciones:\n\n1. M = 2P\n2. M - 5 = 3(P - 5)\n\n### Paso 2: Simplificar la segunda ecuación\n\nPodemos reescribir la segunda ecuación como:\n\nM - 5 = 3P - 15\n\n### Paso 3: Simplificar aún más la segunda ecuación\n\nAhora podemos simplificarla a:\n\nM = 3P - 10\n\n### Paso 4: Sustituir una expresión en la otra ecuación\n\nDado que M = 2P, podemos sustituir esta expresión en la ecuación anterior para obtener:\n\n2P = 3P - 10\n\n### Paso 5: Resolver para P\n\nResolviendo para P, obtenemos:\n\nP = 10\n\n### Paso 6: Sustituir el valor de P en la otra ecuación\n\nSustituyendo este valor de P en la ecuación M = 2P, encontramos que:\n\nM = 20\n\n### Paso 7: Interpretar los resultados\n\nPor lo tanto, María tiene 20 años y Pedro tiene 10 años.\n\n**Recapitulación**\n\n* Tenemos dos variables (M y P) y dos ecuaciones.\n* Usamos sustitución para resolver el problema.\n* La solución es encontrar el valor de ambas variables.\n\n### Ejercicios\n\n1. Resuelve el siguiente problema:\n\nX + 2 = 3(Y - 1)\nY - 2 = 2(X + 5)\n\n2. Resuelve el siguiente problema:\n\nA = 2B\nA - 4 = 5(B - 1)\n\nRecuerda que siempre debes verificar tus respuestas y asegurarte de que se ajusten a las ecuaciones dadas.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 754
+      }
+    }
+  },
+  {
+    "index": 10,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Simplifica la expresión: (3x² - 12) / (x² - 4x + 4) y determina para qué valores de x no está definida.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Simplifica la expresión algebraica (3x² - 12) / (x² - 4x + 4) mediante factores comunes y determina los valores de x para los cuales la expresión no está definida.",
+      "timing": {
+        "safetyGuardMs": 39141,
+        "curationMs": 123285,
+        "brainMs": 43018,
+        "totalMs": 205445
+      },
+      "generation": {
+        "content": "**Simplificación de Expresiones Algebraicas**\n\nEn este ejemplo, necesitamos simplificar la expresión algebraica `(3x² - 12) / (x² - 4x + 4)` mediante factores comunes y determinar los valores de `x` para los cuales la expresión no está definida.\n\n**Paso 1: Factorizar el numerador**\n\nPrimero, factorizamos el término constante `-12` en el numerador. Sabemos que `-12 = -3 × 4`, por lo que podemos escribir:\n\n`(3x² - 12) = (3x² - 3 × 4)`\n\nAhora, podemos sacar `3` como factor común del numerador:\n\n`(3x² - 12) = 3(x² - 4)`\n\n**Paso 2: Factorizar el denominador**\n\nEl denominador es una expresión cuadrática. Necesitamos factorizarla para encontrar su raíz y determinar los valores de `x` que la hacen igual a cero.\n\nLa expresión `(x² - 4x + 4)` se puede escribir como:\n\n`(x² - 4x + 4) = (x - 2)²`\n\nAhora, podemos ver que el denominador se factoriza en `(x - 2)²`.\n\n**Paso 3: Simplificar la expresión**\n\nSustituimos los factores comunes y simplificamos la expresión:\n\n`(3(x² - 4)) / ((x - 2)²)` \n\nAhora, podemos cancelar el factor común `(x - 2)²` del numerador y denominador para obtener:\n\n`3(x - 2)`\n\n**Paso 4: Determinar los valores de x que hacen la expresión indefinida**\n\nLa expresión no está definida cuando el denominador es igual a cero. En este caso, tenemos `(x - 2)² = 0`, lo que implica `x - 2 = 0`. Resolviendo para `x`, obtenemos:\n\n`x = 2`\n\nEsto significa que la expresión no está definida cuando `x = 2`.\n\n**Conclusión**\n\nLa expresión algebraica `(3x² - 12) / (x² - 4x + 4)` se simplifica a `3(x - 2)` mediante factores comunes. La expresión no está definida para `x = 2`, ya que el denominador es igual a cero en este caso.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 740
+      }
+    }
+  },
+  {
+    "index": 11,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Una pelota se lanza hacia arriba desde el suelo con una velocidad inicial. Su altura en metros está dada por h(t) = -5t² + 20t. ¿Cuándo alcanza la altura máxima? ¿Cuál es esa altura? ¿Cuándo regresa al suelo?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Dada la función de altura h(t) = -5t² + 20t, encuentre el tiempo t en segundos en que se alcanza la altura máxima y calcule esta altura. Luego, determine cuándo la pelota regresa al suelo, es decir, cuando la altura sea cero.",
+      "timing": {
+        "safetyGuardMs": 43620,
+        "curationMs": 60709,
+        "brainMs": 62935,
+        "totalMs": 167265
+      },
+      "generation": {
+        "content": "**Análisis de la función de altura**\n\nLa función de altura dada es:\n\nh(t) = -5t² + 20t\n\nEsta función representa la altura de una pelota en función del tiempo t (en segundos). Para encontrar el tiempo en que se alcanza la altura máxima, debemos analizar la función.\n\n**Encontrar la altura máxima**\n\nPara encontrar la altura máxima, podemos tomar la derivada de la función con respecto al tiempo:\n\nh'(t) = -10t + 20\n\nEstableciendo h'(t) = 0, obtenemos:\n\n-10t + 20 = 0\n-10t = -20\nt = 2\n\nEsta es la hora en que se alcanza la altura máxima. Sustituyendo t = 2 en la función original obtenemos:\n\nh(2) = -5(2)² + 20(2)\n= -5(4) + 40\n= -20 + 40\n= 20\n\n**La altura máxima es de 20 metros**\n\n**Regreso a cero**\n\nPara determinar cuándo la pelota regresa al suelo, debemos encontrar el tiempo en que la altura sea igual a cero. Para ello, establecemos h(t) = 0 y resolvemos para t:\n\n-5t² + 20t = 0\n-5t(t - 4) = 0\n\nEsto nos da dos posibles valores de t: t = 0 (el momento en que la pelota es lanzada) y t = 4 (el momento en que la pelota regresa al suelo).\n\n**La pelota regresa al suelo después de 4 segundos**\n\nEn resumen, la altura máxima se alcanza a los 2 segundos con una altura de 20 metros. La pelota regresa al suelo después de 4 segundos.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 614
+      }
+    }
+  },
+  {
+    "index": 12,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "En una bolsa hay 4 bolas rojas, 3 azules y 5 verdes. Se sacan 2 bolas sin reposición. ¿Cuál es la probabilidad de que ambas sean rojas? ¿Y de que sean de diferente color?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "¿Qué es la probabilidad de sacar dos bolas rojas sin reposición de una bolsa que contiene 4 bolas rojas, 3 azules y 5 verdes? ¿Y qué es la probabilidad de sacar dos bolas de diferentes colores?",
+      "timing": {
+        "safetyGuardMs": 5117,
+        "curationMs": 65128,
+        "brainMs": 114922,
+        "totalMs": 185167
+      },
+      "generation": {
+        "content": "**Probabilidad de Sacar Dos Bolas Rojas Sin Reposición**\n\nImagina que tienes una bolsa con 12 bolas en total: 4 rojas, 3 azules y 5 verdes. Quieres saber la probabilidad de sacar dos bolas rojas sin reponer ninguna bola en la bolsa.\n\n**Cálculo de Probabilidades**\n\nPara calcular la probabilidad de un evento, usamos la fórmula:\n\nP(evento) = (Número de resultados favorables) / (Total de resultados posibles)\n\nEn este caso, el evento es sacar dos bolas rojas sin reposición. El número de resultados favorables sería sacar dos bolas rojas en dos sucesos consecutivos.\n\n**Probabilidad de Sacar una Bola Roja en la Primera Tirada**\n\nEl número de bolas rojas en la bolsa es 4, y el total de bolas es 12. La probabilidad de sacar una bola roja en la primera tirada es:\n\nP(rojo en la primera tirada) = (Número de bolas rojas) / (Total de bolas)\n= 4/12\n= 1/3\n\n**Probabilidad de Sacar una Bola Roja en la Segunda Tirada**\n\nSi no se reponen las bolas, el número de bolas rojas restantes es ahora 3. El total de bolas sigue siendo 11 (ya que una bola roja ya fue sacada). La probabilidad de sacar una bola roja en la segunda tirada es:\n\nP(rojo en la segunda tirada) = (Número de bolas rojas restantes) / (Total de bolas restantes)\n= 3/11\n\n**Probabilidad de Sacar Dos Bolas Rojas**\n\nPara encontrar la probabilidad de sacar dos bolas rojas, multiplicamos las probabilidades de cada tirada:\n\nP(rojo en la primera y segunda tirada) = P(rojo en la primera tirada) × P(rojo en la segunda tirada)\n= (1/3) × (3/11)\n= 1/11\n\n**Probabilidad de Sacar Dos Bolas de Diferentes Colores**\n\nAhora, ¿qué pasa si queremos sacar dos bolas de diferentes colores? Tenemos varias opciones: rojo y azul, rojo y verde, o azul y verde.\n\nLa probabilidad de cada una de estas combinaciones es:\n\n* P(rojo y azul) = (4/12) × (3/11) = 1/11\n* P(rojo y verde) = (4/12) × (5/11) = 5/33\n* P(azul y verde) = (3/12) × (5/11) = 5/44\n\nPara encontrar la probabilidad total de sacar dos bolas de diferentes colores, sumamos estas probabilidades:\n\nP(diferentes colores) = P(rojo y azul) + P(rojo y verde) + P(azul y verde)\n= (1/11) + (5/33) + (5/44)\n\nPara simplificar la suma, encontramos el mínimo común denominador (MCD), que es 132. Luego convertimos cada fracción para tener un denominador de 132:\n\nP(rojo y azul) = (12/132)\nP(rojo y verde) = (20/132)\nP(azul y verde) = (15/132)\n\nAhora sumamos las fracciones:\n\nP(diferentes colores) = (12 + 20 + 15)/132\n= 47/132\n\nLa probabilidad de sacar dos bolas de diferentes colores es 47/132.\n\n**Conclusión**\n\nEn resumen, la probabilidad de sacar dos bolas rojas sin reposición es 1/11. La probabilidad de sacar dos bolas de diferentes colores es 47/132.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 1048
+      }
+    }
+  },
+  {
+    "index": 13,
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Las calificaciones de un grupo de 8 estudiantes son: 7, 8, 6, 9, 7, 8, 10, 5. Calcula la media, mediana, moda y desviación estándar.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula las estadísticas descriptivas (media, mediana, moda y desviación estándar) de las siguientes calificaciones: 7, 8, 6, 9, 7, 8, 10, 5.",
+      "timing": {
+        "safetyGuardMs": 24038,
+        "curationMs": 31738,
+        "brainMs": 154020,
+        "totalMs": 209797
+      },
+      "generation": {
+        "content": "**Calculando Estadísticas Descriptivas**\n\nEn este ejercicio, calcularemos las estadísticas descriptivas de un conjunto de calificaciones. Las estadísticas descriptivas son medidas que nos ayudan a describir y entender los datos.\n\n**Calificaciones:**\n7, 8, 6, 9, 7, 8, 10, 5\n\n### Media (Promedio)\n\nLa media es la suma de todos los datos dividida por el número total de observaciones. Para calcular la media, debemos sumar todas las calificaciones y luego dividir por 8.\n\n1. Suma de las calificaciones: 7 + 8 + 6 + 9 + 7 + 8 + 10 + 5 = 60\n2. Dividir por el número total de observaciones (8): 60 ÷ 8 = 7,5\n\n**Media:** 7,5\n\n### Mediana\n\nLa mediana es el valor central del conjunto de datos cuando están ordenados de menor a mayor. Si hay un número impar de datos, la mediana es el valor del medio. Si hay un número par de datos, la mediana es el promedio de los dos valores centrales.\n\n**Datos ordenados:** 5, 6, 7, 7, 8, 8, 9, 10\n\nComo hay un número impar de datos (8), la mediana es el valor del medio: **7**\n\n### Moda\n\nLa moda es el valor que aparece más frecuentemente en el conjunto de datos. En este caso, no hay un valor que se repita más de una vez.\n\n**No hay moda**\n\n### Desviación Estándar\n\nLa desviación estándar mide la dispersión o variabilidad del conjunto de datos. Para calcular la desviación estándar, necesitamos encontrar la media y luego calcular la diferencia entre cada dato y la media.\n\n1. Media: 7,5\n2. Diferencia entre cada dato y la media:\n\t* (7 - 7,5) = -0,5\n\t* (8 - 7,5) = 0,5\n\t* (6 - 7,5) = -1,5\n\t* (9 - 7,5) = 1,5\n\t* (7 - 7,5) = -0,5\n\t* (8 - 7,5) = 0,5\n\t* (10 - 7,5) = 2,5\n\t* (5 - 7,5) = -2,5\n\n3. Calcular la desviación estándar:\n Primero, encontramos el cuadrado de cada diferencia: (-0,5)^2 = 0,25; (0,5)^2 = 0,25; (-1,5)^2 = 2,25; (1,5)^2 = 2,25; (-0,5)^2 = 0,25; (0,5)^2 = 0,25; (2,5)^2 = 6,25; (-2,5)^2 = 6,25\n Luego, calculamos la suma de los cuadrados: 0,25 + 0,25 + 2,25 + 2,25 + 0,25 + 0,25 + 6,25 + 6,25 = 18\n Finalmente, dividimos por el número total de observaciones (8) y tomamos la raíz cuadrada: √(18/8) = √2,25 ≈ 1,5\n\n**Desviación estándar:** aproximadamente **1,5**\n\nEstas estadísticas descriptivas nos ayudan a comprender mejor las calificaciones. La media es 7,5, la mediana es 7 y no hay moda. La desviación estándar es de aproximadamente 1,5.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 1041
+      }
+    }
+  },
+  {
+    "index": 14,
+    "context": "Física de bachillerato",
+    "prompt": "Un auto parte del reposo y acelera uniformemente a 2 m/s² durante 10 segundos. Luego mantiene velocidad constante por 20 segundos. Finalmente frena hasta detenerse en 5 segundos. Calcula la distancia total recorrida.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula la distancia total recorrida por un auto que parte del reposo, acelera uniformemente a una aceleración de 2 m/s² durante 10 segundos, luego mantiene velocidad constante durante 20 segundos y finalmente frena hasta detenerse en 5 segundos.",
+      "timing": {
+        "safetyGuardMs": 14811,
+        "curationMs": 115938,
+        "brainMs": 114804,
+        "totalMs": 245553
+      },
+      "generation": {
+        "content": "**Problema: Distancia recorrida por un auto**\n\nUn auto parte del reposo y acelera uniformemente a una aceleración de 2 m/s² durante 10 segundos. Luego, mantiene velocidad constante durante 20 segundos y finalmente frena hasta detenerse en 5 segundos. Nuestro objetivo es calcular la distancia total recorrida por el auto.\n\n**Paso 1: Aceleración uniforme (0-10 s)**\n\nDurante los primeros 10 segundos, el auto se acelera uniformemente a una aceleración de 2 m/s². Usando la fórmula:\n\n$$d = \\frac{1}{2}at^2$$\n\ndonde d es la distancia recorrida, a es la aceleración y t es el tiempo, podemos calcular la distancia recorrida durante este período:\n\n$$d_1 = \\frac{1}{2}(2\\text{ m/s}^2)(10\\text{ s})^2 = 200\\text{ m}$$\n\n**Paso 2: Velocidad constante (10-30 s)**\n\nDurante los siguientes 20 segundos, el auto mantiene velocidad constante. La distancia recorrida durante este período es igual a la velocidad multiplicada por el tiempo:\n\n$$d_2 = v \\times t = (v_1 + at) \\times t$$\n\ndonde $v_1$ es la velocidad inicial y a es la aceleración. Dado que la aceleración fue 2 m/s² durante los primeros 10 segundos, podemos calcular la velocidad final:\n\n$$v_1 = v_{\\text{final}} + at = (0 + 2\\text{ m/s}^2)(10\\text{ s}) = 20 \\text{ m/s}$$\n\nAhora, podemos calcular la distancia recorrida durante este período:\n\n$$d_2 = (20\\text{ m/s})(20\\text{ s}) = 400\\text{ m}$$\n\n**Paso 3: Frenado (30-35 s)**\n\nDurante los últimos 5 segundos, el auto frena hasta detenerse. La distancia recorrida durante este período es igual a la velocidad inicial multiplicada por el tiempo:\n\n$$d_3 = v_i \\times t = (20\\text{ m/s})(5\\text{ s}) = 100\\text{ m}$$\n\n**Distancia total**\n\nLa distancia total recorrida por el auto es la suma de las distancias recorridas durante cada período:\n\n$$d_{\\text{total}} = d_1 + d_2 + d_3 = 200\\text{ m} + 400\\text{ m} + 100\\text{ m} = 700\\text{ m}$$\n\nLa distancia total recorrida por el auto es de **700 metros**.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 839
+      }
+    }
+  },
+  {
+    "index": 15,
+    "context": "Física de bachillerato",
+    "prompt": "Un bloque de 5 kg está sobre una mesa con coeficiente de fricción cinético de 0.3. Se le aplica una fuerza horizontal de 30N. Dibuja el diagrama de cuerpo libre y calcula la aceleración.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Dibuja el diagrama de cuerpo libre del bloque de 5 kg sobre la mesa con coeficiente de fricción cinético de 0,3, y calcula la aceleración resultante cuando se le aplica una fuerza horizontal de 30 N.",
+      "timing": {
+        "safetyGuardMs": 18184,
+        "curationMs": 118127,
+        "brainMs": 111901,
+        "totalMs": 248212
+      },
+      "generation": {
+        "content": "**Cálculo de la Aceleración Resultante**\n\nAntes de dibujar el diagrama de cuerpo libre, debemos recordar las fuerzas que actúan sobre el bloque:\n\n* La fuerza normal (N) ejercida por la mesa en dirección vertical.\n* El peso del bloque (P) también en dirección vertical.\n* La fricción cinética (f) en dirección opuesta a la fuerza aplicada.\n\n**Diagrama de Cuerpo Libre**\n\nA continuación, te presentamos el diagrama de cuerpo libre del bloque:\n\n```\n  +---------------+\n  |               |\n  |  F = 30 N    |\n  |               |\n  +---------------+\n  |  N (normal)   |\n  |  P (peso)     |\n  |  f (fricción) |\n  +---------------+\n```\n\n**Cálculo de la Aceleración Resultante**\n\nPara calcular la aceleración resultante, debemos considerar solo las fuerzas en dirección horizontal. En este caso, solo es la fricción cinética la que opone resistencia a la movimiento.\n\nLa fuerza normal (N) y el peso (P) no contribuyen a la aceleración horizontal, por lo tanto se pueden descartar del cálculo.\n\nEl componente de la fricción en dirección horizontal se puede calcular usando la siguiente fórmula:\n\nf = μk \\* N\n\ndonde μk es el coeficiente de fricción cinético (0,3) y N es la fuerza normal ejercida por la mesa. La fuerza normal es igual al peso del bloque menos su componente en dirección vertical.\n\nP = m \\* g\nN = P - f_v\n\ndonde m es la masa del bloque (5 kg), g es la aceleración debida a la gravedad (9,8 m/s^2) y f_v es el componente de peso en dirección vertical.\n\nUna vez calculada la fuerza normal, podemos encontrar el componente de fricción en dirección horizontal:\n\nf = 0,3 \\* N\n\nFinalmente, para encontrar la aceleración resultante, usamos la siguiente fórmula:\n\na = F / m - (f / m)\n\ndonde F es la fuerza aplicada horizontalmente (30 N).\n\nSustituyendo los valores conocidos obtenemos:\n\n```\na = 30 N / 5 kg - (0,3 \\* N) / 5 kg\na ≈ 6 m/s^2 - 0,18 m/s^2\na ≈ 5,82 m/s^2\n```\n\nLa aceleración resultante del bloque es de aproximadamente 5,82 m/s^2.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 774
+      }
+    }
+  },
+  {
+    "index": 16,
+    "context": "Física de bachillerato",
+    "prompt": "Se lanza un proyectil con velocidad de 40 m/s a un ángulo de 30° con la horizontal. Calcula el alcance máximo, la altura máxima y el tiempo de vuelo. Desprecia la resistencia del aire.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula el alcance máximo, la altura máxima y el tiempo de vuelo de un proyectil lanzado desde tierra con una velocidad inicial de 40 m/s en un ángulo de elevación de 30° con la horizontal, despreciando la resistencia del aire.",
+      "timing": {
+        "safetyGuardMs": 37848,
+        "curationMs": 77501,
+        "brainMs": 135049,
+        "totalMs": 250398
+      },
+      "generation": {
+        "content": "**Problema: Proyectil lanzado desde tierra**\n\nUn proyectil es lanzado desde tierra con una velocidad inicial de 40 m/s en un ángulo de elevación de 30° con la horizontal. Nuestro objetivo es calcular:\n\n1. El alcance máximo del proyectil\n2. La altura máxima alcanzada por el projectil\n3. El tiempo de vuelo del proyectil\n\n**Formulación del problema**\n\nPara resolver este problema, necesitamos utilizar las fórmulas que relacionan la velocidad inicial (v₀), el ángulo de elevación (θ) y la distancia recorrida (R) o la altura alcanzada (H) por un proyectil.\n\n**1. Alcance máximo**\n\nEl alcance máximo se produce cuando el proyectil cae en la horizontal, es decir, cuando el ángulo entre el vector de posición del proyectil y la horizontal es igual al ángulo de elevación inicial.\n\nLa fórmula para calcular el alcance máximo (R) es:\n\nR = v₀² \\* sen(2θ) / g\n\ndonde g es la aceleración de la gravedad, que valoramos en 9,8 m/s².\n\n**Cálculo del alcance máximo**\n\nSustituyendo los valores dados en el problema, obtenemos:\n\nR = (40 m/s)² \\* sen(2\\*30°) / 9,8 m/s²\nR = 1600 m \\* 0,5 / 9,8 m/s²\nR = 81,63 m\n\n**2. Altura máxima**\n\nLa altura máxima se alcanza cuando el proyectil está en la parte superior de su trayectoria.\n\nLa fórmula para calcular la altura máxima (H) es:\n\nH = v₀² \\* sen²(θ) / 2g\n\n**Cálculo de la altura máxima**\n\nSustituyendo los valores dados en el problema, obtenemos:\n\nH = (40 m/s)² \\* sen²(30°) / 2\\*9,8 m/s²\nH = 1600 m \\* 0,25 / 19,6 m/s²\nH = 20,51 m\n\n**3. Tiempo de vuelo**\n\nEl tiempo de vuelo (t) se puede calcular utilizando la fórmula:\n\nt = v₀ \\* sen(θ) / g\n\n**Cálculo del tiempo de vuelo**\n\nSustituyendo los valores dados en el problema, obtenemos:\n\nt = 40 m/s \\* sen(30°) / 9,8 m/s²\nt = 20 m/s / 9,8 m/s²\nt = 2,04 s\n\n**Conclusión**\n\nEl alcance máximo del proyectil es de 81,63 metros.\nLa altura máxima alcanzada por el proyectil es de 20,51 metros.\nEl tiempo de vuelo del proyectil es de 2,04 segundos.\n\nRecuerda que estos cálculos son aproximados y se desprecian las resistencias del aire.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 889
+      }
+    }
+  },
+  {
+    "index": 17,
+    "context": "Física de bachillerato",
+    "prompt": "Un péndulo simple tiene una longitud de 1 metro. Calcula su período en la Tierra (g=9.8) y en la Luna (g=1.6). ¿Por qué el período no depende de la masa?",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula el período de un péndulo simple con una longitud de 1 metro, considerando dos escenarios: uno en la superficie de la Tierra donde g = 9.8 m/s^2 y otro en la superficie de la Luna donde g = 1.6 m/s^2. Justifica por qué el período del péndulo no depende de su masa.",
+      "timing": {
+        "safetyGuardMs": 20009,
+        "curationMs": 101885,
+        "brainMs": 90467,
+        "totalMs": 212362
+      },
+      "generation": {
+        "content": "**Calculo del Período de un Péndulo Simple**\n\nEl período de un péndulo simple es la cantidad de tiempo que tarda en completar una oscilación completa. Este valor puede ser calculado utilizando la fórmula:\n\nT = 2π √(L/g)\n\ndonde T es el período, L es la longitud del péndulo y g es la aceleración de gravedad.\n\n**Escenario 1: Péndulo en la Superficie de la Tierra**\n\nDado que la longitud del péndulo (L) es de 1 metro y la aceleración de gravedad en la superficie de la Tierra (g) es de 9.8 m/s^2, podemos calcular el período utilizando la fórmula:\n\nT = 2π √(1/9.8)\nT ≈ 1.01 segundos\n\n**Escenario 2: Péndulo en la Superficie de la Luna**\n\nSi consideramos que la aceleración de gravedad en la superficie de la Luna es de 1.6 m/s^2, podemos calcular el período del péndulo de la siguiente manera:\n\nT = 2π √(1/1.6)\nT ≈ 2.13 segundos\n\n**Justificación: Por qué el Período no depende de la Masa**\n\nLa ecuación del período (T) solo incluye la longitud del péndulo (L) y la aceleración de gravedad (g), pero no menciona la masa del péndulo. Esto se debe a que, según la segunda ley de Newton, la fuerza aplicada sobre un objeto es igual al producto de su masa y aceleración. Dado que el péndulo está sometido a una fuerza de gravedad constante, independiente de su masa, el período del péndulo no depende de su masa.\n\nEn resumen, el período del péndulo simple solo depende de la longitud del péndulo y la aceleración de gravedad en la que se encuentra. La masa del péndulo no tiene ningún efecto sobre su período.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 678
+      }
+    }
+  },
+  {
+    "index": 18,
+    "context": "Física de bachillerato",
+    "prompt": "Dos resistencias de 100Ω y 200Ω se conectan en paralelo a una fuente de 12V. Calcula la resistencia equivalente, la corriente total y la potencia disipada por cada resistencia.",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Calcula la resistencia equivalente de dos resistencias de 100Ω y 200Ω que se conectan en paralelo a una fuente de voltaje de 12V. Luego, determina la corriente total que fluye a través del circuito y calcula la potencia disipada por cada una de las resistencias individuales.",
+      "timing": {
+        "safetyGuardMs": 40853,
+        "curationMs": 102896,
+        "brainMs": 39188,
+        "totalMs": 182937
+      },
+      "generation": {
+        "content": "**Circuito con dos resistencias en paralelo**\n\nEn este problema, tenemos dos resistencias conectadas en paralelo a una fuente de voltaje. La primera resistencia tiene un valor de 100 Ω y la segunda tiene un valor de 200 Ω.\n\n**Resistencia equivalente (Req)**\n\nCuando dos o más resistencias se conectan en paralelo, la resistencia equivalente es menor que cada una de las resistencias individuales. El valor de la resistencia equivalente se puede calcular usando la siguiente fórmula:\n\n1/Req = 1/R1 + 1/R2\n\ndonde R1 y R2 son los valores de las dos resistencias.\n\nSubstituimos los valores dados en la ecuación:\n\n1/Req = 1/100 + 1/200\n= (2+1)/200\n= 3/200\n\nAhora, resolvemos para Req:\n\nReq = 200/3\n≈ 66,67 Ω\n\n**Corriente total**\n\nLa corriente que fluye a través de cada resistencia es la misma en un circuito con resistencias en paralelo. Para encontrar la corriente total (I), usamos la fórmula:\n\nV = IR\n\ndonde V es el voltaje de la fuente y R es la resistencia equivalente.\n\nReemplazando los valores dados, tenemos:\n\n12 = I × 66,67\nI = 12/66,67\n≈ 0,18 A o 180 mA\n\n**Potencia disipada por cada resistencia**\n\nLa potencia disipada (P) por cada resistencia es igual a la potencia total dividida por el número de resistencias. En este caso, solo hay dos resistencias.\n\nPrimera resistencia:\nP1 = V × I\n= 12 × 0,18\n≈ 2,16 W\n\nSegunda resistencia:\nP2 = V × I\n= 12 × 0,18\n≈ 2,16 W\n\n**Conclusión**\n\nLa resistencia equivalente de las dos resistencias en paralelo es aproximadamente 66,67 Ω. La corriente total que fluye a través del circuito es aproximadamente 180 mA y la potencia disipada por cada una de las resistencias individuales es aproximadamente 2,16 W.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 724
+      }
+    }
+  },
+  {
+    "index": 19,
+    "context": "Física de bachillerato",
+    "prompt": "Explica la diferencia entre calor y temperatura. Si se mezclan 200g de agua a 80°C con 300g de agua a 20°C, ¿cuál es la temperatura final de equilibrio? (calor específico del agua: 1 cal/g°C)",
+    "response": {
+      "valid": true,
+      "curatedPrompt": "Explica la diferencia entre calor y temperatura. Luego, calcula la cantidad de calor Q que se transfiere cuando se mezclan 200g de agua a 80°C con 300g de agua a 20°C, considerando el calor específico del agua (1 cal/g°C). Finalmente, determina la temperatura final de equilibrio en grados Celsius.",
+      "timing": {
+        "safetyGuardMs": 31246,
+        "curationMs": 66636,
+        "brainMs": 41378,
+        "totalMs": 139259
+      },
+      "generation": {
+        "content": "**Diferencia entre Calor y Temperatura**\n\nEn física, es común confundir los conceptos de calor y temperatura. A continuación, se presentan las definiciones y diferencias entre ellos:\n\n*   **Temperatura**: Es una medida de la cantidad de energía cinética promedio de las partículas que componen un sistema. La temperatura es una propiedad del sistema en sí mismo.\n*   **Calor**: Es la transferencia de energía térmica desde un cuerpo a otro debido a una diferencia de temperatura entre ellos.\n\n**Calculo de Calor Transfiriendo**\n\nPara calcular la cantidad de calor Q que se transfiere cuando se mezclan 200g de agua a 80°C con 300g de agua a 20°C, podemos utilizar la fórmula:\n\nQ = mcΔT\n\ndonde m es el masa del agua, c es el calor específico del agua (1 cal/g°C) y ΔT es la diferencia de temperatura entre los dos cuerpos.\n\nEn este caso, tenemos:\n\nm1 = 200 g\nT1 = 80 °C\nm2 = 300 g\nT2 = 20 °C\n\nLa diferencia de temperatura ΔT es igual a T1 - T2 = 60 °C.\n\nAhora podemos calcular la cantidad de calor Q que se transfiere:\n\nQ = (m1 + m2) \\* c \\* ΔT\n= (200 g + 300 g) \\* 1 cal/g°C \\* 60 °C\n= 12000 cal\n\n**Temperatura Final de Equilibrio**\n\nPara determinar la temperatura final de equilibrio, podemos utilizar el principio de conservación de energía. La cantidad total de calor que se transfiere es igual a la suma de los calores que se transfieren desde cada cuerpo.\n\nEn este caso, el agua a 80°C pierde calor y se enfría hasta una temperatura final de equilibrio (Tf). El agua a 20°C gana calor y se calienta hasta la misma temperatura final de equilibrio (Tf).\n\nPuedemos plantear la ecuación:\n\nm1 \\* c \\* (T1 - Tf) = m2 \\* c \\* (Tf - T2)\n\nSustituyendo los valores conocidos, obtenemos:\n\n200 g \\* 1 cal/g°C \\* (80 °C - Tf) = 300 g \\* 1 cal/g°C \\* (Tf - 20 °C)\n\nResolviendo la ecuación para Tf, obtenemos:\n\nTf = (200 g \\* 80 °C + 300 g \\* 20 °C) / (200 g + 300 g)\n= (16000 cal + 6000 cal) / 500 g\n= 22000 cal / 500 g\n= 44 °C\n\nPor lo tanto, la temperatura final de equilibrio es de 44°C.",
+        "model": "llama3.1:8b",
+        "tokensUsed": 855
+      }
+    }
+  }
+]

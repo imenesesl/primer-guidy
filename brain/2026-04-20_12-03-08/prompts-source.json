@@ -1,0 +1,82 @@
+[
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Un terreno tiene forma de trapecio con bases de 20m y 14m, y una altura de 8m. Calcula su área y el costo de cercarlo si el metro de cerca cuesta $45."
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Demuestra que la suma de los ángulos internos de cualquier triángulo es 180° usando el método de la recta paralela."
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Un tanque cilíndrico tiene 2 metros de diámetro y 3 metros de alto. ¿Cuántos litros de agua puede almacenar? Si se llena al 75%, ¿cuántos litros tiene?"
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "En un triángulo ABC, el ángulo A mide 40° y el ángulo B mide 75°. Clasifica el triángulo según sus ángulos y según sus lados si AB=8cm, BC=5.2cm y AC=7.8cm."
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Una escalera de 5 metros se apoya contra una pared. Si el pie de la escalera está a 3 metros de la pared, ¿a qué altura de la pared llega? ¿Qué ángulo forma con el suelo?"
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Dos cuerdas de una circunferencia se cruzan en un punto interior. Una mide 12cm y se divide en segmentos de 4 y 8. La otra se divide en segmentos de 6 y x. Encuentra x."
+  },
+  {
+    "context": "Geometría de bachillerato",
+    "prompt": "Calcula el área sombreada entre un cuadrado de 10cm de lado y un círculo inscrito en él."
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Un comerciante compra camisetas a $15 y las vende con un 40% de ganancia. Si hace una promoción de 2x1 en la segunda unidad con 20% de descuento, ¿cuánto gana por cada par vendido?"
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "La población de una ciudad era de 50,000 en 2020. Si crece 3% anual, ¿cuál será la población en 2030? Usa la fórmula de crecimiento exponencial."
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "María tiene el doble de edad que Pedro. Hace 5 años, María tenía el triple de la edad de Pedro. ¿Cuántos años tiene cada uno? Plantea el sistema de ecuaciones y resuélvelo."
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Simplifica la expresión: (3x² - 12) / (x² - 4x + 4) y determina para qué valores de x no está definida."
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Una pelota se lanza hacia arriba desde el suelo con una velocidad inicial. Su altura en metros está dada por h(t) = -5t² + 20t. ¿Cuándo alcanza la altura máxima? ¿Cuál es esa altura? ¿Cuándo regresa al suelo?"
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "En una bolsa hay 4 bolas rojas, 3 azules y 5 verdes. Se sacan 2 bolas sin reposición. ¿Cuál es la probabilidad de que ambas sean rojas? ¿Y de que sean de diferente color?"
+  },
+  {
+    "context": "Matemática básica de bachillerato",
+    "prompt": "Las calificaciones de un grupo de 8 estudiantes son: 7, 8, 6, 9, 7, 8, 10, 5. Calcula la media, mediana, moda y desviación estándar."
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Un auto parte del reposo y acelera uniformemente a 2 m/s² durante 10 segundos. Luego mantiene velocidad constante por 20 segundos. Finalmente frena hasta detenerse en 5 segundos. Calcula la distancia total recorrida."
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Un bloque de 5 kg está sobre una mesa con coeficiente de fricción cinético de 0.3. Se le aplica una fuerza horizontal de 30N. Dibuja el diagrama de cuerpo libre y calcula la aceleración."
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Se lanza un proyectil con velocidad de 40 m/s a un ángulo de 30° con la horizontal. Calcula el alcance máximo, la altura máxima y el tiempo de vuelo. Desprecia la resistencia del aire."
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Un péndulo simple tiene una longitud de 1 metro. Calcula su período en la Tierra (g=9.8) y en la Luna (g=1.6). ¿Por qué el período no depende de la masa?"
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Dos resistencias de 100Ω y 200Ω se conectan en paralelo a una fuente de 12V. Calcula la resistencia equivalente, la corriente total y la potencia disipada por cada resistencia."
+  },
+  {
+    "context": "Física de bachillerato",
+    "prompt": "Explica la diferencia entre calor y temperatura. Si se mezclan 200g de agua a 80°C con 300g de agua a 20°C, ¿cuál es la temperatura final de equilibrio? (calor específico del agua: 1 cal/g°C)"
+  }
+]
