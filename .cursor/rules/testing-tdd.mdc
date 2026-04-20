@@ -4,23 +4,23 @@ globs: "**/*.ts,**/*.tsx,**/*.test.ts,**/*.test.tsx,**/*.spec.ts"
 alwaysApply: true
 ---
 
-# Testing — TDD Obligatorio
+# Testing — Mandatory TDD
 
-TODO código DEBE tener pruebas. Sin pruebas = no está terminado. Seguir TDD estrictamente.
+ALL code MUST have tests. No tests = not finished. Follow TDD strictly.
 
 ## TDD Workflow
 
-1. **RED** — Escribir el test PRIMERO. Debe fallar.
-2. **GREEN** — Escribir el código mínimo para que pase.
-3. **REFACTOR** — Limpiar sin romper tests.
+1. **RED** — Write the test FIRST. It must fail.
+2. **GREEN** — Write the minimum code to make it pass.
+3. **REFACTOR** — Clean up without breaking tests.
 
-NUNCA escribir implementación sin su test previo. El test dicta el contrato.
+NEVER write implementation without its test first. The test dictates the contract.
 
-## Capa 1: Unit Tests — React Testing Library + Vitest (Web)
+## Layer 1: Unit Tests — React Testing Library + Vitest (Web)
 
-Cada componente, hook, utilidad y servicio DEBE tener su archivo `.test.tsx` o `.test.ts`.
+Every component, hook, utility, and service MUST have its `.test.tsx` or `.test.ts` file.
 
-### Estructura de archivos
+### File Structure
 
 ```
 ComponentName/
@@ -28,30 +28,30 @@ ComponentName/
   ComponentName.module.scss
   ComponentName.types.ts
   ComponentName.utils.ts
-  ComponentName.test.tsx      ← TEST OBLIGATORIO
+  ComponentName.test.tsx      ← MANDATORY TEST
   index.ts
 ```
 
 ```
 hooks/
   useAuth.ts
-  useAuth.test.ts             ← TEST OBLIGATORIO
+  useAuth.test.ts             ← MANDATORY TEST
 ```
 
 ```
 utils/
   date.utils.ts
-  date.utils.test.ts          ← TEST OBLIGATORIO
+  date.utils.test.ts          ← MANDATORY TEST
 ```
 
-### Principios de testing
+### Testing Principles
 
-- Testear **comportamiento del usuario**, no detalles de implementación
-- Usar `screen`, `render`, `userEvent` — NUNCA acceder a `wrapper.instance()`
-- Queries por orden de prioridad: `getByRole` > `getByLabelText` > `getByText` > `getByTestId`
-- `getByTestId` es ÚLTIMO recurso — preferir queries accesibles
+- Test **user behavior**, not implementation details
+- Use `screen`, `render`, `userEvent` — NEVER access `wrapper.instance()`
+- Query priority: `getByRole` > `getByLabelText` > `getByText` > `getByTestId`
+- `getByTestId` is a LAST RESORT — prefer accessible queries
 
-### Ejemplo
+### Example
 
 ```tsx
 // Button.test.tsx
@@ -77,51 +77,51 @@ describe('Button', () => {
 })
 ```
 
-## Capa 2: Unit Tests — NestJS Servers + Shared Libs (Vitest)
+## Layer 2: Unit Tests — NestJS Servers + Shared Libs (Vitest)
 
-Cada controller, service, guard, adapter y factory en NestJS servers y libs compartidas DEBE tener su `.test.ts` al lado del archivo que testea.
+Every controller, service, guard, adapter, and factory in NestJS servers and shared libs MUST have its `.test.ts` colocated next to the source file.
 
-### Estructura de archivos
+### File Structure
 
 ```
 apps/<name>-server/src/
   modules/<feature>/
     <feature>.controller.ts
-    <feature>.controller.test.ts  ← TEST OBLIGATORIO
+    <feature>.controller.test.ts  ← MANDATORY TEST
     <feature>.service.ts
-    <feature>.service.test.ts     ← TEST OBLIGATORIO
+    <feature>.service.test.ts     ← MANDATORY TEST
 ```
 
 ```
 libs/llm-services/src/
   factory.ts
-  factory.test.ts                 ← TEST OBLIGATORIO
+  factory.test.ts                 ← MANDATORY TEST
   adapters/
     ollama.adapter.ts
-    ollama.adapter.test.ts        ← TEST OBLIGATORIO
+    ollama.adapter.test.ts        ← MANDATORY TEST
 ```
 
 ```
 libs/nest-shared/src/
   guards/
     api-key.guard.ts
-    api-key.guard.test.ts         ← TEST OBLIGATORIO
+    api-key.guard.test.ts         ← MANDATORY TEST
   env/
     load-env.ts
-    load-env.test.ts              ← TEST OBLIGATORIO
+    load-env.test.ts              ← MANDATORY TEST
 ```
 
-### Principios de testing (NestJS)
+### Testing Principles (NestJS)
 
-- **Inyección manual con mocks** — NO usar NestJS testing module. Crear el servicio con `new Service(mockDep as never)` pasando mocks por constructor
-- **vi.mock para módulos externos** — `vi.mock('dotenv', ...)`, `vi.mock('node:fs', ...)`
-- **vi.stubGlobal para fetch** — `vi.stubGlobal('fetch', mockFetch)` para servicios HTTP
-- **process.env para configuración** — manipular directamente en `beforeEach`, limpiar con `delete process.env['KEY']`
-- **No React Testing Library** — estos son servicios puros TypeScript
-- **vi.clearAllMocks() en beforeEach** — cada test empieza limpio
-- Tests deben ser independientes — sin dependencias de orden ni estado compartido
+- **Manual injection with mocks** — do NOT use NestJS testing module. Create the service with `new Service(mockDep as never)` passing mocks via constructor
+- **vi.mock for external modules** — `vi.mock('dotenv', ...)`, `vi.mock('node:fs', ...)`
+- **vi.stubGlobal for fetch** — `vi.stubGlobal('fetch', mockFetch)` for HTTP services
+- **process.env for configuration** — manipulate directly in `beforeEach`, clean up with `delete process.env['KEY']`
+- **No React Testing Library** — these are pure TypeScript services
+- **vi.clearAllMocks() in beforeEach** — every test starts clean
+- Tests MUST be independent — no order dependencies or shared mutable state
 
-### Ejemplo — Service con LLM mock
+### Example — Service with LLM mock
 
 ```typescript
 // generation.service.test.ts
@@ -157,7 +157,7 @@ describe('GenerationService', () => {
 })
 ```
 
-### Ejemplo — Guard con process.env
+### Example — Guard with process.env
 
 ```typescript
 // api-key.guard.test.ts
@@ -191,7 +191,7 @@ describe('ApiKeyGuard', () => {
 })
 ```
 
-### Ejemplo — HTTP client con vi.stubGlobal('fetch')
+### Example — HTTP client with vi.stubGlobal('fetch')
 
 ```typescript
 // brain-client.service.test.ts
@@ -234,9 +234,9 @@ describe('BrainClientService', () => {
 })
 ```
 
-### Vitest Config para Servers
+### Vitest Config for Servers
 
-Servers que usan vitest directamente (sin Nest test utilities) DEBEN tener un `vitest.config.ts`:
+Servers using vitest directly (without Nest test utilities) MUST have a `vitest.config.ts`:
 
 ```typescript
 import { defineConfig } from 'vitest/config'
@@ -249,11 +249,11 @@ export default defineConfig({
 })
 ```
 
-Los `tsconfig.json` de servers DEBEN excluir tests del build: `"exclude": ["node_modules", "dist", "**/*.test.ts"]`
+Server `tsconfig.json` files MUST exclude tests from the build: `"exclude": ["node_modules", "dist", "**/*.test.ts"]`
 
-## Capa 3: E2E Tests — Playwright
+## Layer 3: E2E Tests — Playwright
 
-Playwright valida flujos completos de usuario. Viven en `e2e/` en la raíz de cada app.
+Playwright validates complete user flows. They live in `e2e/` at the root of each app.
 
 ### Shared E2E Infrastructure — `@primer-guidy/e2e-helpers`
 
@@ -270,7 +270,7 @@ import {
 
 The shared bash script `scripts/run-e2e.sh` handles emulator lifecycle. Apps call it via `"test:e2e": "bash ../../scripts/run-e2e.sh"`.
 
-### Estructura por App
+### Structure per App
 
 ```
 apps/<name>-web/
@@ -283,14 +283,14 @@ apps/<name>-web/
       feature.spec.ts         ← App-specific test specs
 ```
 
-### Qué testear con Playwright
+### What to Test with Playwright
 
-- Navegación entre rutas
-- Formularios completos (submit, validación, feedback)
-- Flujos críticos de usuario de principio a fin
-- Estados de error y edge cases de UI
+- Route navigation
+- Complete forms (submit, validation, feedback)
+- Critical end-to-end user flows
+- Error states and UI edge cases
 
-### Ejemplo
+### Example
 
 ```typescript
 // e2e/flows/home.spec.ts
@@ -305,35 +305,35 @@ test('displays home after auth', async ({ page }) => {
 })
 ```
 
-## Capa 3: Firebase Security Rules — `@firebase/rules-unit-testing`
+## Layer 4: Firebase Security Rules — `@firebase/rules-unit-testing`
 
-Cada regla en `firestore.rules` y `database.rules.json` DEBE tener su test correspondiente en `tests/rules/`.
+Every rule in `firestore.rules` and `database.rules.json` MUST have a corresponding test in `tests/rules/`.
 
-### Estructura
+### Structure
 
 ```
 tests/rules/
   vitest.config.ts             ← Config (environment: node, 30s timeout)
-  firestore.test.ts            ← Tests por cada match block en firestore.rules
-  database.test.ts             ← Tests por cada nodo en database.rules.json
+  firestore.test.ts            ← Tests for each match block in firestore.rules
+  database.test.ts             ← Tests for each node in database.rules.json
 ```
 
-### Ejecución
+### Execution
 
 ```bash
 pnpm run test:rules
 ```
 
-Levanta emuladores (Firestore + RTDB) automáticamente y ejecuta los tests.
+Starts emulators (Firestore + RTDB) automatically and runs the tests.
 
-### Qué testear
+### What to Test
 
-Cada `describe` block DEBE cubrir como mínimo:
-- Roles con acceso (owner, authenticated)
-- Roles sin acceso (non-owner, unauthenticated)
-- Operaciones granulares (read, create, update, delete) cuando las reglas difieren por operación
+Each `describe` block MUST cover at minimum:
+- Roles with access (owner, authenticated)
+- Roles without access (non-owner, unauthenticated)
+- Granular operations (read, create, update, delete) when rules differ by operation
 
-### Ejemplo
+### Example
 
 ```typescript
 import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing'
@@ -352,13 +352,13 @@ describe('users/{uid}', () => {
 })
 ```
 
-## Reglas Obligatorias
+## Mandatory Rules
 
-- NUNCA hacer merge/PR sin tests
-- Cobertura mínima: 80% por componente/módulo
-- Cada bug fix DEBE incluir un test que reproduce el bug ANTES del fix
-- Tests deben ser independientes — sin dependencias de orden ni estado compartido
-- Cada regla en `firestore.rules` o `database.rules.json` DEBE tener tests en `tests/rules/` — sin test = regla no desplegada
-- Cada NestJS service, controller, guard y adapter DEBE tener su `.test.ts` — sin test = no está terminado
-- NestJS server tests usan inyección manual con mocks, NO NestJS testing module
-- Shared libs (`libs/llm-services`, `libs/nest-shared`) DEBEN tener tests para toda su API pública
+- NEVER merge/PR without tests
+- Minimum coverage: 80% per component/module
+- Every bug fix MUST include a test that reproduces the bug BEFORE the fix
+- Tests MUST be independent — no order dependencies or shared mutable state
+- Every rule in `firestore.rules` or `database.rules.json` MUST have tests in `tests/rules/` — no test = rule not deployed
+- Every NestJS service, controller, guard, and adapter MUST have its `.test.ts` — no test = not finished
+- NestJS server tests use manual injection with mocks, NOT NestJS testing module
+- Shared libs (`libs/llm-services`, `libs/nest-shared`) MUST have tests for their entire public API
