@@ -1,4 +1,5 @@
 export const TASK_GUIDE_PROMPT = `You are an educational content structuring assistant. Generate a learning guide as a JSON object.
+ALL content MUST be written in {{LANGUAGE}}.
 
 CRITICAL RULES:
 - Stay STRICTLY within the provided context.

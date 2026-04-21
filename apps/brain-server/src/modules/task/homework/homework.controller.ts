@@ -30,6 +30,7 @@ export class HomeworkController {
         students: body.students,
         questionCount: body.questionCount,
         openQuestion: body.openQuestion,
+        language: body.language,
       },
       collector,
     )

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import type { MetricsCollector, StudentContentDto } from '@primer-guidy/nest-shared'
 import { TaskGuideService } from '../shared/task-guide.service'
 import { HOMEWORK_OPEN_PROMPT, HOMEWORK_MC_PROMPT } from '../../../prompts'
+import { DEFAULT_LANGUAGE } from '../../../constants'
 import { HomeworkMultipleChoiceSchema, HomeworkOpenSchema } from './schemas/homework.schema'
 
 export interface HomeworkRequest {
@@ -10,6 +11,7 @@ export interface HomeworkRequest {
   readonly students: readonly string[]
   readonly questionCount?: number
   readonly openQuestion?: boolean
+  readonly language?: string
 }
 
 export interface HomeworkResponse {
@@ -25,9 +27,12 @@ export class HomeworkService {
   constructor(private readonly taskGuide: TaskGuideService) {}
 
   async generate(request: HomeworkRequest, collector: MetricsCollector): Promise<HomeworkResponse> {
+    const language = request.language ?? DEFAULT_LANGUAGE
+
     const { guide, model } = await this.taskGuide.generateGuide(
       request.prompt,
       request.context,
+      language,
       collector,
     )
 
@@ -43,6 +48,7 @@ export class HomeworkService {
         questionCount,
         systemPromptTemplate: promptTemplate,
         schema,
+        language,
       },
       guide,
       collector,

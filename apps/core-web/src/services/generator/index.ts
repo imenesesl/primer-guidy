@@ -17,4 +17,5 @@ export type {
   ValidationFailResponse,
   StudentContentResponse,
   QuestionResponse,
+  GenerateContentArgs,
 } from './generator.types'

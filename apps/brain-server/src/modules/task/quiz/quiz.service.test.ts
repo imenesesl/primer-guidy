@@ -96,7 +96,7 @@ describe('QuizService', () => {
       collector,
     )
 
-    expect(mockGenerateGuide).toHaveBeenCalledWith('Newton', 'physics', collector)
+    expect(mockGenerateGuide).toHaveBeenCalledWith('Newton', 'physics', 'es', collector)
     const config = mockGenerateStudents.mock.calls[0][0]
     expect(config.prompt).toBe('Newton')
     expect(config.context).toBe('physics')

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsString, IsNotEmpty, IsArray, ArrayMinSize } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsString, IsNotEmpty, IsArray, ArrayMinSize, IsOptional } from 'class-validator'
 
 export class QuizRequestDto {
   @ApiProperty({ example: 'Newton laws of motion' })
@@ -18,4 +18,9 @@ export class QuizRequestDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   students!: string[]
+
+  @ApiPropertyOptional({ example: 'es', description: 'Language for generated content (ISO 639-1)' })
+  @IsOptional()
+  @IsString()
+  language?: string
 }

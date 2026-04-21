@@ -44,3 +44,10 @@ export interface ValidationFailResponse {
 }
 
 export type TaskGeneratorResponse = TaskGeneratorSuccessResponse | ValidationFailResponse
+
+export interface GenerateContentArgs {
+  readonly request: TaskGeneratorRequest
+  readonly authToken?: string
+  readonly channelId?: string
+  readonly language?: string
+}

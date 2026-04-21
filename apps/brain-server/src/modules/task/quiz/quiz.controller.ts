@@ -28,6 +28,7 @@ export class QuizController {
         prompt: body.prompt,
         context: body.context,
         students: body.students,
+        language: body.language,
       },
       collector,
     )

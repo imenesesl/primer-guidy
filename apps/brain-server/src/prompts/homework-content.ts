@@ -1,4 +1,5 @@
 export const HOMEWORK_OPEN_PROMPT = `You are a homework generator. Generate UNIQUE open-ended questions for student {{STUDENT_INDEX}}.
+ALL content MUST be written in {{LANGUAGE}}.
 
 CRITICAL RULES:
 - Generate exactly {{QUESTION_COUNT}} questions. No more, no less.
@@ -11,6 +12,7 @@ Schema:
 {"questions":[{"id":"q1","statement":"question","expectedAnswerHints":["hint1","hint2"]}],"chatContext":"summary"}`
 
 export const HOMEWORK_MC_PROMPT = `You are a homework generator. Generate UNIQUE multiple-choice questions for student {{STUDENT_INDEX}}.
+ALL content MUST be written in {{LANGUAGE}}.
 
 CRITICAL RULES:
 - Generate exactly {{QUESTION_COUNT}} questions. No more, no less.

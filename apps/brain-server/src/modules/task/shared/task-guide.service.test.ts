@@ -66,7 +66,7 @@ describe('TaskGuideService', () => {
     it('generates a guide from prompt and context', async () => {
       mockComplete.mockResolvedValueOnce(makeResult(GUIDE_JSON))
 
-      const result = await service.generateGuide('linear equations', 'algebra', collector)
+      const result = await service.generateGuide('linear equations', 'algebra', 'es', collector)
 
       expect(result.guide).toEqual(JSON.parse(GUIDE_JSON))
       expect(result.model).toBe('llama3.1:8b')
@@ -75,7 +75,7 @@ describe('TaskGuideService', () => {
     it('records guide step in metrics', async () => {
       mockComplete.mockResolvedValueOnce(makeResult(GUIDE_JSON))
 
-      await service.generateGuide('p', 'c', collector)
+      await service.generateGuide('p', 'c', 'es', collector)
 
       expect(collector.build().steps[MetricsStep.Guide]).toBeDefined()
     })
@@ -83,13 +83,13 @@ describe('TaskGuideService', () => {
     it('fails fast on invalid JSON', async () => {
       mockComplete.mockResolvedValueOnce(makeResult('not json'))
 
-      await expect(service.generateGuide('p', 'c', collector)).rejects.toThrow(HttpException)
+      await expect(service.generateGuide('p', 'c', 'es', collector)).rejects.toThrow(HttpException)
     })
 
     it('extracts JSON from markdown code fences', async () => {
       mockComplete.mockResolvedValueOnce(makeResult('```json\n' + GUIDE_JSON + '\n```'))
 
-      const result = await service.generateGuide('p', 'c', collector)
+      const result = await service.generateGuide('p', 'c', 'es', collector)
 
       expect(result.guide).toEqual(JSON.parse(GUIDE_JSON))
     })
@@ -108,8 +108,9 @@ describe('TaskGuideService', () => {
           students: ['STU-001', 'STU-002'],
           questionCount: 1,
           systemPromptTemplate:
-            'Generate for student {{STUDENT_INDEX}}, {{QUESTION_COUNT}} questions',
+            'Generate for student {{STUDENT_INDEX}}, {{QUESTION_COUNT}} questions in {{LANGUAGE}}',
           schema: TestSchema,
+          language: 'es',
         },
         JSON.parse(GUIDE_JSON),
         collector,
@@ -129,14 +130,15 @@ describe('TaskGuideService', () => {
           context: 'c',
           students: ['STU-001'],
           questionCount: 1,
-          systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}}',
+          systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}} {{LANGUAGE}}',
           schema: TestSchema,
+          language: 'es',
         },
         JSON.parse(GUIDE_JSON),
         collector,
       )
 
-      expect(collector.build().steps[studentStep(0)]).toBeDefined()
+      expect(collector.build().steps[studentStep('STU-001')]).toBeDefined()
     })
 
     it('retries and succeeds when student content fails then passes', async () => {
@@ -151,8 +153,9 @@ describe('TaskGuideService', () => {
           context: 'c',
           students: ['STU-001'],
           questionCount: 1,
-          systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}}',
+          systemPromptTemplate: 'template {{STUDENT_INDEX}} {{QUESTION_COUNT}} {{LANGUAGE}}',
           schema: TestSchema,
+          language: 'es',
         },
         JSON.parse(GUIDE_JSON),
         collector,

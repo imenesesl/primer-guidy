@@ -8,10 +8,11 @@ import {
   PROCESS_TYPES,
   TASK_KINDS,
 } from '@primer-guidy/nest-shared'
-import type { ProcessResponse } from '@primer-guidy/nest-shared'
+import type { ProcessResponse, TaskProcessResponse } from '@primer-guidy/nest-shared'
 import { SafetyGuardService } from './safety-guard.service'
 import { PromptCurationService } from './prompt-curation.service'
 import { BrainClientService } from './brain-client.service'
+import { ContentPersistenceService } from '../persistence/content-persistence.service'
 import { ValidationReason, VALIDATION_REASON_LABELS } from './dto/validation-response.dto'
 
 const STEP_SAFETY_GUARD = 'safetyGuard'
@@ -22,9 +23,15 @@ export class ValidationService {
     private readonly safetyGuard: SafetyGuardService,
     private readonly curation: PromptCurationService,
     private readonly brainClient: BrainClientService,
+    private readonly persistence: ContentPersistenceService,
   ) {}
 
-  async process(body: Record<string, unknown>): Promise<ProcessResponse> {
+  async process(
+    body: Record<string, unknown>,
+    teacherUid?: string,
+    channelId?: string,
+    language?: string,
+  ): Promise<ProcessResponse> {
     const type = body['type'] as string | undefined
     if (type !== PROCESS_TYPES.Chat && type !== PROCESS_TYPES.TaskGenerator) {
       throw new BadRequestException(
@@ -92,6 +99,7 @@ export class ValidationService {
               prompt: curatedPrompt,
               context: taskDto.context,
               students: taskDto.students,
+              language,
             },
             collector,
           )
@@ -102,11 +110,12 @@ export class ValidationService {
               students: taskDto.students,
               questionCount: taskDto.questionCount,
               openQuestion: taskDto.openQuestion,
+              language,
             },
             collector,
           )
 
-    return {
+    const response: TaskProcessResponse = {
       type: PROCESS_TYPES.TaskGenerator,
       task: taskDto.task,
       valid: true,
@@ -115,5 +124,11 @@ export class ValidationService {
       model: (brainResult['model'] as string) ?? '',
       metrics: collector.build(),
     }
+
+    if (teacherUid && channelId) {
+      this.persistence.save(teacherUid, channelId, response)
+    }
+
+    return response
   }
 }

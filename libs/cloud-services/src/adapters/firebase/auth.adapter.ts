@@ -156,6 +156,16 @@ export class FirebaseAuthAdapter implements IAuthProvider {
     }
   }
 
+  async getIdToken(): Promise<string | null> {
+    const user = this.auth.currentUser
+    if (!user) return null
+    try {
+      return await user.getIdToken()
+    } catch (error) {
+      throw mapError(error)
+    }
+  }
+
   onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void {
     return firebaseOnAuthStateChanged(this.auth, (firebaseUser) => {
       callback(firebaseUser ? mapUser(firebaseUser) : null)

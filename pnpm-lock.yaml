@@ -372,6 +372,9 @@ importers:
       class-validator:
         specifier: ^0.14.2
         version: 0.14.4
+      firebase-admin:
+        specifier: ^13.8.0
+        version: 13.8.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2

@@ -12,6 +12,10 @@ vi.mock('@tanstack/react-router', () => ({
   useParams: () => ({ channelId: 'ch-1' }),
 }))
 
+vi.mock('@primer-guidy/cloud-services', () => ({
+  useAuth: () => ({ getIdToken: vi.fn().mockResolvedValue('mock-token') }),
+}))
+
 vi.mock('@/context/user.context', () => ({
   useCurrentUser: () => ({ uid: 'teacher-1' }),
 }))

@@ -3,7 +3,8 @@ export enum MetricsStep {
   Chat = 'chat',
 }
 
-export const studentStep = (index: number): string => `student.${index}`
+export const studentStep = (identificationNumber: string): string =>
+  `student.${identificationNumber}`
 
 export enum BrainError {
   JsonParseFailed = 'Failed to parse JSON from LLM at step',
@@ -20,4 +21,7 @@ export const BrainRoute = {
 export const TemplatePlaceholder = {
   StudentIndex: '{{STUDENT_INDEX}}',
   QuestionCount: '{{QUESTION_COUNT}}',
+  Language: '{{LANGUAGE}}',
 } as const
+
+export const DEFAULT_LANGUAGE = 'es'

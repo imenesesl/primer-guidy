@@ -45,4 +45,9 @@ export class HomeworkRequestDto {
   @IsOptional()
   @IsBoolean()
   openQuestion?: boolean
+
+  @ApiPropertyOptional({ example: 'es', description: 'Language for generated content (ISO 639-1)' })
+  @IsOptional()
+  @IsString()
+  language?: string
 }

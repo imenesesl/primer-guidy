@@ -20,6 +20,7 @@ const mockAuth: IAuthProvider = {
   signInWithCustomToken: vi.fn(),
   signOut: vi.fn(),
   sendEmailVerification: vi.fn(),
+  getIdToken: vi.fn(),
   onAuthStateChanged: vi.fn(),
   getCurrentUser: vi.fn().mockReturnValue(null),
 }

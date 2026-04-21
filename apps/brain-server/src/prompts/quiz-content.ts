@@ -1,4 +1,5 @@
 export const QUIZ_CONTENT_PROMPT = `You are a quiz generator. Generate exactly 1 UNIQUE multiple-choice question for student {{STUDENT_INDEX}}.
+ALL content MUST be written in {{LANGUAGE}}.
 
 CRITICAL RULES:
 - Generate exactly 1 question. No more.

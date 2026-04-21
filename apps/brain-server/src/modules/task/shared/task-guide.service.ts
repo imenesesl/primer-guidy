@@ -29,6 +29,7 @@ export interface StudentGenerationConfig {
   readonly questionCount: number
   readonly systemPromptTemplate: string
   readonly schema: ZodSchema
+  readonly language: string
 }
 
 export interface GuideResult {
@@ -45,10 +46,12 @@ export class TaskGuideService {
   async generateGuide(
     prompt: string,
     context: string,
+    language: string,
     collector: MetricsCollector,
   ): Promise<GuideResult> {
+    const guidePrompt = TASK_GUIDE_PROMPT.replace(TemplatePlaceholder.Language, language)
     const messages: ChatMessage[] = [
-      { role: ChatRole.System, content: TASK_GUIDE_PROMPT },
+      { role: ChatRole.System, content: guidePrompt },
       {
         role: ChatRole.User,
         content: `Context: ${context}\n\nGenerate a learning guide for: ${prompt}`,
@@ -93,9 +96,7 @@ export class TaskGuideService {
     for (let start = 0; start < config.students.length; start += CONCURRENCY_LIMIT) {
       const batch = config.students.slice(start, start + CONCURRENCY_LIMIT)
       const batchResults = await Promise.all(
-        batch.map((id, batchIdx) =>
-          this.generateWithRetry(start + batchIdx, id, config, guide, signal, collector),
-        ),
+        batch.map((id) => this.generateWithRetry(id, config, guide, signal, collector)),
       )
       results.push(...batchResults)
     }
@@ -104,7 +105,6 @@ export class TaskGuideService {
   }
 
   private async generateWithRetry(
-    index: number,
     identificationNumber: string,
     config: StudentGenerationConfig,
     guide: Record<string, unknown>,
@@ -115,20 +115,13 @@ export class TaskGuideService {
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        return await this.generateForStudent(
-          index,
-          identificationNumber,
-          config,
-          guide,
-          signal,
-          collector,
-        )
+        return await this.generateForStudent(identificationNumber, config, guide, signal, collector)
       } catch (err) {
         lastError = err as Error
         if (signal.aborted) throw lastError
 
         this.logger.warn(
-          `${studentStep(index)} attempt ${attempt + 1}/${MAX_RETRIES + 1} failed: ${lastError.message}`,
+          `${studentStep(identificationNumber)} attempt ${attempt + 1}/${MAX_RETRIES + 1} failed: ${lastError.message}`,
         )
 
         if (attempt < MAX_RETRIES) {
@@ -141,16 +134,17 @@ export class TaskGuideService {
   }
 
   private async generateForStudent(
-    index: number,
     identificationNumber: string,
     config: StudentGenerationConfig,
     guide: Record<string, unknown>,
     signal: AbortSignal,
     collector: MetricsCollector,
   ): Promise<StudentContentDto> {
+    const step = studentStep(identificationNumber)
     const systemPrompt = config.systemPromptTemplate
-      .replace(TemplatePlaceholder.StudentIndex, String(index))
+      .replace(TemplatePlaceholder.StudentIndex, identificationNumber)
       .replace(TemplatePlaceholder.QuestionCount, String(config.questionCount))
+      .replace(TemplatePlaceholder.Language, config.language)
 
     const messages: ChatMessage[] = [
       { role: ChatRole.System, content: systemPrompt },
@@ -160,7 +154,7 @@ export class TaskGuideService {
       },
     ]
 
-    const result = await collector.record(studentStep(index), () =>
+    const result = await collector.record(step, () =>
       this.llm.complete(messages, {
         temperature: STUDENT_TEMPERATURE,
         maxTokens: MAX_TOKENS,
@@ -170,7 +164,7 @@ export class TaskGuideService {
       }),
     )
 
-    const parsed = this.parseAndValidate(result.content, config.schema, studentStep(index))
+    const parsed = this.parseAndValidate(result.content, config.schema, step)
     const trimmedQuestions = parsed.questions
       .slice(0, config.questionCount)
       .map(TaskGuideService.shuffleOptions)

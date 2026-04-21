@@ -3,6 +3,7 @@ import { Button, Flash } from '@primer/react'
 import { PlusIcon } from '@primer/octicons-react'
 import { useParams } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '@primer-guidy/cloud-services'
 import { useCurrentUser } from '@/context/user.context'
 import { useChannels } from '@/services/channel'
 import { useGenerateContent, ProcessType, TaskKind } from '@/services/generator'
@@ -16,6 +17,7 @@ export const ContentTab = () => {
   const { t: tChannels } = useTranslation('channels')
   const { channelId } = useParams({ strict: false }) as { channelId: string }
   const { uid } = useCurrentUser()
+  const auth = useAuth()
   const { data: channels } = useChannels(uid)
   const [isOpen, setIsOpen] = useState(false)
   const [result, setResult] = useState<TaskGeneratorResponse | null>(null)
@@ -27,25 +29,33 @@ export const ContentTab = () => {
     return channel?.students ?? []
   }, [channels, channelId])
 
+  const handleClose = useCallback(() => setIsOpen(false), [])
+
   const handleSubmit = useCallback(
-    (data: GeneratorFormData) => {
+    async (data: GeneratorFormData) => {
       setError(null)
+      const authToken = await auth.getIdToken()
+
       mutate(
         {
-          type: ProcessType.TaskGenerator,
-          task: data.task,
-          prompt: data.prompt,
-          context: data.context,
-          students,
-          ...(data.task === TaskKind.Homework && {
-            questionCount: data.questionCount,
-            openQuestion: data.openQuestion,
-          }),
+          request: {
+            type: ProcessType.TaskGenerator,
+            task: data.task,
+            prompt: data.prompt,
+            context: data.context,
+            students,
+            ...(data.task === TaskKind.Homework && {
+              questionCount: data.questionCount,
+              openQuestion: data.openQuestion,
+            }),
+          },
+          authToken: authToken ?? undefined,
+          channelId,
         },
         {
           onSuccess: (response) => {
             setResult(response)
-            setIsOpen(false)
+            handleClose()
           },
           onError: (err) => {
             setError(err.message)
@@ -53,7 +63,7 @@ export const ContentTab = () => {
         },
       )
     },
-    [mutate, students],
+    [auth, mutate, students, channelId, handleClose],
   )
 
   return (
@@ -76,7 +86,7 @@ export const ContentTab = () => {
 
       <GeneratorForm
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
         students={students}
         onSubmit={handleSubmit}
         isPending={isPending}

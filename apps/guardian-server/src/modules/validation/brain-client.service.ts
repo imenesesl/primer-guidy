@@ -19,6 +19,7 @@ export interface QuizBrainRequest {
   readonly prompt: string
   readonly context: string
   readonly students: readonly string[]
+  readonly language?: string
 }
 
 export interface HomeworkBrainRequest {
@@ -27,6 +28,7 @@ export interface HomeworkBrainRequest {
   readonly students: readonly string[]
   readonly questionCount?: number
   readonly openQuestion?: boolean
+  readonly language?: string
 }
 
 export interface BrainResponse {

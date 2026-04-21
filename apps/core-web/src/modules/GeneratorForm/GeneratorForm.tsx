@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Dialog } from '@primer/react'
@@ -49,10 +50,9 @@ export const GeneratorForm = ({
   const promptLength = watch('prompt').length
   const contextLength = watch('context').length
 
-  const handleClose = () => {
-    reset()
-    onClose()
-  }
+  useEffect(() => {
+    if (!isOpen) reset()
+  }, [isOpen, reset])
 
   if (!isOpen) return null
 
@@ -60,12 +60,12 @@ export const GeneratorForm = ({
     <Dialog
       title={tChannels('generator.title')}
       width="large"
-      onClose={handleClose}
+      onClose={onClose}
       footerButtons={[
         {
           buttonType: 'default',
           content: tChannels('generator.cancel'),
-          onClick: handleClose,
+          onClick: onClose,
         },
         {
           buttonType: 'primary',

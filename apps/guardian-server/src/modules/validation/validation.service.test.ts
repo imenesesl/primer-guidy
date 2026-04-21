@@ -9,9 +9,12 @@ const mockChat = vi.fn()
 const mockQuiz = vi.fn()
 const mockHomework = vi.fn()
 
+const mockSave = vi.fn()
+
 const mockSafetyGuard = { check: mockCheck }
 const mockCuration = { curate: mockCurate }
 const mockBrainClient = { chat: mockChat, quiz: mockQuiz, homework: mockHomework }
+const mockPersistence = { save: mockSave }
 
 describe('ValidationService', () => {
   let service: ValidationService
@@ -22,6 +25,7 @@ describe('ValidationService', () => {
       mockSafetyGuard as never,
       mockCuration as never,
       mockBrainClient as never,
+      mockPersistence as never,
     )
   })
 
@@ -145,6 +149,73 @@ describe('ValidationService', () => {
     expect(result.metrics).toBeDefined()
     expect(typeof result.metrics.totalDurationMs).toBe('number')
     expect(typeof result.metrics.totalTokens).toBe('number')
+  })
+
+  it('calls persistence when teacherUid and channelId are provided for task-generator', async () => {
+    mockCheck.mockResolvedValueOnce({ safe: true })
+    mockCurate.mockResolvedValueOnce('curated')
+    mockQuiz.mockResolvedValueOnce({
+      guide: { topic: 'math' },
+      studentContents: [{ identificationNumber: 'STU-001', questions: [] }],
+      model: 'test-model',
+    })
+
+    await service.process(
+      {
+        type: 'task-generator',
+        task: 'quiz',
+        prompt: 'quiz',
+        context: 'math',
+        students: ['STU-001'],
+      },
+      'teacher-uid',
+      'channel-123',
+    )
+
+    expect(mockSave).toHaveBeenCalledOnce()
+    expect(mockSave).toHaveBeenCalledWith(
+      'teacher-uid',
+      'channel-123',
+      expect.objectContaining({
+        type: 'task-generator',
+        task: 'quiz',
+        valid: true,
+      }),
+    )
+  })
+
+  it('does not call persistence when teacherUid or channelId is missing', async () => {
+    mockCheck.mockResolvedValueOnce({ safe: true })
+    mockCurate.mockResolvedValueOnce('curated')
+    mockQuiz.mockResolvedValueOnce({
+      guide: { topic: 'math' },
+      studentContents: [],
+      model: 'test-model',
+    })
+
+    await service.process({
+      type: 'task-generator',
+      task: 'quiz',
+      prompt: 'quiz',
+      context: 'math',
+      students: ['STU-001'],
+    })
+
+    expect(mockSave).not.toHaveBeenCalled()
+  })
+
+  it('does not call persistence for chat requests', async () => {
+    mockCheck.mockResolvedValueOnce({ safe: true })
+    mockCurate.mockResolvedValueOnce('curated')
+    mockChat.mockResolvedValueOnce({ reply: 'ok', model: 'm' })
+
+    await service.process(
+      { type: 'chat', prompt: 'hi', context: 'math' },
+      'teacher-uid',
+      'channel-123',
+    )
+
+    expect(mockSave).not.toHaveBeenCalled()
   })
 
   it('uses default label when safety result has no message', async () => {

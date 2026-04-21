@@ -23,6 +23,9 @@ deploy/
 playwright-report/
 test-results/
 
+# Firebase credentials
+service-account*.json
+
 # Firebase Emulators
 firestore-debug.log
 database-debug.log

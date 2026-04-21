@@ -13,6 +13,28 @@ service cloud.firestore {
       match /channels/{channelId} {
         allow read: if request.auth != null;
         allow write: if request.auth != null && request.auth.uid == uid;
+
+        // Generated quizzes — teacher reads, Admin SDK writes.
+        match /quizzes/{contentId} {
+          allow read: if request.auth != null && request.auth.uid == uid;
+          allow write: if false;
+
+          match /students/{studentId} {
+            allow read: if request.auth != null && request.auth.uid == uid;
+            allow write: if false;
+          }
+        }
+
+        // Generated homework — teacher reads, Admin SDK writes.
+        match /homework/{contentId} {
+          allow read: if request.auth != null && request.auth.uid == uid;
+          allow write: if false;
+
+          match /students/{studentId} {
+            allow read: if request.auth != null && request.auth.uid == uid;
+            allow write: if false;
+          }
+        }
       }
 
       // Enrollment records — teacher reads/updates/deletes,

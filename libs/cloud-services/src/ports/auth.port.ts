@@ -11,6 +11,7 @@ export interface IAuthProvider {
   signInWithCustomToken(token: string): Promise<AuthUser>
   signOut(): Promise<void>
   sendEmailVerification(): Promise<void>
+  getIdToken(): Promise<string | null>
   onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void
   getCurrentUser(): AuthUser | null
 }

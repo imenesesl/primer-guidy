@@ -110,6 +110,6 @@ describe('HomeworkService', () => {
       collector,
     )
 
-    expect(mockGenerateGuide).toHaveBeenCalledWith('derivatives', 'calculus', collector)
+    expect(mockGenerateGuide).toHaveBeenCalledWith('derivatives', 'calculus', 'es', collector)
   })
 })
