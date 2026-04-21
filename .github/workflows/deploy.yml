@@ -248,11 +248,36 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # ── Job 5: Deploy backend (rules + functions) ─────────────────
-  deploy-backend:
-    name: Backend
+  # ── Job 5: Deploy servers (Brain → Guardian) ─────────────────
+  deploy-servers:
+    name: Servers
     needs: [analyze, test-unit, test-e2e]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Brain server
+        run: echo "🧠 Brain server deploy placeholder — replace with actual deploy command"
+        env:
+          BRAIN_API_KEY: ${{ secrets.BRAIN_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+          GUARD_MODEL: ${{ secrets.GUARD_MODEL }}
+          CURATION_MODEL: ${{ secrets.CURATION_MODEL }}
+          TASK_CONCURRENCY: ${{ secrets.TASK_CONCURRENCY }}
+
+      - name: Deploy Guardian server
+        run: echo "🛡️ Guardian server deploy placeholder — replace with actual deploy command"
+        env:
+          GUARDIAN_BASE_URL: ${{ secrets.GUARDIAN_BASE_URL }}
+          VALIDATION_API_KEY: ${{ secrets.VALIDATION_API_KEY }}
+          BRAIN_BASE_URL: ${{ secrets.BRAIN_BASE_URL }}
+          BRAIN_API_KEY: ${{ secrets.BRAIN_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+  # ── Job 6: Deploy functions (rules + Cloud Functions) ───────
+  deploy-functions:
+    name: Functions
+    needs: [deploy-servers]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -290,27 +315,14 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa-key.json
 
-      # ── Server vars ready for Guardian/Brain deploy ──
-      # When server deploy steps are added, use these env vars:
-      #   GUARDIAN_BASE_URL: ${{ secrets.GUARDIAN_BASE_URL }}
-      #   VALIDATION_API_KEY: ${{ secrets.VALIDATION_API_KEY }}
-      #   BRAIN_BASE_URL: ${{ secrets.BRAIN_BASE_URL }}
-      #   BRAIN_API_KEY: ${{ secrets.BRAIN_API_KEY }}
-      #   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      #   ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
-      #   GUARD_MODEL: ${{ secrets.GUARD_MODEL }}
-      #   CURATION_MODEL: ${{ secrets.CURATION_MODEL }}
-      #   TASK_CONCURRENCY: ${{ secrets.TASK_CONCURRENCY }}
-      #   FIREBASE_SERVICE_ACCOUNT: written to ${{ runner.temp }}/sa-key.json
-
       - name: Cleanup service account
         if: always()
         run: rm -f "$RUNNER_TEMP/sa-key.json"
 
-  # ── Job 6: Deploy UI (hosting) ───────────────────────────────
+  # ── Job 7: Deploy UI (hosting) ──────────────────────────────
   deploy-hosting:
     name: Hosting
-    needs: [deploy-backend]
+    needs: [deploy-functions]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
