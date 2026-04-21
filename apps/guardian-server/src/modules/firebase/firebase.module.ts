@@ -11,7 +11,7 @@ const initFirebase = (): App => {
   const existing = getApps()[0]
   if (existing) return existing
 
-  const serviceAccountPath = process.env['GOOGLE_APPLICATION_CREDENTIALS']
+  const serviceAccountPath = process.env['FIREBASE_SERVICE_ACCOUNT']
   return serviceAccountPath
     ? initializeApp({ credential: cert(resolve(MONOREPO_ROOT, serviceAccountPath)) })
     : initializeApp()
