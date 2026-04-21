@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { Button, Flash } from '@primer/react'
+import { Button, Flash, Spinner, Text, Label } from '@primer/react'
 import { PlusIcon } from '@primer/octicons-react'
 import { useParams } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
@@ -7,11 +7,11 @@ import { useAuth } from '@primer-guidy/cloud-services'
 import { useCurrentUser } from '@/context/user.context'
 import { useChannels } from '@/services/channel'
 import { useGenerateContent, ProcessType, TaskKind } from '@/services/generator'
-import type { GeneratorFormData, TaskGeneratorResponse } from '@/services/generator'
+import type { GeneratorFormData } from '@/services/generator'
+import { useChannelContent } from '@/services/content'
 import { GeneratorForm } from '@/modules/GeneratorForm'
+import { ContentCard } from './ContentCard'
 import styles from './ContentTab.module.scss'
-
-const JSON_INDENT = 2
 
 export const ContentTab = () => {
   const { t: tChannels } = useTranslation('channels')
@@ -20,9 +20,9 @@ export const ContentTab = () => {
   const auth = useAuth()
   const { data: channels } = useChannels(uid)
   const [isOpen, setIsOpen] = useState(false)
-  const [result, setResult] = useState<TaskGeneratorResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const { mutate, isPending } = useGenerateContent()
+  const { data: content, loading } = useChannelContent(uid, channelId)
 
   const students = useMemo(() => {
     const channel = channels?.find((ch) => ch.id === channelId)
@@ -53,8 +53,7 @@ export const ContentTab = () => {
           channelId,
         },
         {
-          onSuccess: (response) => {
-            setResult(response)
+          onSuccess: () => {
             handleClose()
           },
           onError: (err) => {
@@ -80,8 +79,27 @@ export const ContentTab = () => {
         </Flash>
       )}
 
-      {result && (
-        <pre className={styles.jsonOutput}>{JSON.stringify(result, null, JSON_INDENT)}</pre>
+      {loading && (
+        <div className={styles.centered}>
+          <Spinner size="medium" />
+          <Text as="p" className={styles.loadingText}>
+            {tChannels('content.loading')}
+          </Text>
+        </div>
+      )}
+
+      {!loading && content.length === 0 && (
+        <div className={styles.centered}>
+          <Label variant="secondary">{tChannels('content.empty')}</Label>
+        </div>
+      )}
+
+      {!loading && content.length > 0 && (
+        <div className={styles.contentList}>
+          {content.map((item) => (
+            <ContentCard key={item.id} content={item} />
+          ))}
+        </div>
       )}
 
       <GeneratorForm

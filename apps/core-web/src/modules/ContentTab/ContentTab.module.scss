@@ -10,9 +10,40 @@
 }
 
 .flash {
-  @apply mt-2;
+  @apply pt-2;
 }
 
-.jsonOutput {
-  @apply p-4 rounded-lg text-xs overflow-auto max-h-[600px] bg-gray-900 text-gray-200 border border-gray-700 font-mono whitespace-pre-wrap break-all;
+.centered {
+  @apply flex flex-col items-center justify-center gap-2 py-12;
+}
+
+.loadingText {
+  color: var(--primer-fg-muted);
+}
+
+.contentList {
+  @apply flex flex-col gap-3;
+}
+
+.card {
+  @apply flex flex-col gap-2 p-4 rounded-lg border transition-colors;
+
+  border-color: var(--primer-border-default);
+  background-color: var(--primer-canvas-subtle);
+}
+
+.card:hover {
+  background-color: var(--primer-canvas-default);
+}
+
+.cardHeader {
+  @apply flex items-center justify-between;
+}
+
+.cardDate {
+  color: var(--primer-fg-muted);
+}
+
+.cardModel {
+  color: var(--primer-fg-muted);
 }

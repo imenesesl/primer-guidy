@@ -1,0 +1,33 @@
+{
+  "level": "subcollection",
+  "path": "users/{teacherUid}/channels/{channelId}/quizzes|homework/{contentId}",
+  "description": "Generated quizzes and homework content. Written by Admin SDK (Guardian), read by teachers and students.",
+  "schema": {
+    "type": { "type": "string", "required": true, "description": "Always 'task-generator'" },
+    "task": { "type": "string", "required": true, "enum": ["quiz", "homework"] },
+    "valid": { "type": "boolean", "required": true },
+    "guide": { "type": "object", "required": true, "description": "Generated teaching guide" },
+    "model": { "type": "string", "required": true, "description": "LLM model used for generation" },
+    "createdAt": { "type": "string", "required": true, "description": "ISO 8601 timestamp" }
+  },
+  "subcollections": {
+    "students/{identificationNumber}": {
+      "description": "Per-student generated questions. Document ID is the student identification number.",
+      "schema": {
+        "questions": {
+          "type": "array",
+          "required": true,
+          "items": {
+            "id": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "options": { "type": "array", "items": "string", "required": false },
+            "correctIndex": { "type": "number", "required": false },
+            "explanation": { "type": "string", "required": false },
+            "expectedAnswerHints": { "type": "array", "items": "string", "required": false }
+          }
+        },
+        "chatContext": { "type": "string", "required": true }
+      }
+    }
+  }
+}

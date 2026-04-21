@@ -49,6 +49,13 @@
     "minValue": "Value is too low",
     "maxValue": "Value is too high"
   },
+  "content": {
+    "empty": "No content generated yet. Use the button above to create content.",
+    "quiz": "Quiz",
+    "homework": "Homework",
+    "students": "{{count}} students",
+    "loading": "Loading content..."
+  },
   "channelDetail": {
     "title": "Channel: {{channelId}}"
   },

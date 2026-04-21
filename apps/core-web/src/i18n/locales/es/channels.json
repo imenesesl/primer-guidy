@@ -35,6 +35,13 @@
     "openQuestion": "Preguntas abiertas",
     "openQuestionHint": "Genera preguntas abiertas en lugar de opción múltiple"
   },
+  "content": {
+    "empty": "Aún no se ha generado contenido. Usa el botón de arriba para crear contenido.",
+    "quiz": "Quiz",
+    "homework": "Tarea",
+    "students": "{{count}} estudiantes",
+    "loading": "Cargando contenido..."
+  },
   "validation": {
     "required": "Este campo es obligatorio",
     "maxLength": "Límite máximo de caracteres excedido",

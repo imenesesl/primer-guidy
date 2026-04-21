@@ -31,8 +31,12 @@ vi.mock('@/services/generator', () => ({
   useGenerateContent: () => ({ mutate: mockMutate, isPending: false }),
 }))
 
+vi.mock('@/services/content', () => ({
+  useChannelContent: () => ({ data: [], loading: false }),
+}))
+
 vi.mock('./ContentTab.module.scss', () => ({
-  default: { root: 'root', toolbar: 'toolbar' },
+  default: { root: 'root', toolbar: 'toolbar', centered: 'centered' },
 }))
 
 vi.mock('@/modules/GeneratorForm', () => ({
@@ -53,6 +57,10 @@ vi.mock('@/modules/GeneratorForm', () => ({
         data-pending={String(isPending ?? false)}
       />
     ) : null,
+}))
+
+vi.mock('./ContentCard', () => ({
+  ContentCard: () => null,
 }))
 
 import { ContentTab } from './ContentTab'

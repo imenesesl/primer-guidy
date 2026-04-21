@@ -29,6 +29,17 @@
     "content": "Content",
     "ai": "AI"
   },
+  "content": {
+    "empty": "No content available yet.",
+    "quiz": "Quiz",
+    "homework": "Homework",
+    "loading": "Loading content...",
+    "viewQuestions": "View Questions",
+    "hideQuestions": "Hide Questions",
+    "question": "Question {{number}}",
+    "explanation": "Explanation:",
+    "option": "{{letter}}."
+  },
   "breadcrumb": {
     "home": "Home",
     "tasks": "Tasks",
