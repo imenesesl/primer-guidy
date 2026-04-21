@@ -1,10 +1,11 @@
-import { Injectable, Inject, HttpException, HttpStatus, Logger } from '@nestjs/common'
+import { Injectable, Inject, Logger } from '@nestjs/common'
 import { ChatRole } from '@primer-guidy/llm-services'
 import type { ILlmProvider, ChatMessage } from '@primer-guidy/llm-services'
 import type { MetricsCollector, StudentContentDto, QuestionDto } from '@primer-guidy/nest-shared'
 import { LLM_PROVIDER } from '../../../tokens'
 import { TASK_GUIDE_PROMPT } from '../../../prompts'
-import { MetricsStep, BrainError, TemplatePlaceholder, studentStep } from '../../../constants'
+import { MetricsStep, TemplatePlaceholder, studentStep } from '../../../constants'
+import { JsonParseError, SchemaValidationError } from '../../../errors'
 import type { ZodSchema } from 'zod'
 
 const MAX_RETRIES = 2
@@ -219,7 +220,7 @@ export class TaskGuideService {
       this.logger.error(
         `Failed to parse JSON at step "${step}". Raw:\n${raw}\nExtracted:\n${cleaned}`,
       )
-      throw new HttpException(`${BrainError.JsonParseFailed} "${step}"`, HttpStatus.BAD_GATEWAY)
+      throw new JsonParseError(step)
     }
   }
 
@@ -245,10 +246,7 @@ export class TaskGuideService {
     const result = schema.safeParse(parsed)
 
     if (!result.success) {
-      throw new HttpException(
-        `${BrainError.SchemaValidationFailed} "${step}": ${result.error.message}`,
-        HttpStatus.BAD_GATEWAY,
-      )
+      throw new SchemaValidationError(step, result.error.message)
     }
 
     return result.data as { questions: QuestionDto[]; chatContext: string }

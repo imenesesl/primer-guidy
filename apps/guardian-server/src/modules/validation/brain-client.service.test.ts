@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { HttpException } from '@nestjs/common'
 import { BrainClientService } from './brain-client.service'
 import { MetricsCollector } from '@primer-guidy/nest-shared'
+import { BrainResponseError, BrainUnavailableError } from '../../errors'
 
 const mockFetch = vi.fn()
 
@@ -110,7 +110,7 @@ describe('BrainClientService', () => {
     expect(metrics.steps['brain']).toBeDefined()
   })
 
-  it('throws HttpException on non-ok response', async () => {
+  it('throws BrainResponseError on non-ok response', async () => {
     mockFetch.mockResolvedValue({
       ok: false,
       status: 500,
@@ -118,15 +118,15 @@ describe('BrainClientService', () => {
     })
 
     await expect(service.chat({ prompt: 'p', context: 'c' }, collector)).rejects.toThrow(
-      HttpException,
+      BrainResponseError,
     )
   })
 
-  it('throws HttpException when fetch fails (network error)', async () => {
+  it('throws BrainUnavailableError when fetch fails (network error)', async () => {
     mockFetch.mockRejectedValueOnce(new Error('ECONNREFUSED'))
 
     await expect(service.chat({ prompt: 'p', context: 'c' }, collector)).rejects.toThrow(
-      HttpException,
+      BrainUnavailableError,
     )
   })
 })

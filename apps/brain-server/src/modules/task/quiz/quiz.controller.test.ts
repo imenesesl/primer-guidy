@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import 'reflect-metadata'
+import { MetricsCollector } from '@primer-guidy/nest-shared'
 import { QuizController } from './quiz.controller'
 import type { QuizService } from './quiz.service'
 
@@ -8,10 +9,12 @@ const mockService = { generate: mockGenerate } as unknown as QuizService
 
 describe('QuizController', () => {
   let controller: QuizController
+  let collector: MetricsCollector
 
   beforeEach(() => {
     vi.clearAllMocks()
-    controller = new QuizController(mockService)
+    collector = new MetricsCollector()
+    controller = new QuizController(mockService, collector)
   })
 
   it('delegates to QuizService and returns result with metrics', async () => {
@@ -51,5 +54,17 @@ describe('QuizController', () => {
       context: 'math',
       students: ['STU-001', 'STU-002', 'STU-003', 'STU-004', 'STU-005'],
     })
+  })
+
+  it('passes injected collector to service', async () => {
+    mockGenerate.mockResolvedValueOnce({ guide: {}, studentContents: [], model: 'x' })
+
+    await controller.quiz({
+      prompt: 'p',
+      context: 'c',
+      students: ['STU-001'],
+    })
+
+    expect(mockGenerate).toHaveBeenCalledWith(expect.any(Object), collector)
   })
 })

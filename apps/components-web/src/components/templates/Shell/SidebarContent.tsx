@@ -8,6 +8,8 @@ import { isDesktop } from '../../../utils/viewport.utils'
 import type { SidebarContentProps } from './SidebarContent.types'
 import styles from './Shell.module.scss'
 
+const SKELETON_COUNT = 3
+
 export const SidebarContent = ({
   userName,
   sidebarItems,
@@ -69,7 +71,7 @@ export const SidebarContent = ({
               ),
             )
           : sidebarLoading
-            ? Array.from({ length: 3 }, (_, i) => (
+            ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
                 <div key={i} className={styles.sidebarItemSkeleton} />
               ))
             : null}

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import 'reflect-metadata'
 import { ChatRole } from '@primer-guidy/llm-services'
+import { MetricsCollector } from '@primer-guidy/nest-shared'
 import { ChatController } from './chat.controller'
 import type { ChatService } from './chat.service'
 
@@ -9,10 +10,12 @@ const mockService = { generate: mockGenerate } as unknown as ChatService
 
 describe('ChatController', () => {
   let controller: ChatController
+  let collector: MetricsCollector
 
   beforeEach(() => {
     vi.clearAllMocks()
-    controller = new ChatController(mockService)
+    collector = new MetricsCollector()
+    controller = new ChatController(mockService, collector)
   })
 
   it('delegates to ChatService and returns result with metrics', async () => {
@@ -39,5 +42,13 @@ describe('ChatController', () => {
 
     const call = mockGenerate.mock.calls[0][0]
     expect(call.history).toEqual([{ role: ChatRole.User, content: 'hi' }])
+  })
+
+  it('passes injected collector to service', async () => {
+    mockGenerate.mockResolvedValueOnce({ reply: 'ok', model: 'llama3' })
+
+    await controller.chat({ prompt: 'p', context: 'c' })
+
+    expect(mockGenerate).toHaveBeenCalledWith(expect.any(Object), collector)
   })
 })

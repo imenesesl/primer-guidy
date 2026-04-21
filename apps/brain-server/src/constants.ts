@@ -6,12 +6,6 @@ export enum MetricsStep {
 export const studentStep = (identificationNumber: string): string =>
   `student.${identificationNumber}`
 
-export enum BrainError {
-  JsonParseFailed = 'Failed to parse JSON from LLM at step',
-  SchemaValidationFailed = 'LLM output failed schema validation at step',
-  EmptyResponse = 'Anthropic returned empty response',
-}
-
 export const BrainRoute = {
   Chat: 'api/chat',
   Quiz: 'api/task/quiz',

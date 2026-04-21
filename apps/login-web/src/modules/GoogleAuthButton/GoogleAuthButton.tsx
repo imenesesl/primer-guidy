@@ -1,7 +1,7 @@
 import { Button } from '@primer/react'
 import { GoogleIcon } from '@primer-guidy/components-web'
 import type { GoogleAuthButtonProps } from './GoogleAuthButton.types'
-import styles from '@/styles/auth.module.scss'
+import styles from './GoogleAuthButton.module.scss'
 
 export const GoogleAuthButton = ({ label, onClick, disabled }: GoogleAuthButtonProps) => {
   return (

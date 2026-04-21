@@ -1,0 +1,20 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.linkSentCard {
+  @apply flex flex-col items-center gap-3 text-center;
+
+  color: var(--primer-fg-default);
+}
+
+.linkSentIcon {
+  color: var(--primer-accent-fg);
+}
+
+.fullWidth.fullWidth {
+  @apply w-full justify-center cursor-pointer transition-colors duration-200 ease-in-out;
+}
+
+.fullWidth.fullWidth:hover:not(:disabled) {
+  background-color: var(--primer-neutral-muted);
+}

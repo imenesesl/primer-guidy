@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import 'reflect-metadata'
-import { HttpException } from '@nestjs/common'
 import type { ILlmProvider, CompletionResult } from '@primer-guidy/llm-services'
 import { MetricsCollector } from '@primer-guidy/nest-shared'
 import { z } from 'zod'
 import { MetricsStep, studentStep } from '../../../constants'
+import { JsonParseError } from '../../../errors'
 import { TaskGuideService } from './task-guide.service'
 
 const mockComplete = vi.fn<() => Promise<CompletionResult>>()
@@ -83,7 +83,7 @@ describe('TaskGuideService', () => {
     it('fails fast on invalid JSON', async () => {
       mockComplete.mockResolvedValueOnce(makeResult('not json'))
 
-      await expect(service.generateGuide('p', 'c', 'es', collector)).rejects.toThrow(HttpException)
+      await expect(service.generateGuide('p', 'c', 'es', collector)).rejects.toThrow(JsonParseError)
     })
 
     it('extracts JSON from markdown code fences', async () => {
@@ -172,8 +172,8 @@ describe('TaskGuideService', () => {
       expect(result).toEqual({ a: 1 })
     })
 
-    it('throws HttpException for invalid JSON', () => {
-      expect(() => service.parseJson('not json', 'test')).toThrow(HttpException)
+    it('throws JsonParseError for invalid JSON', () => {
+      expect(() => service.parseJson('not json', 'test')).toThrow(JsonParseError)
     })
 
     it('extracts JSON from surrounding text', () => {

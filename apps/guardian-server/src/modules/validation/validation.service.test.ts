@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { BadRequestException } from '@nestjs/common'
+import { InvalidProcessTypeError } from '../../errors'
 import { ValidationService } from './validation.service'
 import { ValidationReason, VALIDATION_REASON_LABELS } from './dto/validation-response.dto'
 
@@ -29,10 +29,10 @@ describe('ValidationService', () => {
     )
   })
 
-  it('throws BadRequestException for invalid type', async () => {
+  it('throws InvalidProcessTypeError for invalid type', async () => {
     await expect(
       service.process({ type: 'invalid', prompt: 'hello', context: 'math' }),
-    ).rejects.toThrow(BadRequestException)
+    ).rejects.toThrow(InvalidProcessTypeError)
   })
 
   it('returns valid:false with error when safety fails for chat', async () => {

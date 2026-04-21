@@ -1,5 +1,6 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import type { MetricsCollector } from '@primer-guidy/nest-shared'
+import { BrainUnavailableError, BrainResponseError } from '../../errors'
 
 const DEFAULT_BRAIN_BASE_URL = 'http://localhost:3011'
 
@@ -78,12 +79,12 @@ export class BrainClientService {
         body: JSON.stringify(body),
       })
     } catch {
-      throw new HttpException('Brain server is unavailable', HttpStatus.SERVICE_UNAVAILABLE)
+      throw new BrainUnavailableError()
     }
 
     if (!response.ok) {
       const body = await response.text().catch(() => 'Unknown error')
-      throw new HttpException(`Brain server error: ${body}`, response.status)
+      throw new BrainResponseError(response.status, body)
     }
 
     const result = (await response.json()) as BrainResponse

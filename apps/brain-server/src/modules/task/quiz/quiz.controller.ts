@@ -10,7 +10,10 @@ import { QuizRequestDto } from './dto/quiz-request.dto'
 @Controller(BrainRoute.Quiz)
 @UseGuards(ApiKeyGuard)
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(
+    private readonly quizService: QuizService,
+    private readonly collector: MetricsCollector,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Generate quiz with unique questions per student' })
@@ -21,8 +24,6 @@ export class QuizController {
   })
   @ApiResponse({ status: 401, description: 'Invalid or missing API key' })
   async quiz(@Body() body: QuizRequestDto): Promise<Record<string, unknown>> {
-    const collector = new MetricsCollector()
-
     const result = await this.quizService.generate(
       {
         prompt: body.prompt,
@@ -30,9 +31,9 @@ export class QuizController {
         students: body.students,
         language: body.language,
       },
-      collector,
+      this.collector,
     )
 
-    return { ...result, metrics: collector.build() }
+    return { ...result, metrics: this.collector.build() }
   }
 }

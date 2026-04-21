@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console -- dev-only CLI script that logs proxy routing info to stdout */
 import http from 'node:http'
 import net from 'node:net'
 import { spawn } from 'node:child_process'

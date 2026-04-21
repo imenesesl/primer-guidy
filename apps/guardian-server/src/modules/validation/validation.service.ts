@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { validate } from 'class-validator'
 import { plainToInstance } from 'class-transformer'
 import {
@@ -9,6 +9,7 @@ import {
   TASK_KINDS,
 } from '@primer-guidy/nest-shared'
 import type { ProcessResponse, TaskProcessResponse } from '@primer-guidy/nest-shared'
+import { InvalidProcessTypeError, DtoValidationError } from '../../errors'
 import { SafetyGuardService } from './safety-guard.service'
 import { PromptCurationService } from './prompt-curation.service'
 import { BrainClientService } from './brain-client.service'
@@ -34,9 +35,7 @@ export class ValidationService {
   ): Promise<ProcessResponse> {
     const type = body['type'] as string | undefined
     if (type !== PROCESS_TYPES.Chat && type !== PROCESS_TYPES.TaskGenerator) {
-      throw new BadRequestException(
-        `type must be "${PROCESS_TYPES.Chat}" or "${PROCESS_TYPES.TaskGenerator}"`,
-      )
+      throw new InvalidProcessTypeError(type ?? 'undefined')
     }
 
     const dto =
@@ -47,7 +46,7 @@ export class ValidationService {
     const errors = await validate(dto, { whitelist: true, forbidNonWhitelisted: true })
     if (errors.length > 0) {
       const messages = errors.map((e) => Object.values(e.constraints ?? {}).join(', '))
-      throw new BadRequestException(messages)
+      throw new DtoValidationError(messages)
     }
 
     const collector = new MetricsCollector()

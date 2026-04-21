@@ -52,7 +52,7 @@
   @apply fixed top-0 left-0 h-screen z-40 overflow-y-auto overflow-x-hidden;
   @apply transition-all duration-200 ease-in-out;
 
-  width: 85vw;
+  width: var(--layout-sidebar-mobile-width);
   max-width: var(--layout-sidebar-width);
   background-color: var(--primer-canvas-subtle);
   border-right: var(--spacing-px) solid var(--primer-border-default);
@@ -88,8 +88,13 @@
 
 .backdrop.backdrop {
   @apply fixed inset-0 z-30 block p-0 w-full h-full rounded-none border-0;
+  @apply transition-opacity duration-200 ease-in-out;
 
   background-color: var(--primer-neutral-muted);
+}
+
+.backdrop.backdrop:hover {
+  opacity: var(--shimmer-opacity-min);
 }
 
 .backdropHidden.backdropHidden {

@@ -10,7 +10,10 @@ import { HomeworkRequestDto } from './dto/homework-request.dto'
 @Controller(BrainRoute.Homework)
 @UseGuards(ApiKeyGuard)
 export class HomeworkController {
-  constructor(private readonly homeworkService: HomeworkService) {}
+  constructor(
+    private readonly homeworkService: HomeworkService,
+    private readonly collector: MetricsCollector,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Generate homework with unique questions per student' })
@@ -21,8 +24,6 @@ export class HomeworkController {
   })
   @ApiResponse({ status: 401, description: 'Invalid or missing API key' })
   async homework(@Body() body: HomeworkRequestDto): Promise<Record<string, unknown>> {
-    const collector = new MetricsCollector()
-
     const result = await this.homeworkService.generate(
       {
         prompt: body.prompt,
@@ -32,9 +33,9 @@ export class HomeworkController {
         openQuestion: body.openQuestion,
         language: body.language,
       },
-      collector,
+      this.collector,
     )
 
-    return { ...result, metrics: collector.build() }
+    return { ...result, metrics: this.collector.build() }
   }
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import 'reflect-metadata'
+import { MetricsCollector } from '@primer-guidy/nest-shared'
 import { HomeworkController } from './homework.controller'
 import type { HomeworkService } from './homework.service'
 
@@ -8,10 +9,12 @@ const mockService = { generate: mockGenerate } as unknown as HomeworkService
 
 describe('HomeworkController', () => {
   let controller: HomeworkController
+  let collector: MetricsCollector
 
   beforeEach(() => {
     vi.clearAllMocks()
-    controller = new HomeworkController(mockService)
+    collector = new MetricsCollector()
+    controller = new HomeworkController(mockService, collector)
   })
 
   it('delegates to HomeworkService and returns result with metrics', async () => {
@@ -49,5 +52,17 @@ describe('HomeworkController', () => {
 
     const call = mockGenerate.mock.calls[0][0]
     expect(call.openQuestion).toBe(true)
+  })
+
+  it('passes injected collector to service', async () => {
+    mockGenerate.mockResolvedValueOnce({ guide: {}, studentContents: [], model: 'x' })
+
+    await controller.homework({
+      prompt: 'p',
+      context: 'c',
+      students: ['STU-001'],
+    })
+
+    expect(mockGenerate).toHaveBeenCalledWith(expect.any(Object), collector)
   })
 })

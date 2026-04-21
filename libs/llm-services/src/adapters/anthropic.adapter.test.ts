@@ -15,7 +15,7 @@ import type { Message } from '@anthropic-ai/sdk/resources/messages'
 const mockCreate = vi.fn()
 
 vi.mock('@anthropic-ai/sdk', async (importOriginal) => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- vi.mock importOriginal requires value import to preserve error classes
   const actual = await importOriginal<typeof import('@anthropic-ai/sdk')>()
   class MockAnthropic {
     messages = { create: mockCreate }

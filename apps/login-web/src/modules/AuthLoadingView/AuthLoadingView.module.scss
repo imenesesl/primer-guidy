@@ -1,0 +1,8 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.verifying {
+  @apply flex flex-col items-center gap-4;
+
+  color: var(--primer-fg-default);
+}
