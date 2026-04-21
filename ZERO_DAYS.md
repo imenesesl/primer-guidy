@@ -525,23 +525,23 @@ Y crear el script en el `package.json` raíz:
 
 ## Resumen ejecutivo
 
-| ID    | Severidad | Esfuerzo | Bloquea release | Estado    |
-| ----- | --------- | -------- | --------------- | --------- |
-| P0-2  | Crítica   | 1 hora   | Sí              | Pendiente |
-| P0-3  | Crítica   | 2 horas  | Sí              | **Nuevo** |
-| P1-3  | Alta      | 2 días   | Sí              | Pendiente |
-| P1-4  | Alta      | 4 horas  | Recomendado     | Pendiente |
-| P1-5  | Alta      | 4 horas  | Sí              | **Nuevo** |
-| P1-6  | Alta      | 2 horas  | Sí              | **Nuevo** |
-| P1-7  | Alta      | 1 hora   | Sí              | **Nuevo** |
-| P2-1  | Media     | 2-3 días | No              | Pendiente |
-| P2-2  | Media     | 4 horas  | Recomendado     | Pendiente |
-| P2-3  | Media     | 1 hora   | No              | Pendiente |
-| P2-4  | Media     | 4 horas  | Recomendado     | Parcial   |
-| P2-5  | Media     | 1 día    | No              | Pendiente |
-| P2-6  | Media     | 1 hora   | No              | **Nuevo** |
-| P2-7  | Media     | 1 día    | No              | **Nuevo** |
-| P3-\* | Baja      | < 1 día  | No              | Pendiente |
+| ID    | Severidad | Esfuerzo | Bloquea release | Estado                  |
+| ----- | --------- | -------- | --------------- | ----------------------- |
+| P0-2  | Crítica   | 1 hora   | Sí              | **Resuelto**            |
+| P0-3  | Crítica   | 2 horas  | Sí              | **Nuevo**               |
+| P1-3  | Alta      | 2 días   | Sí              | Pendiente               |
+| P1-4  | Alta      | 4 horas  | Recomendado     | Pendiente               |
+| P1-5  | Alta      | 4 horas  | Sí              | **Nuevo**               |
+| P1-6  | Alta      | 2 horas  | Sí              | **Nuevo**               |
+| P1-7  | Alta      | 1 hora   | Sí              | **Nuevo**               |
+| P2-1  | Media     | 2-3 días | No              | Pendiente               |
+| P2-2  | Media     | 4 horas  | Recomendado     | Pendiente               |
+| P2-3  | Media     | 1 hora   | No              | Pendiente               |
+| P2-4  | Media     | 4 horas  | Recomendado     | Parcial                 |
+| P2-5  | Media     | 1 día    | No              | Pendiente               |
+| P2-6  | Media     | 1 hora   | No              | **Nuevo**               |
+| P2-7  | Media     | 1 día    | No              | **Nuevo**               |
+| P3-\* | Baja      | < 1 día  | No              | Parcial (P3-4 resuelto) |
 
 **Acción inmediata sugerida (orden):**
 P0-2 (1 h, untrack `.env`) → P0-3 (2 h, hardening de rules + tests) → P1-7 (1 h, password length) → P1-6 (2 h, transaction) → P1-5 (4 h, rules + función redeem) → P1-4 → P1-3 → P2-6 → resto.
