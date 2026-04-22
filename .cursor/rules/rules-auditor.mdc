@@ -16,3 +16,4 @@ The skill handles the full audit process: loading all rules, scanning every file
 - Sorted by priority (P0 first, P3 last)
 - Empty sections MUST be omitted
 - If zero items remain, delete the file entirely
+- Patterns documented as accepted exceptions in `.cursor/rules/*.mdc` are NOT violations — do NOT add them to TECHDEBT.md

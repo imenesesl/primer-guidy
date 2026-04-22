@@ -1,3 +1,2 @@
-export { useAuthGuard } from './useAuthGuard'
-export { AuthGuardStatus } from './AuthGuard.types'
-export type { AuthGuardState } from './AuthGuard.types'
+export { useAuthGuard, AuthGuardStatus, getLoginAppUrl } from '@/services/auth-guard'
+export type { AuthGuardState } from '@/services/auth-guard'

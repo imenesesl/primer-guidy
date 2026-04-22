@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TabLayout } from '@/modules/TabLayout'
+import { TabLayout } from '@primer-guidy/components-web'
 import { DIRECTORY_TABS } from './Directories.utils'
 
 export const Directories = () => {

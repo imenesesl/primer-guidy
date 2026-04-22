@@ -7,37 +7,63 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-vi.mock('@tanstack/react-router', () => ({
-  useParams: () => ({ workspaceId: 'teacher-1', channelId: 'ch-1' }),
-  useLocation: () => ({ pathname: '/tasks/teacher-1/ch-1/content' }),
-}))
-
-vi.mock('@/modules/AuthGuard', () => ({
-  useAuthGuard: () => ({ status: 'authenticated', uid: 'uid-1' }),
-}))
-
-vi.mock('@/services/student', () => ({
-  useStudentProfile: () => ({
-    data: { uid: 'uid-1', identificationNumber: '12345678', name: 'Jane', createdAt: '' },
-  }),
-}))
-
-vi.mock('@/services/content', () => ({
-  useChannelContent: () => ({ data: [], loading: false }),
-}))
-
 vi.mock('./ContentTab.module.scss', () => ({
-  default: { root: 'root', centered: 'centered' },
+  default: {
+    root: 'root',
+    quizColumn: 'quizColumn',
+    panelColumn: 'panelColumn',
+    centered: 'centered',
+    mutedText: 'mutedText',
+    reopenFab: 'reopenFab',
+  },
 }))
 
-vi.mock('./ContentCard', () => ({
-  ContentCard: () => null,
+vi.mock('./QuizPlayer', () => ({
+  QuizPlayer: () => null,
+}))
+
+vi.mock('./AiChatPanel', () => ({
+  AiChatPanel: () => null,
+}))
+
+const mockUseContentTab = vi.fn()
+
+vi.mock('./useContentTab', () => ({
+  useContentTab: () => mockUseContentTab(),
 }))
 
 import { ContentTab } from './ContentTab'
 
+const BASE_STATE = {
+  loading: false,
+  hasContent: false,
+  question: undefined,
+  guide: {},
+  answered: false,
+  selectedIndex: null,
+  previousSelectedIndex: null,
+  mobilePanelOpen: false,
+  setMobilePanelOpen: vi.fn(),
+  answerQuestion: vi.fn(),
+  retryQuiz: vi.fn(),
+  chatContext: '',
+  workspaceId: 'teacher-1',
+  channelId: 'ch-1',
+  collectionName: 'quizzes',
+  contentId: null,
+  identificationNumber: '12345678',
+}
+
 describe('ContentTab', () => {
+  it('shows loading spinner when loading', () => {
+    mockUseContentTab.mockReturnValue({ ...BASE_STATE, loading: true })
+    render(<ContentTab />)
+
+    expect(screen.getByText('content.loading')).toBeInTheDocument()
+  })
+
   it('shows empty message when no content exists', () => {
+    mockUseContentTab.mockReturnValue(BASE_STATE)
     render(<ContentTab />)
 
     expect(screen.getByText('content.empty')).toBeInTheDocument()

@@ -1,5 +1,5 @@
-import { CoreRoutes } from '@/routes/routes'
-import type { TabConfig } from '@/modules/TabLayout'
+import { CoreRoutes } from '@/utils/routes'
+import type { TabConfig } from '@primer-guidy/components-web'
 
 export const ACTIVITY_TABS: readonly TabConfig[] = [
   { labelKey: 'tabs.notifications', path: CoreRoutes.ActivityNotifications },

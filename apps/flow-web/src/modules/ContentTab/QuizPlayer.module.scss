@@ -1,0 +1,151 @@
+@use '@/styles/breakpoints' as *;
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply flex flex-col gap-5 p-4;
+}
+
+.topicHeader {
+  @apply flex flex-col gap-2;
+}
+
+.conceptsDetails {
+  @apply rounded-lg p-3 border border-solid;
+
+  background-color: var(--primer-canvas-subtle);
+  border-color: var(--primer-border-muted);
+}
+
+.conceptsSummary {
+  @apply cursor-pointer list-none;
+  @apply transition-colors duration-200 ease-in-out;
+
+  color: var(--primer-fg-muted);
+}
+
+.conceptsSummary::-webkit-details-marker {
+  @apply hidden;
+}
+
+.conceptsSummary::marker {
+  content: '';
+}
+
+.conceptsChips {
+  @apply flex flex-wrap gap-2 pt-3;
+}
+
+.chip {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  @apply border border-solid bg-transparent;
+
+  color: var(--primer-accent-fg);
+  border-color: var(--primer-accent-emphasis);
+}
+
+.statementCard {
+  --statement-shadow: 0 1px 3px 0 var(--primer-neutral-muted);
+
+  @apply p-6 rounded-xl;
+
+  background-color: var(--primer-canvas-default);
+  border-left: var(--accent-border-width) solid var(--primer-accent-emphasis);
+  box-shadow: var(--statement-shadow);
+}
+
+.optionsGrid {
+  --option-min-width: 16rem;
+
+  @apply grid gap-3;
+
+  grid-template-columns: repeat(auto-fit, minmax(var(--option-min-width), 1fr));
+}
+
+.optionButton.optionButton {
+  @apply w-full rounded-lg cursor-pointer;
+  @apply transition-all duration-200 ease-in-out;
+  @apply text-left whitespace-normal h-auto border border-solid shadow-none;
+
+  background-color: var(--primer-canvas-subtle);
+  border-color: var(--primer-border-muted);
+  color: var(--primer-fg-default);
+
+  [data-component='buttonContent'] {
+    @apply w-full p-4;
+  }
+
+  [data-component='text'] {
+    @apply flex items-center gap-3 w-full;
+  }
+}
+
+.optionButton.optionButton:hover {
+  --option-hover-shadow: 0 2px 8px 0 var(--primer-neutral-muted);
+
+  background-color: var(--primer-canvas-default);
+  border-color: var(--primer-accent-emphasis);
+  box-shadow: var(--option-hover-shadow);
+}
+
+.optionButton.optionButton:disabled {
+  @apply cursor-not-allowed shadow-none;
+}
+
+.badge {
+  @apply flex items-center justify-center w-8 h-8 rounded-full shrink-0;
+  @apply text-xs font-bold;
+
+  background-color: var(--primer-neutral-muted);
+  color: var(--primer-fg-default);
+}
+
+.optionText {
+  @apply flex-1 text-sm font-medium;
+}
+
+.trailingIcon {
+  @apply shrink-0 opacity-0;
+  @apply transition-opacity duration-200 ease-in-out;
+}
+
+.optionButton.optionButton:hover .trailingIcon {
+  @apply opacity-100;
+}
+
+.selected.selected {
+  background-color: var(--primer-accent-muted);
+  border-color: var(--primer-accent-emphasis);
+}
+
+.selected .badge {
+  background-color: var(--primer-accent-emphasis);
+  color: var(--primer-fg-on-emphasis);
+}
+
+.selected .trailingIcon {
+  @apply opacity-100;
+
+  color: var(--primer-accent-fg);
+}
+
+.dimmed.dimmed {
+  @apply opacity-40;
+}
+
+.correctAnswerCard {
+  @apply flex flex-col gap-2 p-4 rounded-lg;
+
+  background-color: var(--primer-success-muted);
+  border-left: var(--accent-border-width) solid var(--primer-success-emphasis);
+}
+
+.correctAnswerHeader {
+  @apply flex items-center gap-2;
+
+  color: var(--primer-success-fg);
+}
+
+.explanationText {
+  color: var(--primer-fg-muted);
+}

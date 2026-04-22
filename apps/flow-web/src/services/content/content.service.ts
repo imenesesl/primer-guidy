@@ -48,3 +48,49 @@ export const getStudentContent = async (
     buildStudentPath(teacherUid, channelId, collectionName, contentId),
     identificationNumber,
   )
+
+export const subscribeToStudentContent = (
+  firestore: IFirestoreProvider,
+  teacherUid: string,
+  channelId: string,
+  collectionName: string,
+  contentId: string,
+  identificationNumber: string,
+  callback: (data: StudentContentData | null) => void,
+): (() => void) =>
+  firestore.onSnapshotDoc<StudentContentData>(
+    buildStudentPath(teacherUid, channelId, collectionName, contentId),
+    identificationNumber,
+    callback,
+  )
+
+export const updateStudentAnswer = async (
+  firestore: IFirestoreProvider,
+  teacherUid: string,
+  channelId: string,
+  collectionName: string,
+  contentId: string,
+  identificationNumber: string,
+  selectedIndex: number,
+  isSecondAttempt: boolean,
+): Promise<void> =>
+  firestore.updateDoc(
+    buildStudentPath(teacherUid, channelId, collectionName, contentId),
+    identificationNumber,
+    { answered: true, selectedIndex, ...(isSecondAttempt && { completed: true }) },
+  )
+
+export const retryQuiz = async (
+  firestore: IFirestoreProvider,
+  teacherUid: string,
+  channelId: string,
+  collectionName: string,
+  contentId: string,
+  identificationNumber: string,
+  currentSelectedIndex: number,
+): Promise<void> =>
+  firestore.updateDoc(
+    buildStudentPath(teacherUid, channelId, collectionName, contentId),
+    identificationNumber,
+    { answered: false, selectedIndex: null, previousSelectedIndex: currentSelectedIndex },
+  )

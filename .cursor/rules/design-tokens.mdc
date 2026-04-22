@@ -30,15 +30,39 @@ NEVER create SCSS token files, variable maps, or custom design systems.
 
 **Exception — Breakpoint SCSS variables:** `src/styles/_breakpoints.scss` defines Tailwind breakpoint values as SCSS variables (e.g., `$breakpoint-md: 48rem`) for use in SCSS mixins. This is the ONLY place where `rem` values are allowed as SCSS variables, because Sass cannot use Tailwind's `screen()` function.
 
-## Global Layout Tokens
+## Global Layout & Typography Tokens — `buildThemeVars` is the Single Source of Truth
 
-Reusable layout dimensions live as CSS custom properties in `global.css` under `:root`. NEVER define them as local SCSS variables inside a single module.
+All reusable CSS custom properties — layout dimensions, typography sizes, timing values — MUST be defined in `LAYOUT_VARS` inside `components-web/src/utils/theme.utils.ts`. They are injected alongside Primer color vars via `buildThemeVars` at the Shell level.
 
-```css
-/* global.css */
-:root {
-  --layout-rail-width: 4.5rem;
-  --layout-sidebar-width: 16.25rem;
+NEVER define reusable tokens as local variables inside SCSS modules. If a value is used across components or represents a design decision (e.g., rail width, label font-size, shimmer duration), it belongs in `LAYOUT_VARS`.
+
+```typescript
+// components-web/src/utils/theme.utils.ts
+const LAYOUT_VARS = {
+  '--spacing-px': '1px',
+  '--layout-rail-width': '4.5rem',
+  '--layout-sidebar-width': '16.25rem',
+  '--rail-label-font-size': '0.625rem',
+  '--shimmer-duration': '1.5s',
+} as const
+```
+
+```scss
+// SCSS consumes them — no local redefinition
+.label {
+  font-size: var(--rail-label-font-size);
+}
+```
+
+### Component-scoped variables (allowed)
+
+Local CSS custom properties are allowed ONLY for values that are **private to a single selector** — e.g., shadow definitions, computed borders, animation parameters that don't make sense as global tokens. They must be defined in the same selector block that uses them.
+
+```scss
+// OK — private to this component, not a reusable token
+.statementCard {
+  --statement-shadow: 0 1px 3px 0 var(--primer-neutral-muted);
+  box-shadow: var(--statement-shadow);
 }
 ```
 
@@ -130,6 +154,20 @@ Every `.module.scss` uses `@reference` for Tailwind layout utilities and `--prim
 3. If a darker/lighter shade is needed → use a different Primer token. NEVER use `filter: brightness()`
 4. If a Primer component has a built-in prop for it → use the prop instead of CSS
 5. **SCSS has ZERO magic numbers** — if a raw value cannot be expressed with `@apply`, extract it to a named CSS custom property (`--descriptive-name: value`). No raw `rem`, `px`, `%` values in property declarations
+
+## Icon Sizes — `IconSize` from `components-web`
+
+All Octicon `size` props MUST use the `IconSize` constants exported from `@primer-guidy/components-web`. NEVER use raw numbers for icon sizes.
+
+```typescript
+import { IconSize } from '@primer-guidy/components-web'
+
+<PeopleIcon size={IconSize.Small} />   // 16
+<Icon size={IconSize.Medium} />        // 20
+<MailIcon size={IconSize.Large} />     // 32
+```
+
+Inside `components-web` itself, import from the relative path: `import { IconSize } from '../../../utils/icon.utils'`.
 
 ## TypeScript / TSX — No Magic Numbers
 

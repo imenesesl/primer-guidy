@@ -74,7 +74,7 @@
 }
 
 .content {
-  @apply flex flex-col h-screen overflow-y-auto;
+  @apply flex flex-col h-screen overflow-hidden;
 
   padding-bottom: var(--layout-bottom-nav-height);
   background-color: var(--primer-canvas-default);

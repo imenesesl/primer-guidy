@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { Button, Text } from '@primer/react'
 import { PeopleIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
+import { IconSize } from '@primer-guidy/components-web'
 import type { ChannelCardProps } from './ChannelCard.types'
 import styles from './ChannelCard.module.scss'
 
@@ -26,7 +27,7 @@ export const ChannelCard = ({
         <Text as="span" className={clsx(styles.statusDot, styles[statusClass])} />
       </div>
       <div className={styles.meta}>
-        <PeopleIcon size={14} />
+        <PeopleIcon size={IconSize.Small} />
         <Text as="span" className={styles.count}>
           {tChannels('channelCard.students', { count: studentCount })}
         </Text>

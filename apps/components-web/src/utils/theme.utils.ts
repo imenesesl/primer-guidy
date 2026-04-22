@@ -21,9 +21,17 @@ const LAYOUT_VARS = {
   '--layout-sidebar-width': '16.25rem',
   '--layout-sidebar-mobile-width': '85vw',
   '--layout-bottom-nav-height': '4.5rem',
+  '--rail-label-font-size': '0.625rem',
   '--shimmer-travel': '200%',
   '--shimmer-duration': '1.5s',
   '--shimmer-opacity-min': '0.4',
+  '--chat-panel-height': '85vh',
+  '--chat-slide-duration': '300ms',
+  '--chat-header-height': '48px',
+  '--aurora-duration': '4s',
+  '--aurora-bg-size': '300%',
+  '--aurora-angle': '135deg',
+  '--accent-border-width': '4px',
 } as const
 
 export const buildThemeVars = (colors?: PrimerColors): CSSProperties =>

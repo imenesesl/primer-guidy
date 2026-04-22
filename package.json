@@ -23,6 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "pnpm -r test",
+    "deploy:rules": "npx firebase deploy --only firestore:rules",
     "test:rules": "firebase emulators:exec --only firestore,database --project demo-rules-test 'pnpm exec vitest run --config tests/rules/vitest.config.ts'",
     "test:e2e": "pnpm -r --workspace-concurrency=1 test:e2e",
     "prepare": "husky"

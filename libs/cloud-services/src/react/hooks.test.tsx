@@ -44,6 +44,7 @@ const mockServices: CloudServices = {
     updateDoc: vi.fn(),
     deleteDoc: vi.fn(),
     onSnapshot: vi.fn(),
+    onSnapshotDoc: vi.fn(),
   },
   hosting: {
     getProjectUrl: vi.fn(),

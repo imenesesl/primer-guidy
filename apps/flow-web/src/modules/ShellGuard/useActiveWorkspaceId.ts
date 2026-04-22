@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import type { WorkspaceEntry } from '@/services/workspace'
 import { extractWorkspaceId } from './ShellGuard.utils'
-import { FlowRoutes } from '@/routes/routes'
+import { FlowRoutes } from '@/utils/routes'
 
 export const useActiveWorkspaceId = (
   workspaces: readonly WorkspaceEntry[] | undefined,

@@ -10,4 +10,5 @@ export {
   useUpdateChannelStudents,
   useToggleChannelActive,
 } from './channel.hooks'
-export type { ChannelData, ChannelDocument } from './channel.types'
+export { CreateChannelSchema } from './channel.types'
+export type { ChannelData, ChannelDocument, CreateChannelFormData } from './channel.types'

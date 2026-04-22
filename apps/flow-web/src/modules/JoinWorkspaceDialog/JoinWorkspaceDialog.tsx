@@ -1,31 +1,41 @@
-import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Dialog, Flash, Text } from '@primer/react'
 import { useTranslation } from 'react-i18next'
 import { useJoinWorkspace, WorkspaceErrorCode } from '@/services/workspace'
 import { CodeInput } from './CodeInput'
 import type { JoinWorkspaceDialogProps } from './JoinWorkspaceDialog.types'
-import { CODE_LENGTH } from './JoinWorkspaceDialog.constants'
+import { JoinWorkspaceSchema } from './JoinWorkspaceDialog.schema'
+import type { JoinWorkspaceFormData } from './JoinWorkspaceDialog.schema'
 import styles from './JoinWorkspaceDialog.module.scss'
 
 export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceDialogProps) => {
   const { t: tShell } = useTranslation('shell')
-  const [code, setCode] = useState('')
   const { mutate: join, isPending, error, reset } = useJoinWorkspace()
 
-  const isValid = code.replace(/\D/g, '').length === CODE_LENGTH
+  const {
+    control,
+    handleSubmit,
+    reset: resetForm,
+    formState: { isValid },
+  } = useForm<JoinWorkspaceFormData>({
+    resolver: valibotResolver(JoinWorkspaceSchema),
+    defaultValues: { code: '' },
+    mode: 'onChange',
+  })
 
   const handleClose = () => {
-    setCode('')
+    resetForm()
     reset()
     onClose()
   }
 
-  const handleJoin = () => {
-    if (!student || !isValid) return
+  const onSubmit = (data: JoinWorkspaceFormData) => {
+    if (!student) return
 
     join(
       {
-        code,
+        code: data.code,
         name: student.name,
         identificationNumber: student.identificationNumber,
       },
@@ -52,7 +62,7 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceD
         {
           buttonType: 'primary',
           content: tShell('joinWorkspace.join'),
-          onClick: handleJoin,
+          onClick: handleSubmit(onSubmit),
           disabled: !isValid || isPending || !student,
         },
       ]}
@@ -61,7 +71,11 @@ export const JoinWorkspaceDialog = ({ isOpen, onClose, student }: JoinWorkspaceD
         <Text as="p" className={styles.description}>
           {tShell('joinWorkspace.description')}
         </Text>
-        <CodeInput value={code} onChange={setCode} />
+        <Controller
+          name="code"
+          control={control}
+          render={({ field }) => <CodeInput value={field.value} onChange={field.onChange} />}
+        />
         {isInvalidCode && <Flash variant="danger">{tShell('joinWorkspace.invalidCode')}</Flash>}
         {isAlreadyEnrolled && (
           <Flash variant="warning">{tShell('joinWorkspace.alreadyEnrolled')}</Flash>

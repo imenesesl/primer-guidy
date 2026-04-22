@@ -26,7 +26,37 @@
             "expectedAnswerHints": { "type": "array", "items": "string", "required": false }
           }
         },
-        "chatContext": { "type": "string", "required": true }
+        "chatContext": { "type": "string", "required": true },
+        "completed": {
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the student has completed the quiz/homework"
+        },
+        "answered": {
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the student has selected an answer"
+        },
+        "selectedIndex": {
+          "type": "number|null",
+          "required": true,
+          "description": "Index of the option selected by the student, null if not answered"
+        },
+        "previousSelectedIndex": {
+          "type": "number|null",
+          "required": true,
+          "description": "Index of the previously selected option before retry, null if first attempt"
+        }
+      },
+      "subcollections": {
+        "chat/{messageId}": {
+          "description": "AI chat messages for the student's quiz/homework attempt. Created by the client.",
+          "schema": {
+            "role": { "type": "string", "required": true, "enum": ["user", "assistant"] },
+            "content": { "type": "string", "required": true },
+            "createdAt": { "type": "string", "required": true, "description": "ISO 8601 timestamp" }
+          }
+        }
       }
     }
   }

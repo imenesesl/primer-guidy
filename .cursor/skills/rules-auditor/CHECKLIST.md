@@ -97,7 +97,7 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 ## 10. styling-conventions
 
 - ALL styles in `.module.scss` — never in `.tsx`
-- Every `.module.scss` starts with `@reference "tailwindcss/theme"` and `@reference "tailwindcss/utilities"`
+- Every `.module.scss` starts with `@reference "tailwindcss/theme"` and `@reference "tailwindcss/utilities"` (exception: when `@use` is present, it MUST come first — SASS compiler constraint; do NOT flag `@use` before `@reference` as a violation)
 - Layout/spacing/sizing via Tailwind `@apply`
 - ALL colors via `--primer-*` CSS custom properties
 - No hardcoded hex/rgb/hsl
@@ -116,7 +116,8 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 - No raw CSS when Tailwind has a utility (opacity, display, transitions, sizing)
 - No raw CSS transitions — use `@apply transition-*`
 - No custom SCSS token files (exception: `_breakpoints.scss`)
-- Global layout tokens in `:root` CSS vars
+- Reusable CSS custom properties (layout, typography, timing) MUST live in `LAYOUT_VARS` in `theme.utils.ts` — NEVER as local SCSS variables; local CSS vars only allowed for single-selector-scoped values (shadows, computed borders)
+- Icon sizes MUST use `IconSize` constants from `components-web` (`Small: 16`, `Medium: 20`, `Large: 32`) — no raw numbers or local constants for Octicon `size` props
 - State statuses: enums, not strings
 - Route paths: `as const` objects, not hardcoded strings
 - Error codes: enums, not strings
@@ -243,7 +244,7 @@ Reference file for the Rules Auditor skill. Each section maps to one `.mdc` rule
 - `tsconfig.json` extends `../../tsconfig.nest.json` with `outDir: "dist"` and decorator flags
 - `tsconfig.json` excludes `**/*.test.ts` from build
 - `nest-cli.json`: SWC builder + `typeCheck: false` + Swagger plugin
-- ESLint NestJS overrides in ROOT `eslint.config.mjs` — servers do NOT have individual ESLint configs
+- ESLint NestJS overrides in ROOT `eslint.config.mjs` for IDE linting; per-server `eslint.config.mjs` extending `nestServer` preset is expected (needed for Nx CLI `nx lint`)
 - Controllers NEVER access repositories directly
 - Services NEVER handle HTTP concerns (request/response objects)
 - LLM injection via `@Inject(TOKEN)` with `ILlmProvider` from `@primer-guidy/llm-services`

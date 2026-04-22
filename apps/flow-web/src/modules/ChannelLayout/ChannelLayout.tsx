@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { Outlet, Link, useParams, useLocation } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { resolveBasePath, buildChannelContentPath, buildChannelPendingPath } from '@/utils/routes'
 import styles from './ChannelLayout.module.scss'
 
 export const ChannelLayout = () => {
@@ -11,9 +12,9 @@ export const ChannelLayout = () => {
   }
 
   const { pathname } = useLocation()
-  const basePath = pathname.includes('/quizes/') ? '/quizes' : '/tasks'
-  const contentPath = `${basePath}/${workspaceId}/${channelId}/content`
-  const aiPath = `${basePath}/${workspaceId}/${channelId}/ai`
+  const basePath = resolveBasePath(pathname)
+  const contentPath = buildChannelContentPath(basePath, workspaceId, channelId)
+  const pendingPath = buildChannelPendingPath(basePath, workspaceId, channelId)
 
   return (
     <div className={styles.root}>
@@ -26,11 +27,11 @@ export const ChannelLayout = () => {
           {tShell('channelTabs.content')}
         </Link>
         <Link
-          to={aiPath}
+          to={pendingPath}
           className={styles.tab}
           activeProps={{ className: clsx(styles.tab, { [styles.tabActive as string]: true }) }}
         >
-          {tShell('channelTabs.ai')}
+          {tShell('channelTabs.pending')}
         </Link>
       </nav>
       <div className={styles.content}>

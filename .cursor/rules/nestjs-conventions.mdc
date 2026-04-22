@@ -154,7 +154,7 @@ Server `tsconfig.json` MUST extend `tsconfig.nest.json` and add `outDir` + decor
 }
 ```
 
-ESLint NestJS overrides live in the ROOT `eslint.config.mjs` — servers do NOT have individual `eslint.config.mjs` files. When adding a new server, add its path patterns to the root config.
+ESLint NestJS overrides live in the ROOT `eslint.config.mjs` — it scopes rules to NestJS file patterns for IDE linting. Each server also has its own minimal `eslint.config.mjs` that extends the shared `nestServer` preset — this is required by the Nx CLI for per-project `nx lint` targets. Both configs are needed; do NOT flag per-server ESLint configs as violations during audits.
 
 ## Single Responsibility per Service
 

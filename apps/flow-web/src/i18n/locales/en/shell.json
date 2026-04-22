@@ -27,7 +27,7 @@
   },
   "channelTabs": {
     "content": "Content",
-    "ai": "AI"
+    "pending": "Pending"
   },
   "content": {
     "empty": "No content available yet.",
@@ -40,12 +40,33 @@
     "explanation": "Explanation:",
     "option": "{{letter}}."
   },
+  "quizPlayer": {
+    "correctAnswer": "{{letter}}) {{answer}}",
+    "keyConcepts": "Key concepts",
+    "answered": "Answered"
+  },
+  "aiChat": {
+    "title": "AI Assistant",
+    "placeholder": "Ask about this question...",
+    "inputPlaceholder": "Type your question...",
+    "sending": "Thinking...",
+    "error": "Something went wrong. Try again.",
+    "retry": "Answer again",
+    "close": "Close",
+    "send": "Send",
+    "overlay": "Close panel"
+  },
+  "pending": {
+    "empty": "No pending quizzes.",
+    "loading": "Loading pending...",
+    "current": "Current"
+  },
   "breadcrumb": {
     "home": "Home",
     "tasks": "Tasks",
     "quizes": "Quizes",
     "learning": "Learning",
     "content": "Content",
-    "ai": "AI"
+    "pending": "Pending"
   }
 }

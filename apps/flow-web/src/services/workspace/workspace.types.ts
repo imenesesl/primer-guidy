@@ -20,3 +20,9 @@ export interface WorkspaceEntry {
   readonly uid: string
   readonly active: boolean
 }
+
+export interface JoinWorkspaceArgs {
+  readonly code: string
+  readonly name: string
+  readonly identificationNumber: string
+}

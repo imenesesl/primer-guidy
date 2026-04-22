@@ -1,3 +1,6 @@
+export const QUIZZES_COLLECTION = 'quizzes' as const
+export const HOMEWORK_COLLECTION = 'homework' as const
+
 export interface QuestionData {
   readonly id: string
   readonly statement: string
@@ -10,10 +13,14 @@ export interface QuestionData {
 export interface StudentContentData {
   readonly questions: QuestionData[]
   readonly chatContext: string
+  readonly completed: boolean
+  readonly answered: boolean
+  readonly selectedIndex: number | null
+  readonly previousSelectedIndex: number | null
 }
 
 export interface ContentData {
-  readonly type: string
+  readonly type: 'task-generator'
   readonly task: 'quiz' | 'homework'
   readonly valid: boolean
   readonly guide: Record<string, unknown>

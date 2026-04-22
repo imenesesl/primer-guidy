@@ -2,7 +2,7 @@ import { ChecklistIcon, NoteIcon, BookIcon, HashIcon } from '@primer/octicons-re
 import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
 import type { WorkspaceEntry } from '@/services/workspace'
 import type { ChannelDocument } from '@/services/channel'
-import { FlowRoutes } from '@/routes/routes'
+import { FlowRoutes } from '@/utils/routes'
 
 type RailItemSeed = Omit<RailItemConfig, 'label'>
 

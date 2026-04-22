@@ -71,7 +71,9 @@
 }
 
 .label {
-  @apply text-[0.625rem] leading-tight;
+  @apply leading-tight;
+
+  font-size: var(--rail-label-font-size);
 }
 
 @include md {

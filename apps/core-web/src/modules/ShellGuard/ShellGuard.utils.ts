@@ -10,7 +10,7 @@ import {
 } from '@primer/octicons-react'
 import type { RailItemConfig, SidebarItemConfig } from '@primer-guidy/components-web'
 import type { ChannelDocument } from '@/services/channel'
-import { CoreRoutes } from '@/routes/routes'
+import { CoreRoutes } from '@/utils/routes'
 
 type RailItemSeed = Omit<RailItemConfig, 'label'>
 

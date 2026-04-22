@@ -70,7 +70,7 @@ export const Shell = ({
           toggleSidebarLabel={labels.toggleSidebar}
           breadcrumb={breadcrumb}
         />
-        {children}
+        <div className={styles.childrenArea}>{children}</div>
       </WorkspaceLayout>
     </div>
   )

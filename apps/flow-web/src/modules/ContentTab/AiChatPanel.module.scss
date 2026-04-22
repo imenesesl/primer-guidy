@@ -1,0 +1,232 @@
+@use '@/styles/breakpoints' as *;
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.overlay.overlay {
+  @apply fixed inset-0 z-30;
+
+  background-color: var(--primer-neutral-muted);
+}
+
+@include md {
+  .overlay.overlay {
+    @apply hidden;
+  }
+}
+
+.panel {
+  @apply fixed bottom-0 left-0 right-0 z-40;
+  @apply flex flex-col overflow-hidden;
+  @apply rounded-t-2xl;
+
+  height: var(--chat-panel-height);
+  background-color: var(--primer-canvas-subtle);
+  animation: slide-up var(--chat-slide-duration) ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@include md {
+  .panel {
+    @apply relative bottom-auto left-auto right-auto z-auto;
+    @apply h-full rounded-none animate-none;
+  }
+}
+
+.waveHeader {
+  @apply relative overflow-hidden rounded-t-2xl;
+
+  height: var(--chat-header-height);
+  background: linear-gradient(
+    var(--aurora-angle),
+    var(--primer-accent-emphasis),
+    var(--primer-success-emphasis),
+    var(--primer-accent-emphasis)
+  );
+  background-size: var(--aurora-bg-size) var(--aurora-bg-size);
+  animation: aurora var(--aurora-duration) ease-in-out infinite;
+}
+
+@keyframes aurora {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@include md {
+  .waveHeader {
+    @apply rounded-t-none;
+  }
+}
+
+.headerBar {
+  @apply absolute inset-0 flex items-center justify-between px-4;
+}
+
+.headerTitle {
+  color: var(--primer-fg-on-emphasis);
+}
+
+.closeButton.closeButton {
+  @apply transition-colors duration-200 ease-in-out shadow-none;
+
+  color: var(--primer-fg-on-emphasis);
+}
+
+.closeButton.closeButton:hover {
+  color: var(--primer-fg-on-emphasis);
+  background-color: var(--primer-neutral-muted);
+}
+
+@include md {
+  .closeButton.closeButton {
+    @apply hidden;
+  }
+}
+
+.chatArea {
+  @apply flex-1 flex flex-col gap-3 p-4 overflow-y-auto min-h-0;
+}
+
+.emptyChat {
+  @apply flex-1 flex items-center justify-center;
+
+  color: var(--primer-fg-muted);
+}
+
+.messageBubble {
+  --message-max-width: 85%;
+
+  @apply px-3 py-2 rounded-xl text-sm break-words;
+
+  max-width: var(--message-max-width);
+}
+
+.markdown {
+  --md-line-height: 1.5;
+  --md-block-padding: 0.4em;
+  --md-list-indent: 1.4em;
+  --md-list-item-padding: 0.15em;
+  --md-blockquote-border: 3px;
+
+  line-height: var(--md-line-height);
+
+  > :first-child {
+    @apply pt-0;
+  }
+
+  > :last-child {
+    @apply pb-0;
+  }
+
+  p {
+    padding-block: var(--md-block-padding);
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  em {
+    @apply italic;
+  }
+
+  ul,
+  ol {
+    padding-block: var(--md-block-padding);
+    padding-left: var(--md-list-indent);
+  }
+
+  li {
+    padding-block: var(--md-list-item-padding);
+  }
+
+  code {
+    @apply px-1 py-0.5 rounded text-xs font-mono;
+
+    background-color: var(--primer-neutral-muted);
+  }
+
+  pre {
+    @apply p-2 rounded-lg overflow-x-auto;
+
+    background-color: var(--primer-neutral-muted);
+
+    code {
+      @apply p-0 bg-transparent;
+    }
+  }
+
+  blockquote {
+    @apply pl-3 py-2;
+
+    border-left: var(--md-blockquote-border) solid var(--primer-border-default);
+    color: var(--primer-fg-muted);
+  }
+
+  a {
+    @apply underline;
+
+    color: var(--primer-accent-fg);
+  }
+}
+
+.userBubble {
+  @apply self-end rounded-br whitespace-pre-wrap;
+
+  background-color: var(--primer-accent-emphasis);
+  color: var(--primer-fg-on-emphasis);
+}
+
+.assistantBubble {
+  @apply self-start rounded-bl;
+
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-default);
+}
+
+.typingIndicator {
+  @apply self-start px-3 py-2 rounded-xl rounded-bl text-sm;
+
+  background-color: var(--primer-canvas-default);
+  color: var(--primer-fg-muted);
+}
+
+.retryBar {
+  @apply flex justify-center px-4 pt-2 shrink-0;
+}
+
+.retryButton.retryButton {
+  @apply transition-colors duration-200 ease-in-out shadow-none;
+
+  color: var(--primer-fg-muted);
+}
+
+.retryButton.retryButton:hover {
+  color: var(--primer-fg-default);
+}
+
+.inputBar {
+  @apply flex gap-2 p-4 shrink-0;
+}
+
+.chatInput.chatInput {
+  @apply flex-1;
+}
+
+.sendButton.sendButton {
+  @apply shrink-0;
+}

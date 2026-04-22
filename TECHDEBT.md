@@ -1,51 +1,39 @@
 # Tech Debt
 
-> Last audited: 2026-04-20
+> Last audited: 2026-04-22
 
 ## P1 — High
 
-| Rule                | File/Area                                                                  | Issue                                                                               |
-| ------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| web-architecture    | `apps/core-web/src/modules/Activity/Activity.tsx`                          | Cross-module import: imports `TabLayout` from `@/modules/TabLayout`                 |
-| web-architecture    | `apps/core-web/src/modules/Directories/Directories.tsx`                    | Cross-module import: imports `TabLayout` from `@/modules/TabLayout`                 |
-| web-architecture    | `apps/core-web/src/modules/ContentTab/ContentTab.tsx`                      | Cross-module import: imports `GeneratorForm` from `@/modules/GeneratorForm`         |
-| web-architecture    | `apps/core-web/src/modules/ShellGuard/ShellGuard.tsx`                      | Cross-module import: imports `useAuthGuard` from `@/modules/AuthGuard`              |
-| web-architecture    | `apps/core-web/src/modules/Activity/Activity.utils.ts`                     | Imports `CoreRoutes` from `@/routes/routes`; modules must not import from `routes/` |
-| web-architecture    | `apps/core-web/src/modules/Directories/Directories.utils.ts`               | Imports `CoreRoutes` from `@/routes/routes`; modules must not import from `routes/` |
-| web-architecture    | `apps/core-web/src/modules/ShellGuard/ShellGuard.utils.ts`                 | Imports `CoreRoutes` from `@/routes/routes`; modules must not import from `routes/` |
-| react-routing-state | `apps/core-web/src/modules/ChannelLayout/ChannelLayout.tsx`                | Hardcoded path strings for content/ai tab navigation                                |
-| react-routing-state | `apps/core-web/src/routes/_shell/channels/$channelId/index.tsx`            | Hardcoded redirect path string                                                      |
-| react-routing-state | `apps/flow-web/src/modules/ChannelLayout/ChannelLayout.tsx`                | Hardcoded path segments (`/quizes`, `/tasks`) and template-literal URL construction |
-| react-routing-state | `apps/flow-web/src/routes/_shell/tasks/$workspaceId/$channelId/index.tsx`  | Hardcoded redirect path string                                                      |
-| react-routing-state | `apps/flow-web/src/routes/_shell/quizes/$workspaceId/$channelId/index.tsx` | Hardcoded redirect path string                                                      |
-| testing-tdd         | `apps/core-web/src/services/channel/channel.hooks.ts`                      | Missing `channel.hooks.test.ts`                                                     |
-| testing-tdd         | `apps/core-web/src/services/enrollment/enrollment.hooks.ts`                | Missing `enrollment.hooks.test.ts`                                                  |
-| testing-tdd         | `apps/core-web/src/services/generator/generator.hooks.ts`                  | Missing `generator.hooks.test.ts`                                                   |
-| testing-tdd         | `apps/core-web/src/services/invite-code/invite-code.hooks.ts`              | Missing `invite-code.hooks.test.ts`                                                 |
-| testing-tdd         | `apps/flow-web/src/services/workspace/workspace.hooks.ts`                  | Missing `workspace.hooks.test.ts`                                                   |
-| testing-tdd         | `apps/flow-web/src/services/channel/channel.hooks.ts`                      | Missing `channel.hooks.test.ts`                                                     |
-| testing-tdd         | `apps/flow-web/src/services/student-auth/student-auth.service.ts`          | Missing `student-auth.service.test.ts`                                              |
-| testing-tdd         | `apps/flow-web/src/modules/Home/AuthFormFields/AuthFormFields.tsx`         | Missing `AuthFormFields.test.tsx`                                                   |
-| database-schemas    | `apps/flow-web/src/services/workspace/`                                    | Missing schema for RTDB `codes/{code}` node                                         |
-| database-schemas    | `apps/flow-web/src/services/workspace/`                                    | Missing schema for Firestore `students/{id}/workspaces` subcollection               |
+| Rule             | File/Area                                                                          | Issue                                                                                                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| reusability      | `apps/flow-web/src/modules/AuthGuard/`                                             | Duplicates `useAuthGuard`, `AuthGuard.types.ts`, `AuthGuard.utils.ts` already in `services/auth-guard/`; `index.ts` re-exports from services but sibling files are redundant copies |
+| forms-validation | `apps/flow-web/src/modules/JoinWorkspaceDialog/JoinWorkspaceDialog.schema.ts`      | Valibot form schema lives under `modules/`; should be in `services/` per convention                                                                                                 |
+| i18n             | `apps/login-web/src/modules/CreateAccount/CreateAccountForm/CreateAccountForm.tsx` | Name validation error uses `tCreateAccount('nameLabel')` instead of a dedicated validation message key                                                                              |
 
 ## P2 — Medium
 
-| Rule                | File/Area                                                                        | Issue                                                                               |
-| ------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| styling-conventions | `apps/core-web/src/modules/Directories/tabs/UsersTab/UsersTab.module.scss`       | `@use` precedes `@reference`; must start with `@reference` lines                    |
-| styling-conventions | `apps/core-web/src/modules/Channels/Channels.module.scss`                        | `@use` precedes `@reference`; must start with `@reference` lines                    |
-| styling-conventions | `apps/core-web/src/modules/ChannelLayout/ChannelLayout.module.scss`              | `@use` precedes `@reference`; must start with `@reference` lines                    |
-| component-structure | `apps/core-web/src/modules/ContentTab/ContentCard.tsx`                           | Not in its own folder with dedicated types, scss, and index.ts                      |
-| component-structure | `apps/flow-web/src/modules/ContentTab/ContentCard.tsx`                           | Not in its own folder with dedicated types, scss, and index.ts                      |
-| component-structure | `apps/flow-web/src/modules/ContentTab/QuestionList.tsx`                          | Not in its own folder with dedicated types, scss, and index.ts                      |
-| component-structure | `apps/flow-web/src/modules/JoinWorkspaceDialog/CodeInput.tsx`                    | Not in its own folder with dedicated types, scss, and index.ts                      |
-| forms-validation    | `apps/core-web/src/modules/Channels/CreateChannelDialog/CreateChannelDialog.tsx` | Uses `useState` for form state instead of `react-hook-form` + `valibot`             |
-| services-layer      | `apps/flow-web/src/services/workspace/workspace.hooks.ts`                        | `JoinWorkspaceArgs` defined inline in hooks file; should be in `workspace.types.ts` |
-| clean-code          | `apps/flow-web/src/styles/_breakpoints.scss`                                     | File is never imported or referenced                                                |
+| Rule                | File/Area                                                 | Issue                                                                                   |
+| ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| component-structure | `apps/flow-web/src/modules/ContentTab/AiChatPanel.tsx`    | Not in its own `AiChatPanel/` folder with prescribed file set and `index.ts` barrel     |
+| component-structure | `apps/flow-web/src/modules/ContentTab/QuizPlayer.tsx`     | Not in its own `QuizPlayer/` folder with prescribed file set and `index.ts` barrel      |
+| component-structure | `apps/flow-web/src/modules/PendingTab/PendingCard.tsx`    | Not in its own `PendingCard/` folder with prescribed file set and `index.ts` barrel     |
+| component-structure | `apps/core-web/src/modules/AuthGuard/ContentSkeleton.tsx` | Not in its own `ContentSkeleton/` folder with prescribed file set and `index.ts` barrel |
+| component-structure | `apps/login-web/src/modules/CreateAccount/SignInLink/`    | Missing `SignInLink.types.ts`                                                           |
+| testing-tdd         | `apps/flow-web/src/modules/ContentTab/useContentTab.ts`   | Hook has no corresponding `useContentTab.test.ts`                                       |
+| testing-tdd         | `apps/components-web/src/utils/icon.utils.ts`             | Public `IconSize` export has no co-located unit test                                    |
+| i18n                | `apps/login-web/src/i18n/locales/es/`                     | Spanish locale files exist but are not registered in `i18n.config.ts`                   |
+| clean-code          | `apps/flow-web/package.json`                              | Unused `zustand` dependency (no imports in `src/`)                                      |
+| clean-code          | `apps/login-web/package.json`                             | Unused `zustand` dependency (no imports in `src/`)                                      |
 
 ## P3 — Low
 
-| Rule          | File/Area                                               | Issue                                                      |
-| ------------- | ------------------------------------------------------- | ---------------------------------------------------------- |
-| design-tokens | `apps/flow-web/src/modules/ContentTab/QuestionList.tsx` | `LETTER_OFFSET = 65` magic number; use `'A'.charCodeAt(0)` |
+| Rule               | File/Area                                                           | Issue                                                                                                  |
+| ------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ui-quality         | `apps/flow-web/src/modules/PendingTab/PendingCard.tsx`              | `TASK_LABEL_VARIANT` uses `Record<string, …>` with string keys instead of a typed enum                 |
+| clean-code         | `apps/flow-web/src/modules/ContentTab/useContentTab.ts`             | Type assertions (`as QuestionData`, `as ContentGuide`) instead of narrowing or typed service outputs   |
+| clean-code         | `apps/flow-web/src/modules/ContentTab/ContentTab.tsx`               | Passes `contentId` and `identificationNumber` with `as string` though upstream values may be null      |
+| design-tokens      | `apps/core-web/src/modules/Channels/Channels.module.scss`           | Grid uses `minmax(14rem, 1fr)` — raw layout number not in a named CSS var                              |
+| i18n               | `apps/login-web/src/index.tsx`                                      | Hardcoded English error string `'Root element not found'`                                              |
+| nestjs-conventions | `apps/guardian-server/src/modules/firebase/firebase.module.ts`      | Monorepo root discovered via `resolve(__dirname, '../../../../..')` — brittle relative path            |
+| clean-code         | `apps/guardian-server/src/modules/validation/validation.service.ts` | Loose typing with `Record<string, unknown>` and `as never[]` for Brain responses instead of typed DTOs |
+| monorepo-structure | `libs/llm-services/package.json`                                    | Missing `"type": "module"` unlike sibling `cloud-services`                                             |

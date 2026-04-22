@@ -49,6 +49,10 @@ export class ContentPersistenceService {
         questions: student.questions,
         chatContext: student.chatContext,
         metrics: student.metrics,
+        completed: false,
+        answered: false,
+        selectedIndex: null,
+        previousSelectedIndex: null,
       })
     }
 

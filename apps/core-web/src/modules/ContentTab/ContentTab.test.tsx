@@ -39,7 +39,7 @@ vi.mock('./ContentTab.module.scss', () => ({
   default: { root: 'root', toolbar: 'toolbar', centered: 'centered' },
 }))
 
-vi.mock('@/modules/GeneratorForm', () => ({
+vi.mock('./GeneratorForm', () => ({
   GeneratorForm: ({
     isOpen,
     students,
@@ -59,7 +59,7 @@ vi.mock('@/modules/GeneratorForm', () => ({
     ) : null,
 }))
 
-vi.mock('./ContentCard', () => ({
+vi.mock('./ContentCard/ContentCard', () => ({
   ContentCard: () => null,
 }))
 

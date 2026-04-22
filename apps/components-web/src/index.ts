@@ -28,6 +28,9 @@ export type { WorkspaceLayoutProps } from './components/templates/WorkspaceLayou
 export { Shell } from './components/templates/Shell'
 export type { ShellProps, BreadcrumbResolver } from './components/templates/Shell'
 
+export { TabLayout } from './components/templates/TabLayout'
+export type { TabConfig, TabLayoutProps } from './components/templates/TabLayout'
+
 export { createLayoutStore, LayoutStoreProvider, useLayoutStore } from './stores/layout.store'
 export type { LayoutStore } from './stores/layout.store'
 
@@ -51,3 +54,5 @@ export { buildThemeVars } from './utils/theme.utils'
 export type { PrimerColors } from './utils/theme.utils'
 
 export { isDesktop, MD_BREAKPOINT } from './utils/viewport.utils'
+
+export { IconSize } from './utils/icon.utils'

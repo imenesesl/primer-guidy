@@ -8,7 +8,7 @@ vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
     <a href={to}>{children}</a>
   ),
-  Outlet: () => <div data-testid="outlet" />,
+  Outlet: () => <section aria-label="route-outlet">nested content</section>,
 }))
 
 vi.mock('react-i18next', () => ({
@@ -28,10 +28,10 @@ vi.mock('./ChannelLayout.module.scss', () => ({
 import { ChannelLayout } from './ChannelLayout'
 
 describe('ChannelLayout', () => {
-  it('renders content and AI tab links', () => {
+  it('renders content and pending tab links', () => {
     render(<ChannelLayout />)
     expect(screen.getByText('channelTabs.content')).toBeInTheDocument()
-    expect(screen.getByText('channelTabs.ai')).toBeInTheDocument()
+    expect(screen.getByText('channelTabs.pending')).toBeInTheDocument()
   })
 
   it('sets content tab link to correct path for tasks', () => {
@@ -40,14 +40,14 @@ describe('ChannelLayout', () => {
     expect(contentLink).toHaveAttribute('href', '/tasks/ws-1/ch-1/content')
   })
 
-  it('sets AI tab link to correct path for tasks', () => {
+  it('sets pending tab link to correct path for tasks', () => {
     render(<ChannelLayout />)
-    const aiLink = screen.getByText('channelTabs.ai').closest('a')
-    expect(aiLink).toHaveAttribute('href', '/tasks/ws-1/ch-1/ai')
+    const pendingLink = screen.getByText('channelTabs.pending').closest('a')
+    expect(pendingLink).toHaveAttribute('href', '/tasks/ws-1/ch-1/pending')
   })
 
   it('renders the Outlet for nested routes', () => {
     render(<ChannelLayout />)
-    expect(screen.getByTestId('outlet')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'route-outlet' })).toBeInTheDocument()
   })
 })

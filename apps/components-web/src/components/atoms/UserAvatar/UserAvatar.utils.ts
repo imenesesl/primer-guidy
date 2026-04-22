@@ -11,8 +11,8 @@ export const getInitials = (name: string): string =>
     .map((word) => word.charAt(0).toUpperCase())
     .join('')
 
-export const toAvatarStyle = (size: number): React.CSSProperties => ({
-  width: size,
-  height: size,
-  fontSize: size / FONT_SIZE_DIVISOR,
-})
+export const toAvatarStyle = (size: number): React.CSSProperties =>
+  ({
+    '--avatar-size': `${size}px`,
+    '--avatar-font-size': `${size / FONT_SIZE_DIVISOR}px`,
+  }) as React.CSSProperties

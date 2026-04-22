@@ -16,6 +16,7 @@ const mockFirestore: IFirestoreProvider = {
   updateDoc: vi.fn(),
   deleteDoc: vi.fn(),
   onSnapshot: vi.fn(),
+  onSnapshotDoc: vi.fn(),
 }
 
 beforeEach(() => {

@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { IFirestoreProvider } from '@primer-guidy/cloud-services'
-import { subscribeToContent, getStudentContent } from './content.service'
+import {
+  subscribeToContent,
+  getStudentContent,
+  subscribeToStudentContent,
+  updateStudentAnswer,
+  retryQuiz,
+} from './content.service'
 import type { ContentDocument, StudentContentData } from './content.types'
 
 const mockFirestore: IFirestoreProvider = {
@@ -11,6 +17,7 @@ const mockFirestore: IFirestoreProvider = {
   updateDoc: vi.fn(),
   deleteDoc: vi.fn(),
   onSnapshot: vi.fn(),
+  onSnapshotDoc: vi.fn(),
 }
 
 beforeEach(() => {
@@ -75,6 +82,10 @@ describe('getStudentContent', () => {
     const studentData: StudentContentData = {
       questions: [{ id: 'q1', statement: 'What is 2+2?' }],
       chatContext: 'math basics',
+      completed: false,
+      answered: false,
+      selectedIndex: null,
+      previousSelectedIndex: null,
     }
     vi.mocked(mockFirestore.getDoc).mockResolvedValue(studentData)
 
@@ -107,5 +118,85 @@ describe('getStudentContent', () => {
     )
 
     expect(result).toBeNull()
+  })
+})
+
+const STUDENT_PATH = 'users/teacher-1/channels/ch-1/quizzes/content-1/students'
+
+describe('subscribeToStudentContent', () => {
+  it('subscribes to a single student document with correct path', () => {
+    const callback = vi.fn()
+    const unsubscribe = vi.fn()
+    vi.mocked(mockFirestore.onSnapshotDoc).mockReturnValue(unsubscribe)
+
+    const result = subscribeToStudentContent(
+      mockFirestore,
+      'teacher-1',
+      'ch-1',
+      'quizzes',
+      'content-1',
+      '12345678',
+      callback,
+    )
+
+    expect(mockFirestore.onSnapshotDoc).toHaveBeenCalledWith(STUDENT_PATH, '12345678', callback)
+    expect(result).toBe(unsubscribe)
+  })
+})
+
+describe('updateStudentAnswer', () => {
+  it('updates answered and selectedIndex on first attempt', async () => {
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await updateStudentAnswer(
+      mockFirestore,
+      'teacher-1',
+      'ch-1',
+      'quizzes',
+      'content-1',
+      '12345678',
+      2,
+      false,
+    )
+
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith(STUDENT_PATH, '12345678', {
+      answered: true,
+      selectedIndex: 2,
+    })
+  })
+
+  it('also sets completed on second attempt', async () => {
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await updateStudentAnswer(
+      mockFirestore,
+      'teacher-1',
+      'ch-1',
+      'quizzes',
+      'content-1',
+      '12345678',
+      1,
+      true,
+    )
+
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith(STUDENT_PATH, '12345678', {
+      answered: true,
+      selectedIndex: 1,
+      completed: true,
+    })
+  })
+})
+
+describe('retryQuiz', () => {
+  it('resets answered and selectedIndex, stores previousSelectedIndex', async () => {
+    vi.mocked(mockFirestore.updateDoc).mockResolvedValue(undefined)
+
+    await retryQuiz(mockFirestore, 'teacher-1', 'ch-1', 'quizzes', 'content-1', '12345678', 3)
+
+    expect(mockFirestore.updateDoc).toHaveBeenCalledWith(STUDENT_PATH, '12345678', {
+      answered: false,
+      selectedIndex: null,
+      previousSelectedIndex: 3,
+    })
   })
 })

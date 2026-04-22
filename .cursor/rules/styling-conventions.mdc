@@ -20,6 +20,18 @@ alwaysApply: true
 }
 ```
 
+### Exception: `@use` before `@reference`
+
+When a SCSS module needs `@use` (e.g., `@use '@/styles/breakpoints' as *` for responsive mixins), the SASS compiler **requires** `@use` to appear before all other rules — including `@reference`. This is a SASS language constraint, not a style violation. The correct order in this case is:
+
+```scss
+@use '@/styles/breakpoints' as *;
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+```
+
+Do NOT flag this as a violation during audits. It is the only valid order when `@use` is present.
+
 - Import in component: `import styles from './ComponentName.module.scss'`
 
 ## Two Sources of Truth
@@ -36,6 +48,11 @@ alwaysApply: true
 | **Overlay colors** | **Primer via useTheme** | `var(--primer-neutral-muted)` |
 | **Color adjustments** | Primer tokens | Use a different `--primer-*` token (e.g., `canvas-inset` < `canvas-default` < `canvas-subtle`) |
 | Typography (when custom) | Tailwind | But prefer Primer `<Text size="small">` first |
+| **Reusable tokens** | **`buildThemeVars` LAYOUT_VARS** | `var(--layout-rail-width)`, `var(--rail-label-font-size)` |
+
+### CSS Custom Properties — Single Source of Truth
+
+All reusable CSS custom properties (layout dimensions, typography tokens, timing values) MUST be defined in `LAYOUT_VARS` inside `components-web/src/utils/theme.utils.ts`. NEVER define reusable tokens as local variables inside SCSS modules. See `design-tokens.mdc` for the full rule.
 
 ## Colors — Primer Theme via useTheme + style prop
 

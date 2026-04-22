@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { Outlet, Link, useParams } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { buildChannelContentPath, buildChannelAiPath } from '@/utils/routes'
 import styles from './ChannelLayout.module.scss'
 
 export const ChannelLayout = () => {
@@ -9,8 +10,8 @@ export const ChannelLayout = () => {
     channelId: string
   }
 
-  const contentPath = `/channels/${channelId}/content`
-  const aiPath = `/channels/${channelId}/ai`
+  const contentPath = buildChannelContentPath(channelId)
+  const aiPath = buildChannelAiPath(channelId)
 
   return (
     <div className={styles.root}>

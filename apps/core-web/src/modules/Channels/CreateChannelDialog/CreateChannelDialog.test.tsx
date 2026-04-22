@@ -13,9 +13,13 @@ vi.mock('@/context/user.context', () => ({
 
 const createMock = vi.fn()
 
-vi.mock('@/services/channel', () => ({
-  useCreateChannel: () => ({ mutate: createMock, isPending: false }),
-}))
+vi.mock('@/services/channel', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useCreateChannel: () => ({ mutate: createMock, isPending: false }),
+  }
+})
 
 import { CreateChannelDialog } from './CreateChannelDialog'
 

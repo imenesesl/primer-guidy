@@ -1,0 +1,41 @@
+@reference "tailwindcss/theme";
+@reference "tailwindcss/utilities";
+
+.root {
+  @apply p-4 flex flex-col gap-4;
+}
+
+.centered {
+  @apply flex flex-col items-center justify-center gap-2 py-12;
+}
+
+.mutedText {
+  color: var(--primer-fg-muted);
+}
+
+.list {
+  @apply flex flex-col gap-3;
+}
+
+.card {
+  @apply flex flex-col gap-2 p-4 rounded-lg border transition-colors;
+
+  border-color: var(--primer-border-default);
+  background-color: var(--primer-canvas-subtle);
+}
+
+.card:hover {
+  background-color: var(--primer-canvas-default);
+}
+
+.cardHeader {
+  @apply flex items-center justify-between;
+}
+
+.cardDate {
+  color: var(--primer-fg-muted);
+}
+
+.cardStatus {
+  @apply flex items-center gap-2;
+}

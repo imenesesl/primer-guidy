@@ -1,36 +1,32 @@
-import { useState } from 'react'
-import { Spinner, Text, Label } from '@primer/react'
-import { useParams, useLocation } from '@tanstack/react-router'
+import { Spinner, Text, Label, IconButton } from '@primer/react'
+import { CommentDiscussionIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
-import { useAuthGuard } from '@/modules/AuthGuard'
-import { useStudentProfile } from '@/services/student'
-import { useChannelContent } from '@/services/content'
-import { ContentCard } from './ContentCard'
+import { useContentTab } from './useContentTab'
+import { QuizPlayer } from './QuizPlayer'
+import { AiChatPanel } from './AiChatPanel'
 import styles from './ContentTab.module.scss'
-
-const QUIZES_ROUTE = '/quizes/'
-const QUIZZES_COLLECTION = 'quizzes'
-const HOMEWORK_COLLECTION = 'homework'
 
 export const ContentTab = () => {
   const { t: tShell } = useTranslation('shell')
-  const { workspaceId, channelId } = useParams({ strict: false }) as {
-    workspaceId: string
-    channelId: string
-  }
-  const { pathname } = useLocation()
-  const { uid } = useAuthGuard()
-  const { data: student } = useStudentProfile(uid)
-
-  const collectionName = pathname.includes(QUIZES_ROUTE) ? QUIZZES_COLLECTION : HOMEWORK_COLLECTION
-
-  const { data: content, loading } = useChannelContent(workspaceId, channelId, collectionName)
-
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-
-  const handleToggle = (contentId: string) => {
-    setExpandedId((prev) => (prev === contentId ? null : contentId))
-  }
+  const {
+    loading,
+    hasContent,
+    question,
+    guide,
+    answered,
+    selectedIndex,
+    previousSelectedIndex,
+    mobilePanelOpen,
+    setMobilePanelOpen,
+    answerQuestion,
+    retryQuiz,
+    chatContext,
+    workspaceId,
+    channelId,
+    collectionName,
+    contentId,
+    identificationNumber,
+  } = useContentTab()
 
   if (loading) {
     return (
@@ -43,7 +39,7 @@ export const ContentTab = () => {
     )
   }
 
-  if (content.length === 0) {
+  if (!hasContent || !question) {
     return (
       <div className={styles.centered}>
         <Label variant="secondary">{tShell('content.empty')}</Label>
@@ -53,20 +49,50 @@ export const ContentTab = () => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.contentList}>
-        {content.map((item) => (
-          <ContentCard
-            key={item.id}
-            content={item}
-            expanded={expandedId === item.id}
-            onToggle={() => handleToggle(item.id)}
+      <div className={styles.quizColumn}>
+        <QuizPlayer
+          question={question}
+          guide={guide}
+          answered={answered}
+          selectedIndex={selectedIndex}
+          previousSelectedIndex={previousSelectedIndex}
+          onAnswer={(index) =>
+            answerQuestion({
+              selectedIndex: index,
+              isSecondAttempt: previousSelectedIndex !== null,
+            })
+          }
+        />
+      </div>
+
+      {answered && mobilePanelOpen && (
+        <div className={styles.panelColumn}>
+          <AiChatPanel
+            onClose={() => setMobilePanelOpen(false)}
+            onRetry={() => retryQuiz(selectedIndex ?? 0)}
+            chatContext={chatContext}
+            question={question}
+            selectedIndex={selectedIndex ?? 0}
+            previousSelectedIndex={previousSelectedIndex}
             teacherUid={workspaceId}
             channelId={channelId}
             collectionName={collectionName}
-            identificationNumber={student?.identificationNumber ?? null}
+            contentId={contentId as string}
+            identificationNumber={identificationNumber as string}
           />
-        ))}
-      </div>
+        </div>
+      )}
+
+      {answered && !mobilePanelOpen && (
+        <IconButton
+          variant="primary"
+          icon={CommentDiscussionIcon}
+          aria-label={tShell('aiChat.title')}
+          onClick={() => setMobilePanelOpen(true)}
+          className={styles.reopenFab}
+          size="medium"
+        />
+      )}
     </div>
   )
 }

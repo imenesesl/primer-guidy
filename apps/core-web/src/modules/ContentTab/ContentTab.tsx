@@ -9,7 +9,7 @@ import { useChannels } from '@/services/channel'
 import { useGenerateContent, ProcessType, TaskKind } from '@/services/generator'
 import type { GeneratorFormData } from '@/services/generator'
 import { useChannelContent } from '@/services/content'
-import { GeneratorForm } from '@/modules/GeneratorForm'
+import { GeneratorForm } from './GeneratorForm'
 import { ContentCard } from './ContentCard'
 import styles from './ContentTab.module.scss'
 

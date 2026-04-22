@@ -1,10 +1,9 @@
 import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
 import { Button, Text } from '@primer/react'
+import { IconSize } from '../../../utils/icon.utils'
 import type { RailItemProps } from './RailItem.types'
 import styles from './RailItem.module.scss'
-
-const ICON_SIZE = 20
 
 export const RailItem = (props: RailItemProps) => {
   const { icon: Icon, 'aria-label': ariaLabel } = props
@@ -18,7 +17,7 @@ export const RailItem = (props: RailItemProps) => {
         onClick={props.onClick}
       >
         <Text as="span" className={clsx(styles.iconWrapper, styles.iconFixed)}>
-          <Icon size={ICON_SIZE} />
+          <Icon size={IconSize.Medium} />
         </Text>
       </Button>
     )
@@ -38,7 +37,7 @@ export const RailItem = (props: RailItemProps) => {
         as="span"
         className={clsx(styles.iconWrapper, { [styles.iconActive as string]: active })}
       >
-        <ResolvedIcon size={ICON_SIZE} />
+        <ResolvedIcon size={IconSize.Medium} />
       </Text>
       <Text as="span" className={styles.label} weight="medium">
         {label}

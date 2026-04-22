@@ -29,11 +29,20 @@ vi.mock('@primer-guidy/components-web', async (importOriginal) => {
   }
 })
 
+const mockUseMutation = vi.fn()
+
 vi.mock('@tanstack/react-query', () => ({
   useQuery: (...args: unknown[]) => mockUseQuery(...args),
+  useMutation: (...args: unknown[]) => mockUseMutation(...args),
 }))
 
-import { useChannelContent, useStudentContent } from './content.hooks'
+import {
+  useChannelContent,
+  useStudentContent,
+  useStudentContentRealtime,
+  useAnswerQuestion,
+  useRetryQuiz,
+} from './content.hooks'
 import type { ContentDocument } from './content.types'
 
 beforeEach(() => {
@@ -136,5 +145,59 @@ describe('useStudentContent', () => {
     renderHook(() => useStudentContent('teacher-1', 'ch-1', 'quizzes', 'content-1', null))
 
     expect(mockUseQuery).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }))
+  })
+})
+
+describe('useStudentContentRealtime', () => {
+  it('passes enabled=true when all params are provided', () => {
+    mockUseSubscription.mockReturnValue({
+      data: null,
+      isLoading: true,
+      status: AsyncStatus.Loading,
+      error: null,
+    })
+
+    renderHook(() =>
+      useStudentContentRealtime('teacher-1', 'ch-1', 'quizzes', 'content-1', '12345678'),
+    )
+
+    expect(mockUseSubscription).toHaveBeenCalledWith(expect.any(Function), { enabled: true })
+  })
+
+  it('passes enabled=false when contentId is null', () => {
+    mockUseSubscription.mockReturnValue({
+      data: null,
+      isLoading: true,
+      status: AsyncStatus.Loading,
+      error: null,
+    })
+
+    renderHook(() => useStudentContentRealtime('teacher-1', 'ch-1', 'quizzes', null, '12345678'))
+
+    expect(mockUseSubscription).toHaveBeenCalledWith(expect.any(Function), { enabled: false })
+  })
+})
+
+describe('useAnswerQuestion', () => {
+  it('creates a mutation with mutationFn', () => {
+    mockUseMutation.mockReturnValue({ mutate: vi.fn() })
+
+    renderHook(() => useAnswerQuestion('teacher-1', 'ch-1', 'quizzes', 'content-1', '12345678'))
+
+    expect(mockUseMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ mutationFn: expect.any(Function) }),
+    )
+  })
+})
+
+describe('useRetryQuiz', () => {
+  it('creates a mutation with mutationFn', () => {
+    mockUseMutation.mockReturnValue({ mutate: vi.fn() })
+
+    renderHook(() => useRetryQuiz('teacher-1', 'ch-1', 'quizzes', 'content-1', '12345678'))
+
+    expect(mockUseMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ mutationFn: expect.any(Function) }),
+    )
   })
 })

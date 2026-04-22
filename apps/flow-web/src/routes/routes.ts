@@ -1,6 +1,1 @@
-export const FlowRoutes = {
-  Root: '/',
-  Tasks: '/tasks',
-  Quizes: '/quizes',
-  Learning: '/learning',
-} as const
+export { FlowRoutes } from '@/utils/routes'

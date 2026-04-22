@@ -6,7 +6,7 @@ import {
 } from '@firebase/rules-unit-testing'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, collection } from 'firebase/firestore'
 
 const RULES = readFileSync(resolve(__dirname, '../../firestore.rules'), 'utf8')
 const PROJECT_ID = 'demo-rules-test'
@@ -206,6 +206,353 @@ describe('students/{identificationNumber}/workspaces/{teacherUid}', () => {
   it('unauthenticated cannot access workspace', async () => {
     const db = testEnv.unauthenticatedContext().firestore()
     await assertFails(getDoc(doc(db, WORKSPACE_PATH)))
+  })
+})
+
+// ── quizzes/{contentId}/students/{studentId} ──────────────────
+
+describe('quizzes/{contentId}/students/{studentId}', () => {
+  const TEACHER_UID = 'teacher-1'
+  const STUDENT_ID = '12345678'
+  const STUDENT_AUTH_UID = 'student-auth-1'
+  const STUDENT_DOC_PATH = `users/${TEACHER_UID}/channels/ch-1/quizzes/quiz-1/students/${STUDENT_ID}`
+  const STUDENT_PROFILE_PATH = `students/${STUDENT_ID}`
+
+  it('any authenticated user can read', async () => {
+    const db = testEnv.authenticatedContext('anyone').firestore()
+    await assertSucceeds(getDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('unauthenticated cannot read', async () => {
+    const db = testEnv.unauthenticatedContext().firestore()
+    await assertFails(getDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('nobody can create via client', async () => {
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(setDoc(doc(db, STUDENT_DOC_PATH), { questions: [], chatContext: '' }))
+  })
+
+  it('nobody can delete via client', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(deleteDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('owner student can update allowed fields', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(updateDoc(doc(db, STUDENT_DOC_PATH), { answered: true, selectedIndex: 2 }))
+  })
+
+  it('owner student cannot update disallowed fields', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(updateDoc(doc(db, STUDENT_DOC_PATH), { questions: [{ id: 'hack' }] }))
+  })
+
+  it('non-owner student cannot update', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(updateDoc(doc(db, STUDENT_DOC_PATH), { answered: true }))
+  })
+})
+
+// ── homework/{contentId}/students/{studentId} ─────────────────
+
+describe('homework/{contentId}/students/{studentId}', () => {
+  const TEACHER_UID = 'teacher-1'
+  const STUDENT_ID = '12345678'
+  const STUDENT_AUTH_UID = 'student-auth-1'
+  const STUDENT_DOC_PATH = `users/${TEACHER_UID}/channels/ch-1/homework/hw-1/students/${STUDENT_ID}`
+  const STUDENT_PROFILE_PATH = `students/${STUDENT_ID}`
+
+  it('any authenticated user can read', async () => {
+    const db = testEnv.authenticatedContext('anyone').firestore()
+    await assertSucceeds(getDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('unauthenticated cannot read', async () => {
+    const db = testEnv.unauthenticatedContext().firestore()
+    await assertFails(getDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('nobody can create via client', async () => {
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(setDoc(doc(db, STUDENT_DOC_PATH), { questions: [], chatContext: '' }))
+  })
+
+  it('nobody can delete via client', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(deleteDoc(doc(db, STUDENT_DOC_PATH)))
+  })
+
+  it('owner student can update allowed fields', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(updateDoc(doc(db, STUDENT_DOC_PATH), { answered: true, selectedIndex: 0 }))
+  })
+
+  it('owner student cannot update disallowed fields', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(updateDoc(doc(db, STUDENT_DOC_PATH), { questions: [{ id: 'hack' }] }))
+  })
+
+  it('non-owner student cannot update', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+      await setDoc(doc(context.firestore(), STUDENT_DOC_PATH), {
+        questions: [],
+        chatContext: '',
+        answered: false,
+        completed: false,
+        selectedIndex: null,
+      })
+    })
+
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(updateDoc(doc(db, STUDENT_DOC_PATH), { answered: true }))
+  })
+})
+
+// ── quizzes/.../students/{studentId}/chat/{messageId} ─────────
+
+describe('quizzes/.../students/{studentId}/chat/{messageId}', () => {
+  const TEACHER_UID = 'teacher-1'
+  const STUDENT_ID = '12345678'
+  const STUDENT_AUTH_UID = 'student-auth-1'
+  const STUDENT_PROFILE_PATH = `students/${STUDENT_ID}`
+  const CHAT_COLLECTION_PATH = `users/${TEACHER_UID}/channels/ch-1/quizzes/quiz-1/students/${STUDENT_ID}/chat`
+  const CHAT_DOC_PATH = `${CHAT_COLLECTION_PATH}/msg-1`
+
+  const VALID_MESSAGE = { role: 'user', content: 'Hello', createdAt: '2026-04-21T00:00:00.000Z' }
+
+  const seedStudentProfile = async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+    })
+  }
+
+  it('owner student can read chat messages', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(getDoc(doc(db, CHAT_DOC_PATH)))
+  })
+
+  it('non-owner cannot read chat messages', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(getDoc(doc(db, CHAT_DOC_PATH)))
+  })
+
+  it('unauthenticated cannot read chat messages', async () => {
+    const db = testEnv.unauthenticatedContext().firestore()
+    await assertFails(getDoc(doc(db, CHAT_DOC_PATH)))
+  })
+
+  it('owner student can create chat message with valid fields', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(addDoc(collection(db, CHAT_COLLECTION_PATH), VALID_MESSAGE))
+  })
+
+  it('owner student cannot create chat message with extra fields', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(
+      addDoc(collection(db, CHAT_COLLECTION_PATH), { ...VALID_MESSAGE, extra: 'hack' }),
+    )
+  })
+
+  it('non-owner cannot create chat message', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(addDoc(collection(db, CHAT_COLLECTION_PATH), VALID_MESSAGE))
+  })
+
+  it('nobody can update chat messages', async () => {
+    await seedStudentProfile()
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), CHAT_DOC_PATH), VALID_MESSAGE)
+    })
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(updateDoc(doc(db, CHAT_DOC_PATH), { content: 'edited' }))
+  })
+
+  it('nobody can delete chat messages', async () => {
+    await seedStudentProfile()
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), CHAT_DOC_PATH), VALID_MESSAGE)
+    })
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(deleteDoc(doc(db, CHAT_DOC_PATH)))
+  })
+})
+
+// ── homework/.../students/{studentId}/chat/{messageId} ────────
+
+describe('homework/.../students/{studentId}/chat/{messageId}', () => {
+  const TEACHER_UID = 'teacher-1'
+  const STUDENT_ID = '12345678'
+  const STUDENT_AUTH_UID = 'student-auth-1'
+  const STUDENT_PROFILE_PATH = `students/${STUDENT_ID}`
+  const CHAT_COLLECTION_PATH = `users/${TEACHER_UID}/channels/ch-1/homework/hw-1/students/${STUDENT_ID}/chat`
+  const CHAT_DOC_PATH = `${CHAT_COLLECTION_PATH}/msg-1`
+
+  const VALID_MESSAGE = {
+    role: 'assistant',
+    content: 'Hi there',
+    createdAt: '2026-04-21T00:00:00.000Z',
+  }
+
+  const seedStudentProfile = async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), STUDENT_PROFILE_PATH), {
+        uid: STUDENT_AUTH_UID,
+        identificationNumber: STUDENT_ID,
+        name: 'Jane',
+      })
+    })
+  }
+
+  it('owner student can read chat messages', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(getDoc(doc(db, CHAT_DOC_PATH)))
+  })
+
+  it('non-owner cannot read chat messages', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(getDoc(doc(db, CHAT_DOC_PATH)))
+  })
+
+  it('owner student can create chat message', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertSucceeds(addDoc(collection(db, CHAT_COLLECTION_PATH), VALID_MESSAGE))
+  })
+
+  it('non-owner cannot create chat message', async () => {
+    await seedStudentProfile()
+    const db = testEnv.authenticatedContext('other-student').firestore()
+    await assertFails(addDoc(collection(db, CHAT_COLLECTION_PATH), VALID_MESSAGE))
+  })
+
+  it('nobody can update chat messages', async () => {
+    await seedStudentProfile()
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), CHAT_DOC_PATH), VALID_MESSAGE)
+    })
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(updateDoc(doc(db, CHAT_DOC_PATH), { content: 'edited' }))
+  })
+
+  it('nobody can delete chat messages', async () => {
+    await seedStudentProfile()
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), CHAT_DOC_PATH), VALID_MESSAGE)
+    })
+    const db = testEnv.authenticatedContext(STUDENT_AUTH_UID).firestore()
+    await assertFails(deleteDoc(doc(db, CHAT_DOC_PATH)))
   })
 })
 

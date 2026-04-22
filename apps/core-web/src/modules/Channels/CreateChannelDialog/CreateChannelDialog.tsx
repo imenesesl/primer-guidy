@@ -1,31 +1,36 @@
-import { useState } from 'react'
-import { Dialog, TextInput, Text, Flash } from '@primer/react'
+import { Dialog, TextInput, Text, FormControl } from '@primer/react'
+import { useForm } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from '@/context/user.context'
-import { useCreateChannel } from '@/services/channel'
+import { useCreateChannel, CreateChannelSchema } from '@/services/channel'
+import type { CreateChannelFormData } from '@/services/channel'
 import type { CreateChannelDialogProps } from './CreateChannelDialog.types'
 import styles from './CreateChannelDialog.module.scss'
-
-const CHANNEL_NAME_PATTERN = /^[a-zA-Z0-9-]+$/
 
 export const CreateChannelDialog = ({ isOpen, onClose }: CreateChannelDialogProps) => {
   const { t: tChannels } = useTranslation('channels')
   const { uid } = useCurrentUser()
-  const [name, setName] = useState('')
   const { mutate: create, isPending } = useCreateChannel()
 
-  const trimmed = name.trim()
-  const isValid = trimmed.length > 0 && CHANNEL_NAME_PATTERN.test(trimmed)
-  const showError = trimmed.length > 0 && !CHANNEL_NAME_PATTERN.test(trimmed)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<CreateChannelFormData>({
+    resolver: valibotResolver(CreateChannelSchema),
+    mode: 'onChange',
+    defaultValues: { name: '' },
+  })
 
   const handleClose = () => {
-    setName('')
+    reset()
     onClose()
   }
 
-  const handleCreate = () => {
-    if (!isValid) return
-    create({ teacherUid: uid, name: trimmed.toLowerCase() }, { onSuccess: handleClose })
+  const onSubmit = (data: CreateChannelFormData) => {
+    create({ teacherUid: uid, name: data.name.toLowerCase() }, { onSuccess: handleClose })
   }
 
   if (!isOpen) return null
@@ -44,7 +49,7 @@ export const CreateChannelDialog = ({ isOpen, onClose }: CreateChannelDialogProp
         {
           buttonType: 'primary',
           content: tChannels('createChannel.create'),
-          onClick: handleCreate,
+          onClick: handleSubmit(onSubmit),
           disabled: !isValid || isPending,
         },
       ]}
@@ -53,13 +58,21 @@ export const CreateChannelDialog = ({ isOpen, onClose }: CreateChannelDialogProp
         <Text as="p" className={styles.description}>
           {tChannels('createChannel.description')}
         </Text>
-        <TextInput
-          placeholder={tChannels('createChannel.namePlaceholder')}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={styles.input}
-        />
-        {showError && <Flash variant="danger">{tChannels('createChannel.invalidName')}</Flash>}
+        <FormControl>
+          <FormControl.Label visuallyHidden>
+            {tChannels('createChannel.namePlaceholder')}
+          </FormControl.Label>
+          <TextInput
+            placeholder={tChannels('createChannel.namePlaceholder')}
+            className={styles.input}
+            {...register('name')}
+          />
+          {errors.name && (
+            <FormControl.Validation variant="error">
+              {tChannels('createChannel.invalidName')}
+            </FormControl.Validation>
+          )}
+        </FormControl>
       </div>
     </Dialog>
   )

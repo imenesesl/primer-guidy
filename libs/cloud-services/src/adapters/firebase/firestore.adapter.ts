@@ -137,4 +137,15 @@ export class FirebaseFirestoreAdapter implements IFirestoreProvider {
       callback(snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as T))
     })
   }
+
+  onSnapshotDoc<T>(
+    collectionName: string,
+    id: string,
+    callback: (data: T | null) => void,
+  ): () => void {
+    const docRef = doc(this.db, collectionName, id)
+    return onSnapshot(docRef, (snapshot) => {
+      callback(snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as T) : null)
+    })
+  }
 }

@@ -2,7 +2,7 @@ import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import type { AuthUser } from '@primer-guidy/cloud-services'
 import { ContentSkeleton } from './ContentSkeleton'
-import { getLoginAppUrl } from './AuthGuard.utils'
+import { getLoginAppUrl } from '@/services/auth-guard'
 
 const createMockAuthUser = (overrides?: Partial<AuthUser>): AuthUser => ({
   uid: 'user-123',

@@ -16,4 +16,5 @@ export interface IFirestoreProvider {
     callback: (data: T[]) => void,
     options?: QueryOptions,
   ): () => void
+  onSnapshotDoc<T>(collection: string, id: string, callback: (data: T | null) => void): () => void
 }

@@ -1,0 +1,65 @@
+[
+  {
+    "level": "rtdb",
+    "path": "codes/{code}",
+    "description": "Invite code lookup table in Realtime Database. Maps a short invite code to the teacher UID who created it.",
+    "schema": {
+      "uid": {
+        "type": "string",
+        "required": true,
+        "description": "UID of the teacher who owns this invite code"
+      }
+    }
+  },
+  {
+    "level": "subcollection",
+    "path": "users/{teacherUid}/students/{identificationNumber}",
+    "description": "Students enrolled under a teacher. Document ID is the student's identification number.",
+    "schema": {
+      "name": {
+        "type": "string",
+        "required": true,
+        "description": "Student display name"
+      },
+      "identificationNumber": {
+        "type": "string",
+        "required": true,
+        "description": "Student identification number — used as document ID"
+      },
+      "status": {
+        "type": "string",
+        "required": true,
+        "enum": ["active", "inactive"],
+        "default": "inactive",
+        "description": "Enrollment status managed by the teacher"
+      },
+      "joinedAt": {
+        "type": "timestamp",
+        "required": true,
+        "description": "When the student joined the workspace"
+      }
+    }
+  },
+  {
+    "level": "subcollection",
+    "path": "students/{identificationNumber}/workspaces/{teacherUid}",
+    "description": "Workspaces a student belongs to, keyed by teacher UID. Read by the student to list their enrolled workspaces.",
+    "schema": {
+      "name": {
+        "type": "string",
+        "required": true,
+        "description": "Workspace display name"
+      },
+      "uid": {
+        "type": "string",
+        "required": true,
+        "description": "Teacher UID — matches the document ID"
+      },
+      "active": {
+        "type": "boolean",
+        "required": true,
+        "description": "Whether the workspace is currently active for this student"
+      }
+    }
+  }
+]

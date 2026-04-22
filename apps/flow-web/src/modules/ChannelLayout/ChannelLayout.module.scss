@@ -7,7 +7,7 @@
 }
 
 .tabBar {
-  @apply flex gap-0 px-2;
+  @apply flex gap-0 px-2 shrink-0;
 
   border-bottom: var(--spacing-px) solid var(--primer-border-default);
 }
@@ -24,11 +24,20 @@
 
   color: var(--primer-fg-muted);
   border-bottom: calc(var(--spacing-px) * 2) solid transparent;
+  outline: none;
 
   &:hover {
     @apply no-underline;
 
     color: var(--primer-fg-default);
+  }
+
+  &:focus-visible {
+    --focus-ring: 0 0 0 2px var(--primer-accent-fg);
+
+    @apply rounded-sm;
+
+    box-shadow: var(--focus-ring);
   }
 }
 
@@ -44,5 +53,5 @@
 }
 
 .content {
-  @apply flex-1;
+  @apply flex-1 overflow-hidden min-h-0;
 }

@@ -1,10 +1,9 @@
 import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
 import { Text } from '@primer/react'
+import { IconSize } from '../../../utils/icon.utils'
 import type { SidebarItemProps } from './SidebarItem.types'
 import styles from './SidebarItem.module.scss'
-
-const ICON_SIZE = 16
 
 export const SidebarItem = ({
   icon: Icon,
@@ -31,7 +30,7 @@ export const SidebarItem = ({
         [styles.iconActive as string]: active && variant === 'header',
       })}
     >
-      <Icon size={ICON_SIZE} />
+      <Icon size={IconSize.Small} />
     </Text>
     <Text as="span" size="small" weight="medium">
       {label}

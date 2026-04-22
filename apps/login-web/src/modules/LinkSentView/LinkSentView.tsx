@@ -1,11 +1,10 @@
 import { Button, Heading, Text } from '@primer/react'
 import { MailIcon } from '@primer/octicons-react'
 import { useTranslation } from 'react-i18next'
+import { IconSize } from '@primer-guidy/components-web'
 import type { LinkSentViewProps } from './LinkSentView.types'
 import authStyles from '@/styles/auth.module.scss'
 import styles from './LinkSentView.module.scss'
-
-const MAIL_ICON_SIZE = 32
 
 export const LinkSentView = ({ onBack, namespace }: LinkSentViewProps) => {
   const { t: tNs } = useTranslation(namespace)
@@ -16,7 +15,7 @@ export const LinkSentView = ({ onBack, namespace }: LinkSentViewProps) => {
       <div className={authStyles.card}>
         <div className={styles.linkSentCard}>
           <div className={styles.linkSentIcon}>
-            <MailIcon size={MAIL_ICON_SIZE} />
+            <MailIcon size={IconSize.Large} />
           </div>
           <Heading as="h2" className={authStyles.heading}>
             {tNs('linkSent.title')}

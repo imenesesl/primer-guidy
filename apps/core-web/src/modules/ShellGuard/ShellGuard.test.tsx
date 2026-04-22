@@ -12,15 +12,15 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-import { AuthGuardStatus } from '@/modules/AuthGuard'
-import type { AuthGuardState } from '@/modules/AuthGuard'
+import { AuthGuardStatus } from '@/services/auth-guard'
+import type { AuthGuardState } from '@/services/auth-guard'
 import type { UserDocument } from '@/services/user'
 
 const mockAuthGuardState: { current: AuthGuardState } = {
   current: { status: AuthGuardStatus.Initializing, user: null },
 }
 
-vi.mock('@/modules/AuthGuard', async (importOriginal) => {
+vi.mock('@/services/auth-guard', async (importOriginal) => {
   const actual = await importOriginal<Record<string, unknown>>()
   return {
     ...actual,
